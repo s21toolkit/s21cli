@@ -1,0 +1,39 @@
+{
+	"compilerOptions": {
+		/* Language and Environment */
+		"target": "ESNext",
+		"lib": ["ESNext"],
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"jsx": "react-jsx",
+
+		/* Modules */
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"moduleDetection": "force",
+		"allowImportingTsExtensions": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		},
+		"types": ["bun-types"],
+
+		/* Emit */
+		"noEmit": true,
+
+		/* Interop Constraints */
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+
+		/* Type Checking */
+		"strict": true,
+		"noImplicitThis": true,
+		"useUnknownInCatchVariables": true,
+		"alwaysStrict": true,
+		"noImplicitReturns": true,
+		"noImplicitOverride": true,
+
+		/* Completeness */
+		"skipLibCheck": true
+	}
+}
