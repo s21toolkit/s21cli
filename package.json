@@ -3,7 +3,8 @@
 	"module": "src/index.ts",
 	"type": "module",
 	"scripts": {
-		"prepare": "git submodule update --init --recursive"
+		"build:client": "make -C lib/client",
+		"build": "bun run build:client"
 	},
 	"bin": {
 		"s21cli-ts": "bin/index.ts",
