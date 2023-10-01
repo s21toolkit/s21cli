@@ -9,8 +9,12 @@ TARGETS ?= linux/amd64
 all: build
 
 .PHONY: build
-build:
->	xgo -buildmode=c-shared -out=build/libclient -targets='$(TARGETS)'  .
+build: tidy
+>	xgo -buildmode=c-shared -out=build/libclient -targets='$(TARGETS)' .
+
+.PHONY: tidy
+tidy:
+>	go mod tidy
 
 .PHONY: clean
 clean:
