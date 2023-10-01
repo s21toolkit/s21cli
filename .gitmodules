@@ -1,3 +1,0 @@
-[submodule "lib/s21client"]
-	path = lib/s21client
-	url = https://github.com/s21toolkit/s21client

@@ -1,3 +1,6 @@
 #!/usr/bin/env bun
 
-console.log("Hello world!")
+import { binary, run } from "cmd-ts"
+import { cli } from "@/cli"
+
+run(binary(cli), process.argv)

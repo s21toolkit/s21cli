@@ -7,7 +7,8 @@
 	},
 	"bin": {
 		"s21cli-ts": "bin/index.ts",
-		"s21cli": "bin/index.ts"
+		"s21cli": "bin/index.ts",
+		"s21": "bin/index.ts"
 	},
 	"devDependencies": {
 		"bun-types": "latest",
