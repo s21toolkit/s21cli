@@ -1,25 +1,26 @@
 {
-	"name": "s21cli-ts",
-	"module": "src/index.ts",
-	"type": "module",
-	"scripts": {
-		"build:client": "make -C lib/client",
-		"build": "bun run build:client"
-	},
-	"bin": {
-		"s21cli-ts": "bin/index.ts",
-		"s21cli": "bin/index.ts",
-		"s21": "bin/index.ts"
-	},
-	"devDependencies": {
-		"bun-types": "latest",
-		"typescript": "^5.2.2"
-	},
-	"peerDependencies": {
-		"typescript": "^5.2.2"
-	},
-	"dependencies": {
-		"cmd-ts": "^0.13.0",
-		"effect": "^2.0.0-next.39"
-	}
+  "name": "s21cli-ts",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "build:client": "make -C lib/client",
+    "build": "bun run build:client"
+  },
+  "bin": {
+    "s21cli-ts": "bin/index.ts",
+    "s21cli": "bin/index.ts",
+    "s21": "bin/index.ts"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "cmd-ts": "^0.13.0",
+    "effect": "^2.0.0-next.39",
+    "env-var": "^7.4.1"
+  }
 }

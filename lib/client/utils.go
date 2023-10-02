@@ -6,8 +6,12 @@ import (
 	"github.com/s21toolkit/s21client"
 )
 
+func useHandle[TTarget any, THandle ~uintptr](handle THandle) TTarget {
+	return cgo.Handle(handle).Value().(TTarget)
+}
+
 type Client = *s21client.Client
 
 func useClient[T ~uintptr](handle T) Client {
-	return cgo.Handle(handle).Value().(*s21client.Client)
+	return useHandle[Client](handle)
 }

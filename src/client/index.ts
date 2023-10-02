@@ -1,3 +1,4 @@
+import { CString } from "bun:ffi"
 import { symbols } from "./symbols"
 import { CStringUtils } from "./utils"
 
@@ -23,6 +24,16 @@ export class Client {
 
 	testCredentials() {
 		return symbols.ClientTestCredentials(this.#handle)
+	}
+
+	getPeerReviewSSHLink() {
+		const value = symbols.ClientGetPeerReviewSSHLink(this.#handle)
+
+		if (!value) {
+			return null
+		}
+
+		return CStringUtils.decode(new CString(value))
 	}
 
 	static testCredentials(username: string, password: string) {

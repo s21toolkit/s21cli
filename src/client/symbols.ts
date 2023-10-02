@@ -32,6 +32,10 @@ export const { symbols } = ffi.dlopen(libraryLocation, {
 		args: [t.uint64_t],
 		returns: t.int,
 	},
+	ClientGetPeerReviewSSHLink: {
+		args: [t.uint64_t],
+		returns: t.pointer,
+	},
 	TestCredentials: {
 		args: [t.cstring, t.cstring],
 		returns: t.int,
