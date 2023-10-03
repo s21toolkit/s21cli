@@ -170,3 +170,6 @@ dist
 
 # vscode workspace configuration
 .vscode/
+
+# data scratchpad
+.data/
