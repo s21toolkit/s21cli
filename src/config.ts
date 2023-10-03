@@ -4,8 +4,8 @@ import env from "env-var"
 import { createJsonFileIfNotExists } from "./utils"
 
 type CredentialsFile = {
-    S21_USERNAME: string,
-    S21_PASSWORD: string,
+    S21_USERNAME: string | null,
+    S21_PASSWORD: string | null,
 }
 
 type ConfigFile = {
@@ -37,30 +37,40 @@ function getFilePathInConfigDirectory(name: string) {
     return join(getOrCreateConfigDirectoryIfNotExists(), name)
 }
 
-async function readOrInitFileInConfigDirectory(name: string, init: unknown) {
+function tryLoadFromEnv<T>(json: T) {
+    for(const key in json) {
+        const val = env.get(key).asString()
+
+        if(val) json[key] = val as any
+    }
+
+    return json
+}
+
+async function readOrInitFileInConfigDirectory<T>(name: string, init: T): Promise<T> {
     return await Bun.file(createJsonFileIfNotExists(getFilePathInConfigDirectory(name), init)).json()
 }
 
-export async function loadCredentials(): Promise<CredentialsFile> {  
-    const json = await readOrInitFileInConfigDirectory("credentials.json", {
+export async function loadCredentials() {  
+    const json = await readOrInitFileInConfigDirectory<CredentialsFile>("credentials.json", {
         S21_USERNAME: null,
         S21_PASSWORD: null
-    }) as CredentialsFile
+    })
 
-    return {
-        S21_USERNAME: getEnvOrObject("S21_USERNAME", json),
-        S21_PASSWORD: getEnvOrObject("S21_PASSWORD", json)
-    }
+    const resolved = tryLoadFromEnv(json)
+
+    if(!resolved.S21_PASSWORD || !resolved.S21_USERNAME)
+        throw "No credentials resolved from config or env."
+
+    return resolved
 }
 
-export async function loadConfig(): Promise<ConfigFile> {
-    const json = await readOrInitFileInConfigDirectory("config.json", {
+export async function loadConfig() {
+    const json = await readOrInitFileInConfigDirectory<ConfigFile>("config.json", {
         PR_DIRECTORY: getConfigDirectory()
-    }) as ConfigFile
+    })
 
-    return {
-        PR_DIRECTORY: getEnvOrObject("PR_DIRECTORY", json),
-    }
+    return tryLoadFromEnv(json)
 }
 
 export async function loadMergedConfig(): Promise<ConfigFile & CredentialsFile> {
