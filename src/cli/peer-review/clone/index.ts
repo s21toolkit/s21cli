@@ -26,21 +26,12 @@ export const cloneCommand = command({
 		const directory = path.join(prDirectory, crypto.randomUUID())
 
 		let gitProc = Bun.spawnSync({
-			cmd: ["git", "clone", link, directory],
+			cmd: ["git", "clone", "-b", "develop", link, directory],
 		})
 
 		console.log(gitProc.stderr.toString())
 
-		console.log(`Cloned to ${directory}`)
-
-		gitProc = Bun.spawnSync({
-			cmd: ["git", "checkout", "-b", "develop"],
-			cwd: directory
-		})
-
-		console.log(gitProc.stderr.toString())
-
-		console.log(`Checkouted to develop`)
+		console.log(`Cloned to ${directory} on branch develop`)
 
 		client.destroy()
 	},
