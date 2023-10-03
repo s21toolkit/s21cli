@@ -27,12 +27,9 @@ export const cloneCommand = command({
 
 		let gitProc = Bun.spawnSync({
 			cmd: [
-				"git",
-				"clone",
-				"-b", "develop",
+				"git", "clone", "-b", "develop",
 				...(config.clone_depth != 0 ? ["--depth", config.clone_depth.toString()] : []),
-				link,
-				directory
+				link, directory
 			],
 		})
 
