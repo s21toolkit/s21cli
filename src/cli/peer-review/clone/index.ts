@@ -26,7 +26,14 @@ export const cloneCommand = command({
 		const directory = path.join(prDirectory, crypto.randomUUID())
 
 		let gitProc = Bun.spawnSync({
-			cmd: ["git", "clone", "-b", "develop", ...(config.clone_depth_1 ? ["--depth", "1"] : []), link, directory],
+			cmd: [
+				"git",
+				"clone",
+				"-b", "develop",
+				...(config.clone_depth != 0 ? ["--depth", config.clone_depth.toString()] : []),
+				link,
+				directory
+			],
 		})
 
 		console.log(gitProc.stderr.toString())
