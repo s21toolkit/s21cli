@@ -6,8 +6,8 @@ import path from "node:path"
 export const cloneCommand = command({
 	name: "clone",
 	args: {},
-	async handler() {
-		const config = await loadMergedConfig()
+	handler() {
+		const config = loadMergedConfig()
 
 		const client = new Client(config.username, config.password)
 
