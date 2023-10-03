@@ -1,5 +1,5 @@
 import { Client } from "@/client"
-import { loadMergedConfig } from "@/config"
+import { Config } from "@/config"
 import { command } from "cmd-ts"
 import path from "node:path"
 
@@ -7,9 +7,7 @@ export const cloneCommand = command({
 	name: "clone",
 	args: {},
 	handler() {
-		const config = loadMergedConfig()
-
-		const client = new Client(config.username, config.password)
+		const client = new Client(Config.username, Config.password)
 
 		const link = client.getPeerReviewSSHLink()
 
@@ -21,14 +19,14 @@ export const cloneCommand = command({
 			console.log(`Pending peer review detected ${link}`)
 		}
 
-		const prDirectory = config.pr_directory
+		const prDirectory = Config.pr_directory
 
 		const directory = path.join(prDirectory, crypto.randomUUID())
 
 		let gitProc = Bun.spawnSync({
 			cmd: [
 				"git", "clone", "-b", "develop",
-				...(config.clone_depth != 0 ? ["--depth", config.clone_depth.toString()] : []),
+				...(Config.clone_depth != 0 ? ["--depth", Config.clone_depth.toString()] : []),
 				link, directory
 			],
 		})

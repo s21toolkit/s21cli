@@ -75,22 +75,26 @@ class ConfigFile extends ConfigFileBase {
 type MergedConfig = ConfigFile & CredentialsFile
 
 
-export function loadCredentials() {  
+function loadCredentials() {  
     const cretentials = new CredentialsFile()
 
-    if(!cretentials.check())
-        throw "No credentials resolved from config or env."
+    if(!cretentials.check()) {
+        console.error("No credentials resolved from config or env.")
+        process.exit(1)
+    }
 
     return cretentials
 }
 
-export function loadConfig() {
+function loadConfig() {
     return new ConfigFile()
 }
 
-export function loadMergedConfig(): MergedConfig {
+function loadMergedConfig(): MergedConfig {
     return {
         ...loadCredentials(),
         ...loadConfig()
     } as MergedConfig
 }
+
+export const Config = loadMergedConfig()
