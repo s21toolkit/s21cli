@@ -62,6 +62,7 @@ class CredentialsFile extends ConfigFileBase {
 
 class ConfigFile extends ConfigFileBase {
     public pr_directory: string = getConfigDirectory()
+    public clone_depth_1: boolean = true
 
     constructor() {
         super("config.json")
