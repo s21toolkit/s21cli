@@ -10,7 +10,7 @@ import (
 func TestCredentials(username, password *C.char) int {
 	client := s21client.New(s21client.DefaultAuth(C.GoString(username), C.GoString(password)))
 
-	_, err := client.R().GetCurrentUser(requests.Variables_GetCurrentUser{})
+	_, err := client.R().GetCurrentUser(requests.GetCurrentUser_Variables{})
 
 	if err != nil {
 		return -1

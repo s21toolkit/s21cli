@@ -26,7 +26,7 @@ func ClientDestroy(handle uintptr) {
 func ClientTestCredentials(handle uintptr) int {
 	client := useClient(handle)
 
-	_, err := client.R().GetCurrentUser(requests.Variables_GetCurrentUser{})
+	_, err := client.R().GetCurrentUser(requests.GetCurrentUser_Variables{})
 
 	if err != nil {
 		return -1
@@ -35,11 +35,11 @@ func ClientTestCredentials(handle uintptr) int {
 	return 1
 }
 
-func getCurrentBooking(events requests.Data_GetAgendaEvents) *requests.Data_GetMyAgendaEvent_GetAgendaEvents {
-	bookings := []requests.Data_GetMyAgendaEvent_GetAgendaEvents{}
+func getCurrentBooking(events requests.GetAgendaEvents_Data) *requests.GetAgendaEvents_Data_GetMyAgendaEvent {
+	bookings := []requests.GetAgendaEvents_Data_GetMyAgendaEvent{}
 
-	for _, event := range events.Data_Student_GetAgendaEvents.GetMyAgendaEvents {
-		if event.Data_AgendaItemContext_GetAgendaEvents.EntityType != "BOOKING" {
+	for _, event := range events.Student.GetMyAgendaEvents {
+		if event.AgendaItemContext.EntityType != "BOOKING" {
 			continue
 		}
 
@@ -63,7 +63,7 @@ func getCurrentBooking(events requests.Data_GetAgendaEvents) *requests.Data_GetM
 func ClientGetPeerReviewSSHLink(handle uintptr) *C.char {
 	client := useClient(handle)
 
-	events, err := client.R().GetAgendaEvents(requests.Variables_GetAgendaEvents{
+	events, err := client.R().GetAgendaEvents(requests.GetAgendaEvents_Variables{
 		From:  carbon.Now().ToIso8601String(),
 		To:    carbon.Now().AddMinutes(15).ToIso8601String(),
 		Limit: 10,
@@ -79,21 +79,21 @@ func ClientGetPeerReviewSSHLink(handle uintptr) *C.char {
 		return nil
 	}
 
-	review, err := client.R().GetAgendaP2P(requests.Variables_GetAgendaP2P{
-		BookingID: currentBooking.Data_AgendaItemContext_GetAgendaEvents.EntityID,
+	review, err := client.R().GetAgendaP2P(requests.GetAgendaP2P_Variables{
+		BookingID: currentBooking.AgendaItemContext.EntityID,
 	})
 
 	if err != nil {
 		return nil
 	}
 
-	checklist, err := client.R().CreateFilledChecklist(requests.Variables_CreateFilledChecklist{
-		StudentAnswerID: *review.Data_Student_GetAgendaP2P.Data_GetEnrichedBooking_GetAgendaP2P.AnswerID,
+	checklist, err := client.R().CreateFilledChecklist(requests.CreateFilledChecklist_Variables{
+		StudentAnswerID: *review.Student.GetEnrichedBooking.AnswerID,
 	})
 
 	if err != nil {
 		return nil
 	}
 
-	return C.CString(checklist.Data_Student_CreateFilledChecklist.Data_CreateFilledChecklist_CreateFilledChecklist.Data_GitlabStudentProjectURL_CreateFilledChecklist.SSHLink)
+	return C.CString(checklist.Student.CreateFilledChecklist.GitlabStudentProjectURL.SSHLink)
 }
