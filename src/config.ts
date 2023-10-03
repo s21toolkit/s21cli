@@ -17,7 +17,7 @@ class ConfigFileBase {
         this.#path = join(getConfigDirectory(), name)
     }
 
-    create() {
+    protected create() {
         const dir = getConfigDirectory()
         if(!existsSync(dir))
             mkdirSync(dir)
@@ -31,7 +31,7 @@ class ConfigFileBase {
         }
     }
 
-    loadFromEnv() {
+    protected loadFromEnv() {
         for(const key in this) {
             const val = env.get(`S21_${String(key).toUpperCase()}`).asString()
     
@@ -39,7 +39,7 @@ class ConfigFileBase {
         }
     }
 
-    loadFromFile() {
+    protected loadFromFile() {
         this.create()
         Object.assign(this, JSON.parse(readFileSync(this.#path).toString()))
     }
