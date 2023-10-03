@@ -7,7 +7,7 @@ export const sshCommand = command({
 	args: {},
 	async handler() {
 		const credentials = await loadCredentials()
-		const client = new Client(credentials.S21_USERNAME, credentials.S21_PASSWORD)
+		const client = new Client(credentials.username, credentials.password)
 
 		const link = client.getPeerReviewSSHLink()
 

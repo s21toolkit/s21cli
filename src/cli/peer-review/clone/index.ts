@@ -9,7 +9,7 @@ export const cloneCommand = command({
 	async handler() {
 		const config = await loadMergedConfig()
 
-		const client = new Client(config.S21_USERNAME, config.S21_PASSWORD)
+		const client = new Client(config.username, config.password)
 
 		const link = client.getPeerReviewSSHLink()
 
@@ -21,7 +21,7 @@ export const cloneCommand = command({
 			console.log(`Pending peer review detected ${link}`)
 		}
 
-		const prDirectory = config.PR_DIRECTORY
+		const prDirectory = config.pr_directory
 
 		const directory = path.join(prDirectory, crypto.randomUUID())
 

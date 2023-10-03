@@ -1,20 +1,7 @@
-import { existsSync, mkdirSync } from "fs"
+import { existsSync, mkdirSync, readFileSync } from "fs"
 import { join } from "path"
 import env from "env-var"
 import { createJsonFileIfNotExists } from "./utils"
-
-type CredentialsFile = {
-    S21_USERNAME: string,
-    S21_PASSWORD: string,
-}
-
-type ConfigFile = {
-    PR_DIRECTORY: string,
-}
-
-function getEnvOrObject<T>(key: keyof T, obj: T) {
-    return env.get(key.toString()).asString() || obj[key]
-}
 
 function getConfigDirectory() {
     // TODO: windows
@@ -24,58 +11,86 @@ function getConfigDirectory() {
     return config
 }
 
-function getOrCreateConfigDirectoryIfNotExists() {
-    const config = getConfigDirectory()
+class ConfigFileBase {
+    #path: string
 
-    if(!existsSync(config))
-        mkdirSync(config)
-
-    return config
-}
-
-function getFilePathInConfigDirectory(name: string) {
-    return join(getOrCreateConfigDirectoryIfNotExists(), name)
-}
-
-function tryLoadFromEnv<T>(json: T) {
-    for(const key in json) {
-        const val = env.get(key).asString()
-
-        if(val) json[key] = val as any
+    constructor(name: string) {
+        this.#path = join(getConfigDirectory(), name)
     }
 
-    return json
+    create() {
+        const dir = getConfigDirectory()
+        if(!existsSync(dir))
+            mkdirSync(dir)
+
+        if(!existsSync(this.#path)) {
+            const w = Bun.file(this.#path).writer()
+    
+            w.write(JSON.stringify(this))
+    
+            w.end()
+        }
+    }
+
+    loadFromEnv() {
+        for(const key in this) {
+            const val = env.get(`S21_${String(key).toUpperCase()}`).asString()
+    
+            if(val) this[key] = val as any
+        }
+    }
+
+    loadFromFile() {
+        this.create()
+        Object.assign(this, JSON.parse(readFileSync(this.#path).toString()))
+    }
 }
 
-async function readOrInitFileInConfigDirectory<T>(name: string, init: T): Promise<T> {
-    return await Bun.file(createJsonFileIfNotExists(getFilePathInConfigDirectory(name), init)).json()
+class CredentialsFile extends ConfigFileBase {
+    username: string = ""
+    password: string = ""
+
+    constructor() {
+        super("credentials.json")
+        this.loadFromFile()
+        this.loadFromEnv()
+    }
+
+    check() {
+        return !!this.username && !!this.password
+    }
 }
 
-export async function loadCredentials() {  
-    const json = await readOrInitFileInConfigDirectory<CredentialsFile>("credentials.json", {
-        S21_USERNAME: "",
-        S21_PASSWORD: ""
-    })
+class ConfigFile extends ConfigFileBase {
+    public pr_directory: string = getConfigDirectory()
 
-    const resolved = tryLoadFromEnv(json)
+    constructor() {
+        super("config.json")
+        this.loadFromFile()
+        this.loadFromEnv()
+    }
+}
 
-    if(!resolved.S21_PASSWORD || !resolved.S21_USERNAME)
+
+type MergedConfig = ConfigFile & CredentialsFile
+
+
+export function loadCredentials() {  
+    const cretentials = new CredentialsFile()
+
+    if(!cretentials.check())
         throw "No credentials resolved from config or env."
 
-    return resolved
+    return cretentials
 }
 
-export async function loadConfig() {
-    const json = await readOrInitFileInConfigDirectory<ConfigFile>("config.json", {
-        PR_DIRECTORY: getConfigDirectory()
-    })
-
-    return tryLoadFromEnv(json)
+export function loadConfig() {
+    return new ConfigFile()
 }
 
-export async function loadMergedConfig(): Promise<ConfigFile & CredentialsFile> {
+export function loadMergedConfig(): MergedConfig {
     return {
-        ...(await loadCredentials()),
-        ...(await loadConfig())
-    }
+        ...loadCredentials(),
+        ...loadConfig()
+    } as MergedConfig
 }
