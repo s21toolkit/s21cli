@@ -4,8 +4,8 @@ import env from "env-var"
 import { createJsonFileIfNotExists } from "./utils"
 
 type CredentialsFile = {
-    S21_USERNAME: string | null,
-    S21_PASSWORD: string | null,
+    S21_USERNAME: string,
+    S21_PASSWORD: string,
 }
 
 type ConfigFile = {
@@ -53,8 +53,8 @@ async function readOrInitFileInConfigDirectory<T>(name: string, init: T): Promis
 
 export async function loadCredentials() {  
     const json = await readOrInitFileInConfigDirectory<CredentialsFile>("credentials.json", {
-        S21_USERNAME: null,
-        S21_PASSWORD: null
+        S21_USERNAME: "",
+        S21_PASSWORD: ""
     })
 
     const resolved = tryLoadFromEnv(json)
