@@ -19,7 +19,7 @@ curl -fsSL https://raw.githubusercontent.com/s21toolkit/s21cli/master/scripts/in
 Установка через Bun
 </summary>
 
-> [!INFO]
+> [!IMPORTANT]
 > Для работы необходимо установить <a href="https://bun.sh">Bun</a>
 >
 > ```sh
