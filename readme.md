@@ -5,25 +5,32 @@
 ## Установка
 
 > [!WARNING]  
-> Так как Bun для Windows пока в разработке, работа на Windows не проверялась.
+> Так как Bun для Windows пока в разработке, сборок для Windows не предусмотрено.
+
+Установка через скрипт:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/s21toolkit/s21cli/master/scripts/install_binary.sh | sh
+```
 
 <details>
 
 <summary>
-Для работы необходимо установить <a href="https://bun.sh">Bun</a>
+Установка через Bun
 </summary>
 
-```sh
-curl -fsSL https://bun.sh/install | bash
-```
-
-</details>
-
-Установка через bun:
+> [!INFO]
+> Для работы необходимо установить <a href="https://bun.sh">Bun</a>
+>
+> ```sh
+> curl -fsSL https://bun.sh/install | bash
+> ```
 
 ```sh
 bun add -g github:s21toolkit/s21cli-ts
 ```
+
+</details>
 
 ## Настройка
 
@@ -54,3 +61,4 @@ s21cli <...commands> [...args]
     - `ssh` - Получает ссылки на репозиторий текущего пир ревью
     - `clone` - Клонирует проект текущего пир ревью в новую папку
   - `test` - Отправляет тестовый запрос к платформе
+    kek
