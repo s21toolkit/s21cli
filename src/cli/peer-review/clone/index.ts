@@ -1,36 +1,45 @@
-import { Client } from "@/client"
 import { Environment } from "@/environment"
+import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
 import { command } from "cmd-ts"
-import path from "node:path"
+import { join } from "node:path"
 
 export const cloneCommand = command({
 	name: "clone",
 	args: {},
-	handler() {
-		const client = new Client(Environment.USERNAME, Environment.PASSWORD)
-
-		const link = client.getPeerReviewSSHLink()
-
-		if (!link) {
-			console.error("Review not found")
-
-			return
-		} else {
-			console.log(`Pending peer review detected ${link}`)
-		}
-
-		const prDirectory = Environment.PR_DIRECTORY
-
-		const directory = path.join(prDirectory, crypto.randomUUID())
-
-		const gitProc = Bun.spawnSync({
-			cmd: ["git", "clone", link, directory],
+	async handler() {
+		const review = await getPendingPeerReview().catch((error) => {
+			if (error instanceof Error) {
+				console.error(error.message)
+			} else {
+				console.error("Unknown error")
+			}
 		})
 
-		console.log(gitProc.stderr.toString())
+		if (!review) {
+			return
+		}
 
-		console.log(`Cloned to ${directory}`)
+		const { checklist } = review
 
-		client.destroy()
+		console.log(
+			`Pending booking detected: ${checklist.student.createFilledChecklist.moduleInfoP2P.moduleName}`,
+		)
+
+		const { sshLink, httpsLink } =
+			checklist.student.createFilledChecklist.gitlabStudentProjectUrl
+
+		console.log(`Repo SSH link: ${sshLink}`)
+		console.log(`Repo HTTPS link: ${httpsLink}`)
+
+		const directoryName = join(Environment.PR_DIRECTORY, crypto.randomUUID())
+
+		const gitHandle = Bun.spawnSync({
+			cmd: ["git", "clone", "--recurse-submodules", sshLink, directoryName],
+			stdout: "inherit",
+		})
+
+		if (gitHandle.exitCode != 0) {
+			console.error("Failed to clone project repo")
+		}
 	},
 })

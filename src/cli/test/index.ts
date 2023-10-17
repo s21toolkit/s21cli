@@ -1,7 +1,5 @@
-import { command, flag, option, string } from "cmd-ts"
-import { Client } from "@/client"
-import { symbols } from "@/client/symbols"
-import { CStringUtils } from "@/client/utils"
+import { command, option, string } from "cmd-ts"
+import { Client, DefaultAuthProvider } from "@s21toolkit/client"
 
 export const testCommand = command({
 	name: "test",
@@ -16,25 +14,34 @@ export const testCommand = command({
 			long: "password",
 			type: string,
 		}),
-		uniqueClient: flag({
-			short: "x",
-			long: "unique-client",
-			defaultValue: () => false,
-		}),
 	},
-	handler(argv) {
-		const { username, password, uniqueClient } = argv
+	async handler(argv) {
+		const { username, password } = argv
 
-		if (uniqueClient) {
-			Client.use(new Client(username, password), (client) => {
-				const result = client.testCredentials()
+		const auth = new DefaultAuthProvider(username, password)
 
-				console.log(`[X] Result: `, result)
-			})
-		} else {
-			const result = Client.testCredentials(username, password)
+		const client = new Client(auth)
 
-			console.log(`Result: `, result)
+		try {
+			const data = await client.api.getCurrentUser()
+
+			console.log("Ok:", data.student.getExperience.coinsCount)
+		} catch (error) {
+			if (!(error instanceof Error)) {
+				console.error("Unknown error")
+
+				return
+			}
+
+			if (error.cause instanceof Response) {
+				console.error("Request error:", error.cause.statusText)
+				console.error("Headers:", error.cause.headers)
+				console.error("Body:", await error.cause.text())
+
+				return
+			}
+
+			console.error("Error:", error)
 		}
 	},
 })

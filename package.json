@@ -19,7 +19,9 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@s21toolkit/client": "^0.2.4",
     "cmd-ts": "^0.13.0",
+    "dayjs": "^1.11.10",
     "effect": "^2.0.0-next.39",
     "env-var": "^7.4.1"
   }
