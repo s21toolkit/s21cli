@@ -173,3 +173,6 @@ dist
 
 # data scratchpad
 .data/
+
+# build output
+build/
