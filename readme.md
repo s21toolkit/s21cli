@@ -4,6 +4,9 @@
 
 ## Установка
 
+> [!WARNING]  
+> Так как Bun для Windows пока в разработке, работа на Windows не проверялась.
+
 <details>
 
 <summary>
