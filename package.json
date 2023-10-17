@@ -12,7 +12,12 @@
     "s21": "bin/index.ts"
   },
   "devDependencies": {
+    "@total-typescript/ts-reset": "^0.5.1",
+    "@types/eslint": "^8.44.4",
     "bun-types": "latest",
+    "eslint": "^8.44.1",
+    "eslint-kit": "^10.4.0",
+    "eslint-plugin-no-relative-import-paths": "^1.5.2",
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
