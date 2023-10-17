@@ -19,7 +19,7 @@ curl -fsSL https://bun.sh/install | bash
 Установка через bun:
 
 ```sh
-bun add -g github:s21toolkit/s21auto
+bun add -g github:s21toolkit/s21cli-ts
 ```
 
 ## Использование
