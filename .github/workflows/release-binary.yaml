@@ -17,6 +17,10 @@ jobs:
         with:
           bun-version: latest
 
+      - run: bun install --forzen-lockfile
+        env:
+          GITHUB_NPM_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
       - run: bun run compile
 
       - uses: ncipollo/release-action@v1.13.0
