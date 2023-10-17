@@ -1,40 +1,49 @@
-import { Client } from "@/client"
 import { Config } from "@/config"
+import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
 import { command } from "cmd-ts"
-import path from "node:path"
+import { join } from "node:path"
 
 export const cloneCommand = command({
 	name: "clone",
 	args: {},
-	handler() {
-		const client = new Client(Config.username, Config.password)
-
-		const link = client.getPeerReviewSSHLink()
-
-		if (!link) {
-			console.error("Review not found")
-
-			return
-		} else {
-			console.log(`Pending peer review detected ${link}`)
-		}
-
-		const prDirectory = Config.pr_directory
-
-		const directory = path.join(prDirectory, crypto.randomUUID())
-
-		let gitProc = Bun.spawnSync({
-			cmd: [
-				"git", "clone", "-b", "develop",
-				...(Config.clone_depth != 0 ? ["--depth", Config.clone_depth.toString()] : []),
-				link, directory
-			],
+	async handler() {
+		const review = await getPendingPeerReview().catch((error) => {
+			if (error instanceof Error) {
+				console.error(error.message)
+			} else {
+				console.error("Unknown error")
+			}
 		})
 
-		console.log(gitProc.stderr.toString())
+		if (!review) {
+			return
+		}
 
-		console.log(`Cloned to ${directory} on branch develop`)
+		const { checklist } = review
 
-		client.destroy()
+		console.log(
+			`Pending booking detected: ${checklist.student.createFilledChecklist.moduleInfoP2P.moduleName}`,
+		)
+
+		const { sshLink, httpsLink } =
+			checklist.student.createFilledChecklist.gitlabStudentProjectUrl
+
+		console.log(`Repo SSH link: ${sshLink}`)
+		console.log(`Repo HTTPS link: ${httpsLink}`)
+
+		const directoryName = join(Config.pr_directory, crypto.randomUUID())
+
+		const gitHandle = Bun.spawnSync({
+			cmd: [
+				"git", "clone", "-b", "-develop", "--recurse-submodules",
+				...(Config.clone_depth != 0 ? ["--depth", Config.clone_depth.toString()] : []),
+				sshLink, directoryName
+			],
+			stdout: "inherit",
+		})
+
+		if (gitHandle.exitCode != 0) {
+			console.error("Failed to clone project repo")
+		}
 	},
 })

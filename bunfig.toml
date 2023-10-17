@@ -1,0 +1,2 @@
+[install.scopes]
+s21toolkit = { url = "https://npm.pkg.github.com", token = "$GITHUB_NPM_TOKEN" }

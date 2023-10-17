@@ -1,17 +1,28 @@
-import { Client } from "@/client"
-import { Config } from "@/config"
+import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
 import { command } from "cmd-ts"
 
 export const sshCommand = command({
 	name: "ssh",
 	args: {},
-	handler() {
-		const client = new Client(Config.username, Config.password)
+	async handler() {
+		const review = await getPendingPeerReview().catch((error) => {
+			if (error instanceof Error) {
+				console.error(error.message)
+			} else {
+				console.error("Unknown error")
+			}
+		})
 
-		const link = client.getPeerReviewSSHLink()
+		if (!review) {
+			return
+		}
 
-		console.log(`SSH link: "${link}"`)
+		const { checklist } = review
 
-		client.destroy()
+		const { sshLink, httpsLink } =
+			checklist.student.createFilledChecklist.gitlabStudentProjectUrl
+
+		console.log(`Repo SSH link: ${sshLink}`)
+		console.log(`Repo HTTPS link: ${httpsLink}`)
 	},
 })
