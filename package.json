@@ -1,33 +1,32 @@
 {
-  "name": "s21cli-ts",
-  "module": "src/index.ts",
-  "type": "module",
-  "scripts": {
-    "build:client": "make -C lib/client",
-    "build": "bun run build:client"
-  },
-  "bin": {
-    "s21cli-ts": "bin/index.ts",
-    "s21cli": "bin/index.ts",
-    "s21": "bin/index.ts"
-  },
-  "devDependencies": {
-    "@total-typescript/ts-reset": "^0.5.1",
-    "@types/eslint": "^8.44.4",
-    "bun-types": "latest",
-    "eslint": "^8.44.1",
-    "eslint-kit": "^10.4.0",
-    "eslint-plugin-no-relative-import-paths": "^1.5.2",
-    "typescript": "^5.2.2"
-  },
-  "peerDependencies": {
-    "typescript": "^5.2.2"
-  },
-  "dependencies": {
-    "@s21toolkit/client": "^0.2.4",
-    "cmd-ts": "^0.13.0",
-    "dayjs": "^1.11.10",
-    "effect": "^2.0.0-next.39",
-    "env-var": "^7.4.1"
-  }
+	"name": "s21cli-ts",
+	"module": "src/index.ts",
+	"type": "module",
+	"scripts": {
+		"compile": "bun build --compile bin/index.ts --outfile build/s21"
+	},
+	"bin": {
+		"s21cli-ts": "bin/index.ts",
+		"s21cli": "bin/index.ts",
+		"s21": "bin/index.ts"
+	},
+	"devDependencies": {
+		"@total-typescript/ts-reset": "^0.5.1",
+		"@types/eslint": "^8.44.4",
+		"bun-types": "latest",
+		"eslint": "^8.44.1",
+		"eslint-kit": "^10.4.0",
+		"eslint-plugin-no-relative-import-paths": "^1.5.2",
+		"typescript": "^5.2.2"
+	},
+	"peerDependencies": {
+		"typescript": "^5.2.2"
+	},
+	"dependencies": {
+		"@s21toolkit/client": "^0.2.4",
+		"cmd-ts": "^0.13.0",
+		"dayjs": "^1.11.10",
+		"effect": "^2.0.0-next.39",
+		"env-var": "^7.4.1"
+	}
 }
