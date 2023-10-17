@@ -11,6 +11,10 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+
+    env:
+      GITHUB_NPM_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
@@ -18,9 +22,6 @@ jobs:
           bun-version: latest
 
       - run: bun install --forzen-lockfile
-        env:
-          GITHUB_NPM_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
       - run: bun run compile
 
       - uses: ncipollo/release-action@v1.13.0
