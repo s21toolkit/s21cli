@@ -13,6 +13,8 @@
 curl -fsSL https://raw.githubusercontent.com/s21toolkit/s21cli/master/scripts/install_binary.sh | sh
 ```
 
+Установка бинарного релиза вручную: [[Релизы](https://github.com/s21toolkit/s21cli/releases)]
+
 <details>
 
 <summary>
