@@ -1,3 +1,45 @@
 # s21cli-ts
 
-Bun/TypeScript s21cli implementation utilizing s21client through bun:ffi lol.
+Консольный интерфейс для работы с платформой школы 21.
+
+## Установка
+
+<details>
+
+<summary>
+Для работы необходимо установить <a href="https://bun.sh">Bun</a>
+</summary>
+
+```sh
+curl -fsSL https://bun.sh/install | bash
+```
+
+</details>
+
+Установка через bun:
+
+```sh
+bun add -g github:s21toolkit/s21auto
+```
+
+## Использование
+
+```sh
+s21 <...commands> [...args]
+```
+
+или
+
+```sh
+s21cli <...commands> [...args]
+```
+
+## Команды
+
+Для всех команд доступен флаг `-h` для получения справки.
+
+- `s21`
+  - `pr`
+    - `ssh` - Получает ссылки на репозиторий текущего пир ревью
+    - `clone` - Клонирует проект текущего пир ревью в новую папку
+  - `test` - Отправляет тестовый запрос к платформе
