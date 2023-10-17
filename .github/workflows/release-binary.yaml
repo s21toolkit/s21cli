@@ -1,4 +1,4 @@
-name: relase-binary
+name: release-binary
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
       - "v*"
 
 permissions:
+  packages: read
   contents: write
 
 jobs:
