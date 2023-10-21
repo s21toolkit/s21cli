@@ -27,8 +27,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: s21-linux
-          path: build/s21
+          path: build/*
 
   build-macos:
     runs-on: macos-latest
@@ -47,8 +46,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: s21-macos
-          path: build/s21
+          path: build/*
 
   publish:
     needs:
@@ -66,4 +64,4 @@ jobs:
 
       - uses: ncipollo/release-action@v1.13.0
         with:
-          artifacts: artifacts/*/s21*
+          artifacts: artifacts/*/*
