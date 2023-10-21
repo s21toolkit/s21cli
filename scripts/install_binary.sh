@@ -12,9 +12,19 @@ S21_EXE="$S21_BIN/s21"
 
 echo "Installing s21cli"
 
+PLATFORM=$(uname --kernel-name | tr '[:upper:]' '[:lower:]')
+ARCHITECTURE=$(uname --machine | tr '[:upper:]' '[:lower:]')
+
+echo "- Target platform identified as $PLATFORM/$ARCHITECTURE"
+
 echo "- Locating latest release"
 
-BINARY_URL=$(curl -s https://api.github.com/repos/s21toolkit/s21cli/releases/latest | grep "browser_download_url.*s21" | cut -d : -f 2,3 | tr -d \")
+BINARY_URL=$(curl -s https://api.github.com/repos/s21toolkit/s21cli/releases/latest | grep "browser_download_url.*s21" | cut -d : -f 2,3 | tr -d \" | grep $PLATFORM | xargs)
+
+if [ $BINARY_URL != *s21-$PLATFORM-$ARCHITECTURE ]; then
+	echo "-- Warning: Platform architecture checks are not yet fully implemented"
+	echo "-- Warning: Potential architecture mismatch detected for $BINARY_URL -> $ARCHITECTURE"
+fi
 
 echo "- Downloading $BINARY_URL to $S21_BIN"
 
