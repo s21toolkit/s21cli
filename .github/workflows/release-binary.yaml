@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  build-linux:
     runs-on: ubuntu-latest
 
     env:
@@ -25,6 +25,45 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run compile
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: s21-linux
+          path: build/s21
+
+  build-macos:
+    runs-on: macos-latest
+
+    env:
+      GITHUB_NPM_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+      - run: bun run compile
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: s21-macos
+          path: build/s21
+
+  publish:
+    needs:
+      - build-linux
+      - build-macos
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+
       - uses: ncipollo/release-action@v1.13.0
         with:
-          artifacts: build/s21
+          artifacts: artifacts/s21*
