@@ -23,7 +23,7 @@ jobs:
           bun-version: latest
 
       - run: bun install --frozen-lockfile
-      - run: bun run compile
+      - run: bun run build
 
       - uses: actions/upload-artifact@v3
         with:
@@ -43,7 +43,7 @@ jobs:
           bun-version: latest
 
       - run: bun install --frozen-lockfile
-      - run: bun run compile
+      - run: bun run build
 
       - uses: actions/upload-artifact@v3
         with:
