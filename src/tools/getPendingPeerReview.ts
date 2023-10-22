@@ -9,10 +9,10 @@ export async function getPendingPeerReview(client = getDefaultClient()) {
 	})
 
 	const pendingBookingEvents = agendaEvents.student.getMyAgendaEvents
-		.filter((event) => event.agendaEventType == "BOOKING")
+		.filter((event) => event.agendaEventType === "BOOKING")
 		.filter((event) => dayjs().isAfter(event.start))
 
-	if (pendingBookingEvents.length == 0) {
+	if (pendingBookingEvents.length === 0) {
 		throw new Error("No bookings found")
 	}
 
