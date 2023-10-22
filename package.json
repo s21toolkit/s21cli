@@ -7,8 +7,6 @@
 	},
 	"bin": {
 		"s21-dev": "bin/index.ts",
-		"s21cli-ts": "bin/index.ts",
-		"s21cli": "bin/index.ts",
 		"s21": "bin/index.ts"
 	},
 	"devDependencies": {
