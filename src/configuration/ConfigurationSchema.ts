@@ -13,8 +13,8 @@ export enum ConfigurationSource {
 
 // prettier-ignore
 export type ConfigurationSchemaProperty =
-	| Type
-	| [Type, ConfigurationSource?]
+	| Type<{}>
+	| [Type<{}>, ConfigurationSource?]
 
 export function resolveSchemaProperty(schema: ConfigurationSchemaProperty) {
 	const isArray = Array.isArray(schema)
