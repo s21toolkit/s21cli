@@ -1,7 +1,7 @@
-import { Environment } from "@/environment"
-import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
 import { command } from "cmd-ts"
 import { join } from "node:path"
+import { Configuration } from "@/configuration"
+import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
 
 export const cloneCommand = command({
 	name: "clone",
@@ -31,14 +31,17 @@ export const cloneCommand = command({
 		console.log(`Repo SSH link: ${sshLink}`)
 		console.log(`Repo HTTPS link: ${httpsLink}`)
 
-		const directoryName = join(Environment.PR_DIRECTORY, crypto.randomUUID())
+		const directoryName = join(
+			Configuration.static.prDirectory,
+			crypto.randomUUID(),
+		)
 
 		const gitHandle = Bun.spawnSync({
 			cmd: ["git", "clone", "--recurse-submodules", sshLink, directoryName],
 			stdout: "inherit",
 		})
 
-		if (gitHandle.exitCode != 0) {
+		if (gitHandle.exitCode !== 0) {
 			console.error("Failed to clone project repo")
 		}
 	},

@@ -1,5 +1,5 @@
-import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
 import { command } from "cmd-ts"
+import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
 
 export const sshCommand = command({
 	name: "ssh",

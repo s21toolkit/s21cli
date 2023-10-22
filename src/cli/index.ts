@@ -1,6 +1,6 @@
 import { subcommands } from "cmd-ts"
-import { testCommand } from "./test"
 import { peerReviewCommand } from "./peer-review"
+import { testCommand } from "./test"
 
 export const cli = subcommands({
 	name: "s21",
