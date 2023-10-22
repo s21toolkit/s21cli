@@ -6,6 +6,7 @@
 		"build": "bun run ./build.mjs"
 	},
 	"bin": {
+		"s21-dev": "bin/index.ts",
 		"s21cli-ts": "bin/index.ts",
 		"s21cli": "bin/index.ts",
 		"s21": "bin/index.ts"
@@ -24,9 +25,11 @@
 	},
 	"dependencies": {
 		"@s21toolkit/client": "^0.2.4",
+		"arktype": "^1.0.24-alpha",
 		"cmd-ts": "^0.13.0",
 		"dayjs": "^1.11.10",
 		"effect": "^2.0.0-next.39",
-		"env-var": "^7.4.1"
+		"env-var": "^7.4.1",
+		"yaml": "^2.3.3"
 	}
 }
