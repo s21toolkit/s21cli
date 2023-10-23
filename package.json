@@ -1,33 +1,33 @@
 {
-	"name": "s21cli-ts",
-	"module": "src/index.ts",
-	"type": "module",
-	"scripts": {
-		"build": "bun run ./build.mjs"
-	},
-	"bin": {
-		"s21-dev": "bin/index.ts",
-		"s21": "bin/index.ts"
-	},
-	"devDependencies": {
-		"@total-typescript/ts-reset": "^0.5.1",
-		"@types/eslint": "^8.44.4",
-		"bun-types": "latest",
-		"eslint": "^8.44.1",
-		"eslint-kit": "^10.4.0",
-		"eslint-plugin-no-relative-import-paths": "^1.5.2",
-		"typescript": "^5.2.2"
-	},
-	"peerDependencies": {
-		"typescript": "^5.2.2"
-	},
-	"dependencies": {
-		"@s21toolkit/client": "^0.2.4",
-		"arktype": "^1.0.24-alpha",
-		"cmd-ts": "^0.13.0",
-		"dayjs": "^1.11.10",
-		"effect": "^2.0.0-next.39",
-		"env-var": "^7.4.1",
-		"yaml": "^2.3.3"
-	}
+  "name": "s21cli-ts",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "bun run ./build.mjs"
+  },
+  "bin": {
+    "s21-dev": "bin/index.ts",
+    "s21": "bin/index.ts"
+  },
+  "devDependencies": {
+    "@total-typescript/ts-reset": "^0.5.1",
+    "@types/eslint": "^8.44.4",
+    "bun-types": "latest",
+    "eslint": "^8.44.1",
+    "eslint-kit": "^10.4.0",
+    "eslint-plugin-no-relative-import-paths": "^1.5.2",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@s21toolkit/client": "^0.2.4",
+    "arktype": "^1.0.24-alpha",
+    "cmd-ts": "^0.13.0",
+    "dayjs": "^1.11.10",
+    "effect": "^2.0.0-next.39",
+    "env-var": "^7.4.1",
+    "yaml": "^2.3.3"
+  }
 }
