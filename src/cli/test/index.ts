@@ -1,5 +1,6 @@
 import { Client, DefaultAuthProvider } from "@s21toolkit/client"
 import { command, option, string } from "cmd-ts"
+import { commandHandler } from "@/tools/commandHandler"
 
 export const testCommand = command({
 	name: "test",
@@ -15,33 +16,34 @@ export const testCommand = command({
 			type: string,
 		}),
 	},
-	async handler(argv) {
-		const { username, password } = argv
+	handler: (argv) =>
+		commandHandler(async () => {
+			const { username, password } = argv
 
-		const auth = new DefaultAuthProvider(username, password)
+			const auth = new DefaultAuthProvider(username, password)
 
-		const client = new Client(auth)
+			const client = new Client(auth)
 
-		try {
-			const data = await client.api.getCurrentUser()
+			try {
+				const data = await client.api.getCurrentUser()
 
-			console.log("Ok:", data.student.getExperience.coinsCount)
-		} catch (error) {
-			if (!(error instanceof Error)) {
-				console.error("Unknown error")
+				console.log("Ok:", data.student.getExperience.coinsCount)
+			} catch (error) {
+				if (!(error instanceof Error)) {
+					console.error("Unknown error")
 
-				return
+					return
+				}
+
+				if (error.cause instanceof Response) {
+					console.error("Request error:", error.cause.statusText)
+					console.error("Headers:", error.cause.headers)
+					console.error("Body:", await error.cause.text())
+
+					return
+				}
+
+				console.error("Error:", error)
 			}
-
-			if (error.cause instanceof Response) {
-				console.error("Request error:", error.cause.statusText)
-				console.error("Headers:", error.cause.headers)
-				console.error("Body:", await error.cause.text())
-
-				return
-			}
-
-			console.error("Error:", error)
-		}
-	},
+		}),
 })
