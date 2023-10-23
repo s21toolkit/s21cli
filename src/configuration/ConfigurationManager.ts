@@ -28,45 +28,30 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 		return this.#configuration[property]!
 	}
 
-	async load<TKey extends keyof TSchema>(property: TKey) {
-		await this.loadAll()
-
-		this.#assertConfigured(property)
-
-		return this.#configuration[property]!
-	}
-
 	tryGet<TKey extends keyof TSchema>(property: TKey) {
 		return this.#configuration[property]
 	}
 
-	async tryLoad<TKey extends keyof TSchema>(property: TKey) {
-		await this.loadAll()
-
-		return this.#configuration[property]
-	}
-
-	get static() {
-		type StaticConfigurationProxy = ConfigurationSchema.ObjectType<TSchema>
+	get required() {
+		type RequiredConfigurationProxy = ConfigurationSchema.ObjectType<TSchema>
 
 		return new Proxy(this, {
 			get(target, property) {
 				return target.get(property as keyof TSchema)
 			},
-		}) as Readonly<StaticConfigurationProxy>
+		}) as Readonly<RequiredConfigurationProxy>
 	}
 
-	get dynamic() {
-		type SchemaObject = ConfigurationSchema.ObjectType<TSchema>
-		type DynamicConfigurationProxy = {
-			[K in keyof SchemaObject]: Promise<SchemaObject[K]>
-		}
+	get optional() {
+		type OptionalConfigurationProxy = Partial<
+			ConfigurationSchema.ObjectType<TSchema>
+		>
 
 		return new Proxy(this, {
-			async get(target, property) {
-				return target.load(property as keyof TSchema)
+			get(target, property) {
+				return target.tryGet(property as keyof TSchema)
 			},
-		}) as Readonly<DynamicConfigurationProxy>
+		}) as Readonly<OptionalConfigurationProxy>
 	}
 
 	#assertConfigured<TKey extends keyof TSchema>(property: TKey) {
@@ -77,7 +62,7 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 		throw new Error(`Missing required configuration: ${String(property)}`)
 	}
 
-	async loadAll() {
+	async load() {
 		await this.#loadGlobalFile()
 		await this.#loadLocalFile()
 		await this.#loadEnv()

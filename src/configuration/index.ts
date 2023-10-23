@@ -7,4 +7,4 @@ export const Configuration = new ConfigurationManager({
 	password: type("string"),
 })
 
-await Configuration.loadAll()
+await Configuration.load()

@@ -2,7 +2,7 @@ import { Client, DefaultAuthProvider } from "@s21toolkit/client"
 import { Configuration } from "@/configuration"
 
 export function getDefaultClient() {
-	const { username, password } = Configuration.static
+	const { username, password } = Configuration.required
 
 	const auth = new DefaultAuthProvider(username, password)
 

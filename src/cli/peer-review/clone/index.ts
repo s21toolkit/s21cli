@@ -32,7 +32,7 @@ export const cloneCommand = command({
 		console.log(`Repo HTTPS link: ${httpsLink}`)
 
 		const directoryName = join(
-			Configuration.static.prDirectory,
+			Configuration.required.prDirectory,
 			crypto.randomUUID(),
 		)
 
