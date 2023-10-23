@@ -1,0 +1,35 @@
+import { command, option, positional } from "cmd-ts"
+import { json } from "@/cli/arguments/json"
+import { commandHandler } from "@/cli/utils/commandHandler"
+import { getDefaultClient } from "@/tools/getDefaultClient"
+
+export const apiCommand = command({
+	name: "api",
+	args: {
+		operation: positional({
+			displayName: "operation",
+		}),
+		variables: option({
+			short: "v",
+			long: "variables",
+			type: json,
+			defaultValue: () => ({}),
+		}),
+	},
+	handler: (argv) =>
+		commandHandler(async () => {
+			const { operation, variables } = argv
+
+			const client = getDefaultClient()
+
+			if (!(operation in client.api) || operation === "client") {
+				throw new Error("Unsupported API operation")
+			}
+
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			const data = await client.api[operation](variables)
+
+			console.log(JSON.stringify(data, undefined, 2))
+		}),
+})
