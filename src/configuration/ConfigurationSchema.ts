@@ -16,6 +16,12 @@ export type ConfigurationSchemaProperty =
 	| Type<{}>
 	| [Type<{}>, ConfigurationSource?]
 
+// prettier-ignore
+type ArktypeMorphInferenceFix<T> =
+	T extends (In: never) => infer R
+		? R
+		: { [K in keyof T]: ArktypeMorphInferenceFix<T[K]> }
+
 export function resolveSchemaProperty(schema: ConfigurationSchemaProperty) {
 	const isArray = Array.isArray(schema)
 
@@ -54,9 +60,9 @@ export namespace ConfigurationSchema {
 		TKey extends keyof TSchema,
 	> =
 		TSchema[TKey] extends Type
-			? TSchema[TKey]["infer"]
+			? ArktypeMorphInferenceFix<TSchema[TKey]["infer"]>
 			: TSchema[TKey] extends [Type, ConfigurationSource?]
-				? TSchema[TKey][0]["infer"]
+				? ArktypeMorphInferenceFix<TSchema[TKey][0]["infer"]>
 				: never
 
 	// prettier-ignore
