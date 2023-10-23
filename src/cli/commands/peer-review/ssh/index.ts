@@ -1,5 +1,5 @@
 import { command } from "cmd-ts"
-import { commandHandler } from "@/tools/commandHandler"
+import { commandHandler } from "@/cli/utils/commandHandler"
 import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
 
 export const sshCommand = command({

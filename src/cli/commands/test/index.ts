@@ -1,6 +1,6 @@
 import { Client, DefaultAuthProvider } from "@s21toolkit/client"
 import { command, option, string } from "cmd-ts"
-import { commandHandler } from "@/tools/commandHandler"
+import { commandHandler } from "@/cli/utils/commandHandler"
 
 export const testCommand = command({
 	name: "test",

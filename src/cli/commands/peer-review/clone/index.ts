@@ -1,7 +1,7 @@
 import { command } from "cmd-ts"
 import { join } from "node:path"
+import { commandHandler } from "@/cli/utils/commandHandler"
 import { Configuration } from "@/configuration"
-import { commandHandler } from "@/tools/commandHandler"
 import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
 
 export const cloneCommand = command({
