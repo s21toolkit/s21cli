@@ -1,6 +1,5 @@
 import { command, option, positional } from "cmd-ts"
 import { json } from "@/cli/arguments/json"
-import { commandHandler } from "@/cli/utils/commandHandler"
 import { getDefaultClient } from "@/tools/getDefaultClient"
 
 export const apiCommand = command({
@@ -17,20 +16,19 @@ export const apiCommand = command({
 			defaultValue: () => ({}),
 		}),
 	},
-	handler: (argv) =>
-		commandHandler(async () => {
-			const { operation, variables } = argv
+	async handler(argv) {
+		const { operation, variables } = argv
 
-			const client = getDefaultClient()
+		const client = getDefaultClient()
 
-			if (!(operation in client.api) || operation === "client") {
-				throw new Error("Unsupported API operation")
-			}
+		if (!(operation in client.api) || operation === "client") {
+			throw new Error("Unsupported API operation")
+		}
 
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			const data = await client.api[operation](variables)
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
+		const data = await client.api[operation](variables)
 
-			console.log(JSON.stringify(data, undefined, 2))
-		}),
+		console.log(JSON.stringify(data, undefined, 2))
+	},
 })

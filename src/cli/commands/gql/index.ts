@@ -1,7 +1,6 @@
 import { createGqlQueryRequest } from "@s21toolkit/client"
 import { command, option, positional } from "cmd-ts"
 import { json } from "@/cli/arguments/json"
-import { commandHandler } from "@/cli/utils/commandHandler"
 import { getDefaultClient } from "@/tools/getDefaultClient"
 
 export const gqlCommand = command({
@@ -18,19 +17,18 @@ export const gqlCommand = command({
 			defaultValue: () => ({}),
 		}),
 	},
-	handler: (argv) =>
-		commandHandler(async () => {
-			const { query, variables } = argv
+	async handler(argv) {
+		const { query, variables } = argv
 
-			const client = getDefaultClient()
+		const client = getDefaultClient()
 
-			const request = createGqlQueryRequest(
-				query,
-				variables as Record<string, unknown>,
-			)
+		const request = createGqlQueryRequest(
+			query,
+			variables as Record<string, unknown>,
+		)
 
-			const data = await client.request(request)
+		const data = await client.request(request)
 
-			console.log(JSON.stringify(data, undefined, 2))
-		}),
+		console.log(JSON.stringify(data, undefined, 2))
+	},
 })

@@ -1,6 +1,5 @@
 import { fetchUserData, Token } from "@s21toolkit/client"
 import { command, flag } from "cmd-ts"
-import { commandHandler } from "@/cli/utils/commandHandler"
 import { Configuration } from "@/configuration"
 
 export const authCommand = command({
@@ -13,26 +12,25 @@ export const authCommand = command({
 			defaultValue: () => false,
 		}),
 	},
-	handler: (argv) =>
-		commandHandler(async () => {
-			const { noId } = argv
+	async handler(argv) {
+		const { noId } = argv
 
-			const { username, password } = Configuration.required
+		const { username, password } = Configuration.required
 
-			const token = new Token(username, password)
+		const token = new Token(username, password)
 
-			await token.refresh()
+		await token.refresh()
 
-			console.log(`Token: ${token.accessToken}`)
+		console.log(`Token: ${token.accessToken}`)
 
-			if (noId) {
-				return
-			}
+		if (noId) {
+			return
+		}
 
-			const user = await fetchUserData(token)
+		const user = await fetchUserData(token)
 
-			console.log(
-				`SchoolID: ${user.user.getCurrentUserSchoolRoles[0].schoolId}`,
-			)
-		}),
+		console.log(
+			`SchoolID: ${user.user.getCurrentUserSchoolRoles[0].schoolId}`,
+		)
+	},
 })

@@ -1,6 +1,5 @@
 import { command } from "cmd-ts"
 import { join } from "node:path"
-import { commandHandler } from "@/cli/utils/commandHandler"
 import { Configuration } from "@/configuration"
 import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
 
@@ -9,40 +8,33 @@ export const cloneCommand = command({
 	description:
 		"Clones pending PR repository into new directory (configuration: prDirectory)",
 	args: {},
-	handler: () =>
-		commandHandler(async () => {
-			const review = await getPendingPeerReview()
+	async handler() {
+		const review = await getPendingPeerReview()
 
-			const { checklist } = review
+		const { checklist } = review
 
-			console.log(
-				`Pending booking detected: ${checklist.student.createFilledChecklist.moduleInfoP2P.moduleName}`,
-			)
+		console.log(
+			`Pending booking detected: ${checklist.student.createFilledChecklist.moduleInfoP2P.moduleName}`,
+		)
 
-			const { sshLink, httpsLink } =
-				checklist.student.createFilledChecklist.gitlabStudentProjectUrl
+		const { sshLink, httpsLink } =
+			checklist.student.createFilledChecklist.gitlabStudentProjectUrl
 
-			console.log(`Repo SSH link: ${sshLink}`)
-			console.log(`Repo HTTPS link: ${httpsLink}`)
+		console.log(`Repo SSH link: ${sshLink}`)
+		console.log(`Repo HTTPS link: ${httpsLink}`)
 
-			const directoryName = join(
-				Configuration.required.prDirectory,
-				crypto.randomUUID(),
-			)
+		const directoryName = join(
+			Configuration.required.prDirectory,
+			crypto.randomUUID(),
+		)
 
-			const gitHandle = Bun.spawnSync({
-				cmd: [
-					"git",
-					"clone",
-					"--recurse-submodules",
-					sshLink,
-					directoryName,
-				],
-				stdout: "inherit",
-			})
+		const gitHandle = Bun.spawnSync({
+			cmd: ["git", "clone", "--recurse-submodules", sshLink, directoryName],
+			stdout: "inherit",
+		})
 
-			if (gitHandle.exitCode !== 0) {
-				console.error("Failed to clone project repo")
-			}
-		}),
+		if (gitHandle.exitCode !== 0) {
+			console.error("Failed to clone project repo")
+		}
+	},
 })
