@@ -5,6 +5,8 @@ export const Configuration = new ConfigurationManager({
 	// Authentication
 	username: type("string"),
 	password: type("string"),
+	token: type("string"),
+	schoolId: type("string"),
 
 	// Debug
 	debugDisableErrorHandling: type([
