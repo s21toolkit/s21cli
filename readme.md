@@ -80,3 +80,4 @@ s21 <...commands> [...args]
   - `test` - Отправляет тестовый запрос к платформе
   - `api` - Выполняет указанный метод API, возвращает данные в формате JSON (см. [s21docs/api-operations](https://github.com/s21toolkit/s21docs/blob/master/operations.md))
   - `gql` - Выполняет указанный GQL запрос, возвращает данные в формате JSON
+  - `auth` - Выполняет аутентификацию по логину и паролю, возвращает токен и schoolId
