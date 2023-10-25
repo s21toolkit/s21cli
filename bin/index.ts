@@ -3,8 +3,11 @@
 import { binary, runSafely } from "cmd-ts"
 import { cli } from "@/cli"
 import { CLIError } from "@/cli/CLIError"
+import { Configuration } from "@/configuration"
 
 async function main(): Promise<number> {
+	const displayRawErrors = Configuration.optional.debugRawErrors ?? false
+
 	try {
 		const result = await runSafely(binary(cli), process.argv)
 
@@ -20,10 +23,16 @@ async function main(): Promise<number> {
 
 		return 0
 	} catch (error) {
+		console.error("Fatal error!")
+
 		if (error instanceof Error) {
 			console.error(error.message)
 		} else {
 			console.error("Unknown error")
+		}
+
+		if (displayRawErrors) {
+			console.error(error)
 		}
 
 		if (error instanceof CLIError) {

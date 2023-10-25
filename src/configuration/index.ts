@@ -9,7 +9,7 @@ export const Configuration = new ConfigurationManager({
 	schoolId: type("string"),
 
 	// Debug
-	debugDisableErrorHandling: type([
+	debugRawErrors: type([
 		"boolean",
 		"|",
 		["string", "|>", (value) => value === "true"],
