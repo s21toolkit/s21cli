@@ -6,6 +6,7 @@ import { getDefaultClient } from "@/tools/getDefaultClient"
 
 export const gqlCommand = command({
 	name: "gql",
+	description: "Performs arbitrary GQL query, returns raw JSON data",
 	args: {
 		query: positional({
 			displayName: "query",

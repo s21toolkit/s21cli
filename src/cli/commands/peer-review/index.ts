@@ -1,11 +1,12 @@
 import { subcommands } from "cmd-ts"
 import { cloneCommand } from "./clone"
-import { sshCommand } from "./ssh"
+import { linkCommand } from "./link"
 
 export const peerReviewCommand = subcommands({
 	name: "pr",
+	description: "Peer-review related utilities",
 	cmds: {
-		ssh: sshCommand,
+		link: linkCommand,
 		clone: cloneCommand,
 	},
 })

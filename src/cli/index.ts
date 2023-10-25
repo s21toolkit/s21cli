@@ -6,6 +6,7 @@ import { testCommand } from "./commands/test"
 
 export const cli = subcommands({
 	name: "s21",
+	description: "Command line utilities for school 21 education platform",
 	cmds: {
 		test: testCommand,
 		pr: peerReviewCommand,

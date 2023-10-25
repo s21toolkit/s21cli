@@ -5,6 +5,7 @@ import { getDefaultClient } from "@/tools/getDefaultClient"
 
 export const apiCommand = command({
 	name: "api",
+	description: "Performs specified API operation, returns raw JSON data",
 	args: {
 		operation: positional({
 			displayName: "operation",

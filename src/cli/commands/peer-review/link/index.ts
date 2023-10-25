@@ -2,8 +2,9 @@ import { command } from "cmd-ts"
 import { commandHandler } from "@/cli/utils/commandHandler"
 import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
 
-export const sshCommand = command({
-	name: "ssh",
+export const linkCommand = command({
+	name: "link",
+	description: "Displays SSH/HTTPS links for pending PR repository",
 	args: {},
 	handler: () =>
 		commandHandler(async () => {

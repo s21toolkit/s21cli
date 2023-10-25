@@ -4,6 +4,7 @@ import { commandHandler } from "@/cli/utils/commandHandler"
 
 export const testCommand = command({
 	name: "test",
+	description: "Sends test request, displays detailed error messages",
 	args: {
 		username: option({
 			short: "u",

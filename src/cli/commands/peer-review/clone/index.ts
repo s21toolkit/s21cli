@@ -6,6 +6,8 @@ import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
 
 export const cloneCommand = command({
 	name: "clone",
+	description:
+		"Clones pending PR repository into new directory (configuration: prDirectory)",
 	args: {},
 	handler: () =>
 		commandHandler(async () => {
