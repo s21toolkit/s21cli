@@ -32,6 +32,7 @@
 		"alwaysStrict": true,
 		"noImplicitReturns": true,
 		"noImplicitOverride": true,
+		"noUncheckedIndexedAccess": true,
 
 		/* Completeness */
 		"skipLibCheck": true
