@@ -12,8 +12,8 @@ S21_EXE="$S21_BIN/s21"
 
 echo "Installing s21cli"
 
-PLATFORM=$(uname --kernel-name | tr '[:upper:]' '[:lower:]')
-ARCHITECTURE=$(uname --machine | tr '[:upper:]' '[:lower:]')
+PLATFORM=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCHITECTURE=$(uname -m | tr '[:upper:]' '[:lower:]')
 
 echo "- Target platform identified as $PLATFORM/$ARCHITECTURE"
 
