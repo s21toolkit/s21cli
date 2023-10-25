@@ -1,6 +1,7 @@
 import { subcommands } from "cmd-ts"
 import { apiCommand } from "./commands/api"
 import { authCommand } from "./commands/auth/index"
+import { executeCommand } from "./commands/execute"
 import { gqlCommand } from "./commands/gql"
 import { peerReviewCommand } from "./commands/peer-review"
 import { testCommand } from "./commands/test"
@@ -14,5 +15,6 @@ export const cli = subcommands({
 		api: apiCommand,
 		gql: gqlCommand,
 		auth: authCommand,
+		execute: executeCommand,
 	},
 })

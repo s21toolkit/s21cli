@@ -1,5 +1,6 @@
-import { type } from "arktype"
+import { arrayOf, type } from "arktype"
 import { ConfigurationManager } from "./ConfigurationManager"
+import { ConfigurationSource } from "./ConfigurationSchema"
 
 export const Configuration = new ConfigurationManager({
 	// Authentication
@@ -17,6 +18,15 @@ export const Configuration = new ConfigurationManager({
 
 	// pr/clone
 	prDirectory: type("string"),
+
+	// Scripts
+	scripts: [
+		arrayOf({
+			name: "string",
+			path: "string",
+		}),
+		ConfigurationSource.File,
+	],
 })
 
 await Configuration.load()
