@@ -18,6 +18,7 @@ const JS_CONFIGURATION_FILE_NAMES = [
 	".s21.mts",
 ]
 
+// TODO: Decompose this, extract configuration loaders
 export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 	#configuration: Partial<ConfigurationSchema.ObjectType<TSchema>> = {}
 
