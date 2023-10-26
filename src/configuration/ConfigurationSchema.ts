@@ -8,6 +8,8 @@ export enum ConfigurationSource {
 
 	File = LocalFile | GlobalFile,
 	Any = Environment | File,
+
+	JSFile = 1 << 3,
 }
 /* eslint-enable no-bitwise, sonarjs/no-identical-expressions */
 

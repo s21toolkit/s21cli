@@ -98,7 +98,8 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 		for (const configName of JS_CONFIGURATION_FILE_NAMES) {
 			const filename = join(directory, configName)
 
-			await this.#loadJSFile(filename, source)
+			// eslint-disable-next-line no-bitwise
+			await this.#loadJSFile(filename, source | ConfigurationSource.JSFile)
 		}
 	}
 
