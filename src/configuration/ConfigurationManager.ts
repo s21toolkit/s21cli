@@ -8,7 +8,15 @@ import {
 	resolveSchemaProperty,
 } from "./ConfigurationSchema"
 
-const CONFIGURATION_FILE_NAME = ".s21.yaml"
+const YAML_CONFIGURATION_FILE_NAMES = [".s21.yaml", ".s21.yml"]
+const JS_CONFIGURATION_FILE_NAMES = [
+	".s21.js",
+	".s21.cjs",
+	".s21.mjs",
+	".s21.ts",
+	".s21.cts",
+	".s21.mts",
+]
 
 export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 	#configuration: Partial<ConfigurationSchema.ObjectType<TSchema>> = {}
@@ -68,22 +76,35 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 		await this.#loadEnv()
 	}
 
-	async #loadGlobalFile() {
-		const filename = join(homedir(), CONFIGURATION_FILE_NAME)
-
-		await this.#loadFile(filename, ConfigurationSource.GlobalFile)
-	}
-
 	async #loadLocalFile() {
-		const filename = join(process.cwd(), CONFIGURATION_FILE_NAME)
-
-		await this.#loadFile(filename, ConfigurationSource.LocalFile)
+		return await this.#loadFileFrom(
+			process.cwd(),
+			ConfigurationSource.LocalFile,
+		)
 	}
 
-	async #loadFile(filename: string, source: ConfigurationSource) {
-		const file = Bun.file(filename)
+	async #loadGlobalFile() {
+		return await this.#loadFileFrom(homedir(), ConfigurationSource.GlobalFile)
+	}
 
-		if (!(await file.exists())) {
+	async #loadFileFrom(directory: string, source: ConfigurationSource) {
+		for (const configName of YAML_CONFIGURATION_FILE_NAMES) {
+			const filename = join(directory, configName)
+
+			await this.#loadYamlFile(filename, source)
+		}
+
+		for (const configName of JS_CONFIGURATION_FILE_NAMES) {
+			const filename = join(directory, configName)
+
+			await this.#loadJSFile(filename, source)
+		}
+	}
+
+	async #loadYamlFile(filename: string, source: ConfigurationSource) {
+		const file = await this.#openFile(filename)
+
+		if (!file) {
 			return
 		}
 
@@ -91,8 +112,38 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 
 		const data = parse(content) as unknown
 
+		await this.#loadFileData(data, source, filename)
+	}
+
+	async #loadJSFile(filename: string, source: ConfigurationSource) {
+		const file = await this.#openFile(filename)
+
+		if (!file) {
+			return
+		}
+
+		const data = (await import(filename))?.default as unknown
+
+		await this.#loadFileData(data, source, filename)
+	}
+
+	async #openFile(filename: string) {
+		const file = Bun.file(filename)
+
+		if (!(await file.exists())) {
+			return undefined
+		}
+
+		return file
+	}
+
+	async #loadFileData(
+		data: unknown,
+		source: ConfigurationSource,
+		filename: string,
+	) {
 		if (!data || typeof data != "object") {
-			console.error(`Configuration problems detected in ${file.name}:`)
+			console.error(`Configuration problems detected in ${filename}:`)
 			console.error(`\t- Invalid configuration root, must be an object`)
 			return
 		}
@@ -144,7 +195,7 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 			}
 
 			const { schema, source: allowedSource } = resolveSchemaProperty(
-				this.schema[key],
+				this.schema[key]!,
 			)
 
 			// eslint-disable-next-line no-bitwise
