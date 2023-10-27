@@ -1,7 +1,7 @@
 import dayjs from "dayjs"
-import { getDefaultClient } from "./getDefaultClient"
+import { getAuthorizedClient } from "@/auth/getAuthorizedClient"
 
-export async function getPendingPeerReview(client = getDefaultClient()) {
+export async function getPendingPeerReview(client = getAuthorizedClient()) {
 	const agendaEvents = await client.api.getAgendaEvents({
 		from: dayjs().toDate(),
 		to: dayjs().add(1, "hour").toDate(),

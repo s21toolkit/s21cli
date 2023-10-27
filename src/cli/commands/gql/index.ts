@@ -1,7 +1,7 @@
 import { createGqlQueryRequest } from "@s21toolkit/client"
 import { command, option, positional } from "cmd-ts"
+import { getAuthorizedClient } from "@/auth"
 import { json } from "@/cli/arguments/json"
-import { getDefaultClient } from "@/tools/getDefaultClient"
 
 export const gqlCommand = command({
 	name: "gql",
@@ -20,7 +20,7 @@ export const gqlCommand = command({
 	async handler(argv) {
 		const { query, variables } = argv
 
-		const client = getDefaultClient()
+		const client = getAuthorizedClient()
 
 		const request = createGqlQueryRequest(
 			query,

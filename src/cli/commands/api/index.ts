@@ -1,6 +1,6 @@
 import { command, option, positional } from "cmd-ts"
+import { getAuthorizedClient } from "@/auth"
 import { json } from "@/cli/arguments/json"
-import { getDefaultClient } from "@/tools/getDefaultClient"
 
 export const apiCommand = command({
 	name: "api",
@@ -19,7 +19,7 @@ export const apiCommand = command({
 	async handler(argv) {
 		const { operation, variables } = argv
 
-		const client = getDefaultClient()
+		const client = getAuthorizedClient()
 
 		if (!(operation in client.api) || operation === "client") {
 			throw new Error("Unsupported API operation")
