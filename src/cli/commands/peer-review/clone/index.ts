@@ -1,4 +1,4 @@
-import { command } from "cmd-ts"
+import { command, option, string } from "cmd-ts"
 import { join } from "node:path"
 import { Configuration } from "@/configuration"
 import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
@@ -7,8 +7,15 @@ export const cloneCommand = command({
 	name: "clone",
 	description:
 		"Clones pending PR repository into new directory (configuration: prDirectory)",
-	args: {},
-	async handler() {
+	args: {
+		branch: option({
+			short: "b",
+			long: "branch",
+			type: string,
+			defaultValue: () => "develop",
+		}),
+	},
+	async handler(argv) {
 		const review = await getPendingPeerReview()
 
 		const { checklist } = review
@@ -29,7 +36,15 @@ export const cloneCommand = command({
 		)
 
 		const gitHandle = Bun.spawnSync({
-			cmd: ["git", "clone", "--recurse-submodules", sshLink, directoryName],
+			cmd: [
+				"git",
+				"clone",
+				"--branch",
+				argv.branch,
+				"--recurse-submodules",
+				sshLink,
+				directoryName,
+			],
 			stdout: "inherit",
 			stderr: "inherit",
 			stdin: "inherit",
