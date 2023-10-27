@@ -36,7 +36,7 @@ export class TokenAuthProvider implements AuthProvider {
 		const schoolId = userRoleData.user.getCurrentUserSchoolRoles[0]?.schoolId
 
 		if (!schoolId) {
-			throw new Error("Unable to extract school id")
+			throw new Error("Failed to extract school id")
 		}
 
 		return schoolId

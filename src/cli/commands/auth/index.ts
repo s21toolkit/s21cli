@@ -27,10 +27,14 @@ export const authCommand = command({
 			return
 		}
 
-		const user = await fetchUserData(token)
+		const { user } = await fetchUserData(token)
 
-		console.log(
-			`SchoolID: ${user.user.getCurrentUserSchoolRoles[0].schoolId}`,
-		)
+		const schoolId = user.getCurrentUserSchoolRoles[0]?.schoolId
+
+		if (!schoolId) {
+			throw new Error("Failed to extract schoolId")
+		}
+
+		console.log(`SchoolID: ${schoolId}`)
 	},
 })
