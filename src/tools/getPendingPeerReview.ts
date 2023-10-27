@@ -1,5 +1,4 @@
 import dayjs from "dayjs"
-import { inspect } from "node:util"
 import { getDefaultClient } from "./getDefaultClient"
 
 export async function getPendingPeerReview(client = getDefaultClient()) {
