@@ -33,7 +33,13 @@ export class TokenAuthProvider implements AuthProvider {
 
 		const userRoleData = await client.api.userRoleLoaderGetRoles()
 
-		return userRoleData.user.getCurrentUserSchoolRoles[0].schoolId
+		const schoolId = userRoleData.user.getCurrentUserSchoolRoles[0]?.schoolId
+
+		if (!schoolId) {
+			throw new Error("Unable to extract school id")
+		}
+
+		return schoolId
 	}
 
 	async getAuthCredentials(): Promise<AuthCredentials> {
