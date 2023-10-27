@@ -1,4 +1,5 @@
 import dayjs from "dayjs"
+import { inspect } from "node:util"
 import { getDefaultClient } from "./getDefaultClient"
 
 export async function getPendingPeerReview(client = getDefaultClient()) {
@@ -9,7 +10,7 @@ export async function getPendingPeerReview(client = getDefaultClient()) {
 	})
 
 	const pendingBookingEvents = agendaEvents.student.getMyAgendaEvents
-		.filter((event) => event.agendaEventType === "BOOKING")
+		.filter((event) => event.agendaItemContext.entityType === "BOOKING")
 		.filter((event) => dayjs().isAfter(event.start))
 
 	if (pendingBookingEvents.length === 0) {
@@ -19,7 +20,7 @@ export async function getPendingPeerReview(client = getDefaultClient()) {
 	const [booking] = pendingBookingEvents
 
 	const enrichedBooking = await client.api.getAgendaP2P({
-		bookingId: booking.agendaItemContext.entityId,
+		bookingId: booking!.agendaItemContext.entityId,
 	})
 
 	const answerId = enrichedBooking.student.getEnrichedBooking.answerId

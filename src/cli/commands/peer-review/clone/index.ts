@@ -31,6 +31,8 @@ export const cloneCommand = command({
 		const gitHandle = Bun.spawnSync({
 			cmd: ["git", "clone", "--recurse-submodules", sshLink, directoryName],
 			stdout: "inherit",
+			stderr: "inherit",
+			stdin: "inherit",
 		})
 
 		if (gitHandle.exitCode !== 0) {
