@@ -176,3 +176,6 @@ dist
 
 # build output
 build/
+
+# har files
+.har/
