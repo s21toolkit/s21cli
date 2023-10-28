@@ -18,5 +18,5 @@ export function getPeerReviewDescriptor(
 	const verifiableUserName = extractUsername(verifiableUser.login)
 	const verifierUserName = extractUsername(verifierUser.login)
 
-	return `${projectName} / ${verifiableUserName} (${verifierUserName})`
+	return `${projectName}-${verifiableUserName}-${verifierUserName}`
 }

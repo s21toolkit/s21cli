@@ -9,7 +9,7 @@ function getPrDirectory(descriptor: string) {
 
 	const uuid = crypto.randomUUID()
 
-	return join(basePath, `${descriptor} [${uuid}]`)
+	return join(basePath, `${descriptor}-${uuid}`)
 }
 
 export const cloneCommand = command({
