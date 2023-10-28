@@ -1,18 +1,11 @@
-import type { Api } from "@s21toolkit/client"
 import { command, option, string } from "cmd-ts"
 import { join } from "node:path"
 import { Configuration } from "@/configuration"
 import { fetchPendingPeerReview } from "@/platform/fetchPendingPeerReview"
 import { getPeerReviewDescriptor } from "@/platform/getPeerReviewDescriptor"
 
-function getPrDirectory(enrichedBooking: Api.GetAgendaP2P.Data) {
+function getPrDirectory(descriptor: string) {
 	const basePath = Configuration.required.prDirectory
-
-	const descriptor = getPeerReviewDescriptor(enrichedBooking)
-
-	if (!descriptor) {
-		throw new Error("Failed to create peer review descriptor")
-	}
 
 	const uuid = crypto.randomUUID()
 
@@ -34,11 +27,15 @@ export const cloneCommand = command({
 	async handler(argv) {
 		const review = await fetchPendingPeerReview()
 
+		const descriptor = getPeerReviewDescriptor(review.enrichedBooking)
+
+		if (!descriptor) {
+			throw new Error("Failed to create peer review descriptor")
+		}
+
 		const { checklist } = review
 
-		console.log(
-			`Pending booking detected: ${checklist.student.createFilledChecklist.moduleInfoP2P.moduleName}`,
-		)
+		console.log(`Pending booking detected: ${descriptor}`)
 
 		const { sshLink, httpsLink } =
 			checklist.student.createFilledChecklist.gitlabStudentProjectUrl
@@ -46,7 +43,7 @@ export const cloneCommand = command({
 		console.log(`Repo SSH link: ${sshLink}`)
 		console.log(`Repo HTTPS link: ${httpsLink}`)
 
-		const directoryName = getPrDirectory(review.enrichedBooking)
+		const directoryName = getPrDirectory(descriptor)
 
 		const gitHandle = Bun.spawnSync({
 			cmd: [
