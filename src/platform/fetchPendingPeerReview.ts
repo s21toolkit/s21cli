@@ -1,7 +1,7 @@
 import dayjs from "dayjs"
 import { getAuthorizedClient } from "@/auth/getAuthorizedClient"
 
-export async function getPendingPeerReview(client = getAuthorizedClient()) {
+export async function fetchPendingPeerReview(client = getAuthorizedClient()) {
 	const agendaEvents = await client.api.getAgendaEvents({
 		from: dayjs().toDate(),
 		to: dayjs().add(1, "hour").toDate(),
@@ -16,10 +16,10 @@ export async function getPendingPeerReview(client = getAuthorizedClient()) {
 		throw new Error("No bookings found")
 	}
 
-	const [booking] = pendingBookingEvents
+	const booking = pendingBookingEvents[0]!
 
 	const enrichedBooking = await client.api.getAgendaP2P({
-		bookingId: booking!.agendaItemContext.entityId,
+		bookingId: booking.agendaItemContext.entityId,
 	})
 
 	const answerId = enrichedBooking.student.getEnrichedBooking.answerId

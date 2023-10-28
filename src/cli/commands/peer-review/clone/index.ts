@@ -1,7 +1,23 @@
+import type { Api } from "@s21toolkit/client"
 import { command, option, string } from "cmd-ts"
 import { join } from "node:path"
 import { Configuration } from "@/configuration"
-import { getPendingPeerReview } from "@/tools/getPendingPeerReview"
+import { fetchPendingPeerReview } from "@/platform/fetchPendingPeerReview"
+import { getPeerReviewDescriptor } from "@/platform/getPeerReviewDescriptor"
+
+function getPrDirectory(enrichedBooking: Api.GetAgendaP2P.Data) {
+	const basePath = Configuration.required.prDirectory
+
+	const descriptor = getPeerReviewDescriptor(enrichedBooking)
+
+	if (!descriptor) {
+		throw new Error("Failed to create peer review descriptor")
+	}
+
+	const uuid = crypto.randomUUID()
+
+	return join(basePath, `${descriptor} [${uuid}]`)
+}
 
 export const cloneCommand = command({
 	name: "clone",
@@ -16,7 +32,7 @@ export const cloneCommand = command({
 		}),
 	},
 	async handler(argv) {
-		const review = await getPendingPeerReview()
+		const review = await fetchPendingPeerReview()
 
 		const { checklist } = review
 
@@ -30,10 +46,7 @@ export const cloneCommand = command({
 		console.log(`Repo SSH link: ${sshLink}`)
 		console.log(`Repo HTTPS link: ${httpsLink}`)
 
-		const directoryName = join(
-			Configuration.required.prDirectory,
-			crypto.randomUUID(),
-		)
+		const directoryName = getPrDirectory(review.enrichedBooking)
 
 		const gitHandle = Bun.spawnSync({
 			cmd: [
