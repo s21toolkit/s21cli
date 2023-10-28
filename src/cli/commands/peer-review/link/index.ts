@@ -1,4 +1,5 @@
 import { command, number, option } from "cmd-ts"
+import type { PendingPeerReview } from "@/platform/fetchPendingPeerReviews"
 import { fetchPendingPeerReviews } from "@/platform/fetchPendingPeerReviews"
 import { getPeerReviewDescriptor } from "@/platform/getPeerReviewDescriptor"
 
