@@ -19,4 +19,7 @@ export function getPeerReviewDescriptor(
 	const verifierUserName = extractUsername(verifierUser.login)
 
 	return `${projectName}-${verifiableUserName}-${verifierUserName}`
+		.toLowerCase()
+		.replaceAll(/\s+/g, "-")
+		.replaceAll(/[^\w\d_-]/g, "")
 }
