@@ -1,5 +1,6 @@
 import { command } from "cmd-ts"
 import { fetchPendingPeerReview } from "@/platform/fetchPendingPeerReview"
+import { getPeerReviewDescriptor } from "@/platform/getPeerReviewDescriptor"
 
 export const linkCommand = command({
 	name: "link",
@@ -7,6 +8,14 @@ export const linkCommand = command({
 	args: {},
 	async handler() {
 		const review = await fetchPendingPeerReview()
+
+		const descriptor = getPeerReviewDescriptor(review.enrichedBooking)
+
+		if (!descriptor) {
+			throw new Error("Failed to create peer review descriptor")
+		}
+
+		console.log(`Pending booking detected: ${descriptor}`)
 
 		const { checklist } = review
 		const { sshLink, httpsLink } =
