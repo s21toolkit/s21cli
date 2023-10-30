@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 
+import "disposablestack/auto"
 import { binary, runSafely } from "cmd-ts"
 import { cli } from "@/cli"
 import { CLIError } from "@/cli/CLIError"
