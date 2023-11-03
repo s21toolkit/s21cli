@@ -31,7 +31,7 @@ export async function fetchPendingPeerReviews(client = getAuthorizedClient()) {
 		limit: 100,
 	})
 
-	const pendingBookingEvents = agendaEvents.student.getMyAgendaEvents
+	const pendingBookingEvents = agendaEvents.calendarEventS21.getMyAgendaEvents
 		.filter((event) => event.agendaItemContext.entityType === "BOOKING")
 		.filter((event) => dayjs().isAfter(event.start))
 
