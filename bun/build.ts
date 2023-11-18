@@ -10,10 +10,12 @@ Bun.spawnSync({
 	cmd: [
 		"bun",
 		"build",
-		...["--preload", resolve(import.meta.dir, "preload.ts")],
 		...["--compile", "./bin/index.ts"],
 		...["--define", `EXTERNAL_APP_VERSION="${version}"`],
 		"--minify",
 		...["--outfile", outfile],
 	],
+	stdin: "inherit",
+	stdout: "inherit",
+	stderr: "inherit",
 })
