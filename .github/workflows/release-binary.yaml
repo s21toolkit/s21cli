@@ -9,6 +9,8 @@ permissions:
   packages: read
   contents: write
 
+# FIXME: For some reason bun:latest breaks package installs, so it's 1.0.7 for now
+
 jobs:
   build-linux:
     runs-on: ubuntu-latest
