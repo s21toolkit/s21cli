@@ -5,6 +5,7 @@ import { authCommand } from "./commands/auth/index"
 import { gqlCommand } from "./commands/gql"
 import { peerReviewCommand } from "./commands/peer-review"
 import { testCommand } from "./commands/test"
+import { updateCommand } from "./commands/update"
 import { versionCommand } from "./commands/version"
 
 export const cli = subcommands({
@@ -18,5 +19,6 @@ export const cli = subcommands({
 		gql: gqlCommand,
 		auth: authCommand,
 		version: versionCommand,
+		update: updateCommand,
 	},
 })

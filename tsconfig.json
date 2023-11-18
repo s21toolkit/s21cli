@@ -14,7 +14,8 @@
 		"allowImportingTsExtensions": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["src/*"]
+			"@/*": ["src/*"],
+			"@root/*": ["./*"]
 		},
 		"types": ["bun-types"],
 
