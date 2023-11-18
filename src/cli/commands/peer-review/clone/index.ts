@@ -1,9 +1,9 @@
-import { command, number, option, string } from "cmd-ts"
+import type { Api } from "@s21toolkit/client"
+import { command, number, option, optional, string } from "cmd-ts"
 import { join } from "node:path"
+import { getAuthorizedClient } from "@/auth"
+import { fetchSelectedPeerReview } from "@/cli/commands/peer-review/fetchPeerReviews"
 import { Configuration } from "@/configuration"
-import type { PendingPeerReview } from "@/platform/fetchPendingPeerReviews"
-import { fetchPendingPeerReviews } from "@/platform/fetchPendingPeerReviews"
-import { getPeerReviewDescriptor } from "@/platform/getPeerReviewDescriptor"
 
 function getPrDirectory(descriptor: string) {
 	const basePath = Configuration.required.prDirectory
@@ -13,16 +13,30 @@ function getPrDirectory(descriptor: string) {
 	return join(basePath, `${descriptor}-${uuid}`)
 }
 
-function resolvePeerReview(reviews: PendingPeerReview[], index: number) {
-	if (reviews.length === 1) {
-		return reviews[0]!
-	}
+function bookingToPrettyString(booking: Api.GetAgendaP2P.Data) {
+	const project = booking.student.getEnrichedBooking.task!.goalName
+	const verifiableUser =
+		booking.student.getEnrichedBooking.verifiableStudent!.user
 
-	if (index >= 0 && index < reviews.length) {
-		return reviews[index]!
-	}
+	const verifierUser = booking.student.getEnrichedBooking.verifierUser
 
-	return undefined
+	const isTeam = Boolean(booking.student.getEnrichedBooking.team)
+
+	return `"${project}" by ${isTeam ? "(Team)" : ""} ${
+		verifiableUser.login
+	} reviewed by ${verifierUser.login}`
+}
+
+function bookingToUrlString(booking: Api.GetAgendaP2P.Data) {
+	const project = booking.student.getEnrichedBooking.task!.goalName
+	const verifiableUser =
+		booking.student.getEnrichedBooking.verifiableStudent!.user
+
+	const verifierUser = booking.student.getEnrichedBooking.verifierUser
+
+	return `${project}-${verifiableUser.login}-${verifierUser.login}`
+		.replaceAll(/[^\w\d_-]/g, "")
+		.replaceAll(/\s+/g, "-")
 }
 
 export const cloneCommand = command({
@@ -39,40 +53,20 @@ export const cloneCommand = command({
 		index: option({
 			short: "i",
 			long: "index",
-			type: number,
-			defaultValue: () => -1,
+			type: optional(number),
+			defaultValue: () => undefined,
 		}),
 	},
 	async handler(argv) {
-		const reviews = await fetchPendingPeerReviews()
+		const client = getAuthorizedClient()
 
-		// FIXME: Refactor this, reduce duplication with pr/link
-		const review = resolvePeerReview(reviews, argv.index)
+		const booking = await fetchSelectedPeerReview(client, argv.index)
 
-		if (!review) {
-			console.log(
-				`Multiple pending bookings detected, use "-i" option to select:`,
-			)
+		const checklist = await client.api.createFilledChecklist({
+			studentAnswerId: booking.student.getEnrichedBooking.answerId!,
+		})
 
-			// eslint-disable-next-line unicorn/no-for-loop
-			for (let i = 0; i < reviews.length; i++) {
-				console.log(
-					`${i}. ${getPeerReviewDescriptor(reviews[i]!.enrichedBooking)}`,
-				)
-			}
-
-			throw new Error("Multiple bookings found")
-		}
-
-		const descriptor = getPeerReviewDescriptor(review.enrichedBooking)
-
-		if (!descriptor) {
-			throw new Error("Failed to create peer review descriptor")
-		}
-
-		const { checklist } = review
-
-		console.log(`Pending booking detected: ${descriptor}`)
+		console.log(`Pending booking detected: ${bookingToPrettyString(booking)}`)
 
 		const { sshLink, httpsLink } =
 			checklist.student.createFilledChecklist.gitlabStudentProjectUrl
@@ -80,7 +74,7 @@ export const cloneCommand = command({
 		console.log(`Repo SSH link: ${sshLink}`)
 		console.log(`Repo HTTPS link: ${httpsLink}`)
 
-		const directoryName = getPrDirectory(descriptor)
+		const directoryName = getPrDirectory(bookingToUrlString(booking))
 
 		const gitHandle = Bun.spawnSync({
 			cmd: [

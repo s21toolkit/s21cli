@@ -1,19 +1,7 @@
 import { command, number, option } from "cmd-ts"
-import type { PendingPeerReview } from "@/platform/fetchPendingPeerReviews"
-import { fetchPendingPeerReviews } from "@/platform/fetchPendingPeerReviews"
+import { getAuthorizedClient } from "@/auth"
+import { fetchSelectedPeerReview } from "@/cli/commands/peer-review/fetchPeerReviews"
 import { getPeerReviewDescriptor } from "@/platform/getPeerReviewDescriptor"
-
-function resolvePeerReview(reviews: PendingPeerReview[], index: number) {
-	if (reviews.length === 1) {
-		return reviews[0]!
-	}
-
-	if (index >= 0 && index < reviews.length) {
-		return reviews[index]!
-	}
-
-	return undefined
-}
 
 export const linkCommand = command({
 	name: "link",
@@ -27,27 +15,11 @@ export const linkCommand = command({
 		}),
 	},
 	async handler(argv) {
-		const reviews = await fetchPendingPeerReviews()
+		const client = getAuthorizedClient()
 
-		// FIXME: Refactor this, reduce duplication with pr/clone
-		const review = resolvePeerReview(reviews, argv.index)
+		const booking = await fetchSelectedPeerReview(client, argv.index)
 
-		if (!review) {
-			console.log(
-				`Multiple pending bookings detected, use "-i" option to select:`,
-			)
-
-			// eslint-disable-next-line unicorn/no-for-loop
-			for (let i = 0; i < reviews.length; i++) {
-				console.log(
-					`${i}. ${getPeerReviewDescriptor(reviews[i]!.enrichedBooking)}`,
-				)
-			}
-
-			throw new Error("Multiple bookings found")
-		}
-
-		const descriptor = getPeerReviewDescriptor(review.enrichedBooking)
+		const descriptor = getPeerReviewDescriptor(booking)
 
 		if (!descriptor) {
 			throw new Error("Failed to create peer review descriptor")
@@ -55,7 +27,10 @@ export const linkCommand = command({
 
 		console.log(`Pending booking detected: ${descriptor}`)
 
-		const { checklist } = review
+		const checklist = await client.api.createFilledChecklist({
+			studentAnswerId: booking.student.getEnrichedBooking.answerId!,
+		})
+
 		const { sshLink, httpsLink } =
 			checklist.student.createFilledChecklist.gitlabStudentProjectUrl
 
