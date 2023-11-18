@@ -7,7 +7,9 @@ export function getPeerReviewDescriptor(
 	const { task } = enrichedBooking.student.getEnrichedBooking
 
 	if (!task) {
-		return undefined
+		throw new Error(
+			"Failed to create booking descriptor, task was not provided",
+		)
 	}
 
 	const verifierUser = enrichedBooking.student.getEnrichedBooking.verifierUser!

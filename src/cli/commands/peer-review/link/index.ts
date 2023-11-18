@@ -19,13 +19,9 @@ export const linkCommand = command({
 
 		const booking = await fetchSelectedPeerReview(client, argv.index)
 
-		const descriptor = getPeerReviewDescriptor(booking)
-
-		if (!descriptor) {
-			throw new Error("Failed to create peer review descriptor")
-		}
-
-		console.log(`Pending booking detected: ${descriptor}`)
+		console.log(
+			`Pending booking detected: ${getPeerReviewDescriptor(booking)}`,
+		)
 
 		const checklist = await client.api.createFilledChecklist({
 			studentAnswerId: booking.student.getEnrichedBooking.answerId!,
