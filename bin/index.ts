@@ -2,6 +2,7 @@
 
 import "disposablestack/auto"
 import { binary, runSafely } from "cmd-ts"
+import process from "node:process"
 import { cli } from "@/cli"
 import { CLIError } from "@/cli/CLIError"
 import { Configuration } from "@/configuration"

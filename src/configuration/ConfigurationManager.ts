@@ -1,6 +1,7 @@
 import type { Problems } from "arktype"
 import { homedir } from "node:os"
 import { join } from "node:path"
+import process from "node:process"
 import { parse } from "yaml"
 import type { ConfigurationSchema } from "./ConfigurationSchema"
 import {
