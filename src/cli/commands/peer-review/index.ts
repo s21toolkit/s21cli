@@ -1,6 +1,7 @@
 import { subcommands } from "cmd-ts"
 import { cloneCommand } from "./clone"
 import { linkCommand } from "./link"
+import { listCommand } from "./list"
 
 export const peerReviewCommand = subcommands({
 	name: "pr",
@@ -8,5 +9,6 @@ export const peerReviewCommand = subcommands({
 	cmds: {
 		link: linkCommand,
 		clone: cloneCommand,
+		list: listCommand,
 	},
 })

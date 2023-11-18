@@ -47,6 +47,10 @@ export async function fetchPeerReviews(client: Client, index?: number) {
 		return enrichedBookings
 	}
 
+	if (pendingBookings.length === 0) {
+		throw new Error("No bookings found")
+	}
+
 	if (index < 0 || index >= pendingBookings.length) {
 		throw new Error(
 			`Invalid booking index, should be between 0 and ${
