@@ -24,6 +24,8 @@ jobs:
         with:
           bun-version: "1.0.7"
 
+      - run: echo "APP_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
       - run: bun install --frozen-lockfile
       - run: bun run build
 
@@ -42,6 +44,8 @@ jobs:
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: "1.0.7"
+
+      - run: echo "APP_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - run: bun install --frozen-lockfile
       - run: bun run build
