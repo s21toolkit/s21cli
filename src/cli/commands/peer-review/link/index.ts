@@ -1,4 +1,4 @@
-import { command, number, option } from "cmd-ts"
+import { command, number, option, optional } from "cmd-ts"
 import { getAuthorizedClient } from "@/auth"
 import { fetchSelectedPeerReview } from "@/cli/commands/peer-review/fetchPeerReviews"
 import { getPeerReviewDescriptor } from "@/platform/getPeerReviewDescriptor"
@@ -10,8 +10,8 @@ export const linkCommand = command({
 		index: option({
 			short: "i",
 			long: "index",
-			type: number,
-			defaultValue: () => -1,
+			type: optional(number),
+			defaultValue: () => undefined,
 		}),
 	},
 	async handler(argv) {

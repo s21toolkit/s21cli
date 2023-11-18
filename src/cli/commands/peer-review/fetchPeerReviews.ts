@@ -70,6 +70,10 @@ export async function fetchSelectedPeerReview(client: Client, index?: number) {
 			return bookings[0]!
 		}
 
+		if (bookings.length === 0) {
+			throw new Error("No bookings found")
+		}
+
 		console.log(
 			`Multiple pending bookings detected, use "-i" option to select:`,
 		)
