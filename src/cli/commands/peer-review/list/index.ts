@@ -1,7 +1,7 @@
 import { command } from "cmd-ts"
 import { getAuthorizedClient } from "@/auth"
 import { fetchPeerReviews } from "@/cli/commands/peer-review/fetchPeerReviews"
-import { getPeerReviewDescriptor } from "@/platform/getPeerReviewDescriptor"
+import { getPeerReviewDescriptor } from "@/adapters/getPeerReviewDescriptor"
 
 export const listCommand = command({
 	name: "list",
