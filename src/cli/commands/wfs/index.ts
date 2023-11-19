@@ -1,26 +1,8 @@
-import type { Client } from "@s21toolkit/client"
 import { command, option, string } from "cmd-ts"
 import dayjs from "dayjs"
-import { getGoalIdFromNodeCode } from "@/adapters/getGoalIdFromNodeCode"
 import { getAuthorizedClient } from "@/auth"
 import { duration } from "@/cli/arguments/duration"
-import { resolveGoalIdFromGitRemote } from "@/git"
-
-async function resolveProjectModuleId(client: Client, projectCode: string) {
-	if (projectCode === "this") {
-		return await resolveGoalIdFromGitRemote()
-	}
-
-	const { user } = await client.api.getCurrentUser()
-
-	const goalId = await getGoalIdFromNodeCode(
-		client,
-		projectCode,
-		user.getCurrentUser.currentSchoolStudentId,
-	)
-
-	return goalId
-}
+import { resolveProjectModuleId } from "@/cli/resolveProjectModuleId"
 
 export const watchForSlotsCommand = command({
 	aliases: ["watch", "wfs", "watch-for-slots"],
@@ -43,10 +25,10 @@ export const watchForSlotsCommand = command({
 			type: duration,
 		}),
 	},
-	async handler(args) {
+	async handler(argv) {
 		const client = getAuthorizedClient()
 
-		const moduleId = await resolveProjectModuleId(client, args.projectCode)
+		const moduleId = await resolveProjectModuleId(client, argv.projectCode)
 
 		const module = await client.api.calendarGetModule({ moduleId })
 
@@ -60,7 +42,7 @@ export const watchForSlotsCommand = command({
 			const slots =
 				await client.api.calendarGetNameLessStudentTimeslotsForReview({
 					from: dayjs().toDate(),
-					to: dayjs().add(args.timeAhead, "seconds").toDate(),
+					to: dayjs().add(argv.timeAhead, "seconds").toDate(),
 					taskId,
 				})
 
