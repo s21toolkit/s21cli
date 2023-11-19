@@ -1,6 +1,6 @@
 import type { Api, Client } from "@s21toolkit/client"
 import dayjs from "dayjs"
-import { getPeerReviewDescriptor } from "@/platform/getPeerReviewDescriptor"
+import { getPeerReviewDescriptor } from "@/adapters/getPeerReviewDescriptor"
 
 export async function fetchPendingBookings(client: Client) {
 	const agendaEvents = await client.api.getAgendaEvents({

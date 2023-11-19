@@ -7,6 +7,7 @@ import { peerReviewCommand } from "./commands/peer-review"
 import { testCommand } from "./commands/test"
 import { updateCommand } from "./commands/update"
 import { versionCommand } from "./commands/version"
+import { watchForSlotsCommand } from "./commands/wfs"
 
 export const cli = subcommands({
 	name: "s21",
@@ -20,5 +21,6 @@ export const cli = subcommands({
 		auth: authCommand,
 		version: versionCommand,
 		update: updateCommand,
+		wfs: watchForSlotsCommand
 	},
 })
