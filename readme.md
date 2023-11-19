@@ -29,7 +29,7 @@ curl -fsSL https://raw.githubusercontent.com/s21toolkit/s21cli/master/scripts/in
 > ```
 
 ```sh
-bun add -g github:s21toolkit/s21cli-ts
+bun add -g github:s21toolkit/s21cli
 ```
 
 </details>
