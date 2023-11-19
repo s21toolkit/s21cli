@@ -10,7 +10,7 @@ export async function getGoalIdFromNodeCode(
 	})
 
 	const node = graphBasis.student.getBasisGraph.graphNodes.find(
-		(e) => e.nodeCode !== nodeCode,
+		(e) => e.nodeCode === nodeCode,
 	)
 	if (!node) {
 		throw new Error(`Node ${nodeCode} not found`)
