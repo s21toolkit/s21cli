@@ -25,7 +25,7 @@ export const watchForSlots = command({
 
 		const taskId = module.student.getModuleById.currentTask.task.id
 
-		console.log("Watching...")
+		console.log(`Watching on project ${module.student.getModuleById.moduleTitle}...`)
 
 		while(true) {
 			const slots = await client.api.calendarGetNameLessStudentTimeslotsForReview({
@@ -39,14 +39,15 @@ export const watchForSlots = command({
 				continue
 			}
 
-			client.api.calendarAddBookingToEventSlot({
+			const startTime = timeSlots[0]!.validStartTimes[0] as any as string
+			await client.api.calendarAddBookingToEventSlot({
 				answerId: module.student.getModuleById.trajectory.levels[0]!.goalElements[0]!.points[0]!.studentTask.lastAnswer.id,
-				startTime: timeSlots[0]!.validStartTimes[0] as any as string,
 				wasStaffSlotChosen: timeSlots[0]!.staffSlot.toString(),
+				startTime: startTime,
 				isOnline: false
 			})
 
-			console.log(`Subscribed on slot ${timeSlots[0]!.validStartTimes[0]}`)
+			console.log(`Subscribed on slot ${new Date(startTime).toLocaleString()}`)
 		}
 	}
 })
