@@ -41,7 +41,7 @@ export const watchForSlots = command({
 
 			client.api.calendarAddBookingToEventSlot({
 				answerId: module.student.getModuleById.trajectory.levels[0]!.goalElements[0]!.points[0]!.studentTask.lastAnswer.id,
-				startTime: timeSlots[0]!.validStartTimes[0]!.toISOString(),
+				startTime: timeSlots[0]!.validStartTimes[0] as any as string,
 				wasStaffSlotChosen: timeSlots[0]!.staffSlot.toString(),
 				isOnline: false
 			})
