@@ -2,7 +2,7 @@ import { Client, DefaultAuthProvider } from "@s21toolkit/client"
 import { TokenAuthProvider } from "@/auth/TokenAuthProvider"
 import { Configuration } from "@/configuration"
 
-export function getAuthorizedClient() {
+export function createAuthorizedClient() {
 	const { token, schoolId } = Configuration.optional
 
 	if (token) {
@@ -18,4 +18,14 @@ export function getAuthorizedClient() {
 	const client = new Client(auth)
 
 	return client
+}
+
+let defaultAuthorizedClient: Client | undefined
+
+export function getAuthorizedClient() {
+	if (!defaultAuthorizedClient) {
+		defaultAuthorizedClient = createAuthorizedClient()
+	}
+
+	return defaultAuthorizedClient
 }
