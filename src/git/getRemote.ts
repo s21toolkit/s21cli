@@ -1,5 +1,5 @@
 export async function getRemote() {
-	const proc = Bun.spawn(["git", "config", "--local", "--get", "remote.origin.url"])
+	const proc = Bun.spawn(["git", "remote", "get-url", "origin"])
 	await proc.exited
 
 	if(proc.exitCode != 0) {
