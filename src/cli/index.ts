@@ -4,6 +4,7 @@ import { apiCommand } from "./commands/api"
 import { authCommand } from "./commands/auth/index"
 import { gqlCommand } from "./commands/gql"
 import { peerReviewCommand } from "./commands/peer-review"
+import { projectCommand } from "./commands/project"
 import { testCommand } from "./commands/test"
 import { updateCommand } from "./commands/update"
 import { versionCommand } from "./commands/version"
@@ -21,6 +22,7 @@ export const cli = subcommands({
 		auth: authCommand,
 		version: versionCommand,
 		update: updateCommand,
-		wfs: watchForSlotsCommand
+		wfs: watchForSlotsCommand,
+		project: projectCommand,
 	},
 })
