@@ -1,11 +1,14 @@
-import { getGoalIdFromNodeCode } from "@/adapters/getGoalIdFromNodeCode";
-import { AuthProvider } from "@s21toolkit/client";
-import { getNodeCode } from "./getNodeCode";
-import { getAuthorizedClient } from "@/auth";
+import { getGoalIdFromNodeCode } from "@/adapters/getGoalIdFromNodeCode"
+import { getAuthorizedClient } from "@/auth"
+import { getNodeCode } from "./getNodeCode"
 
-export async function resolveGoalIdFromGit() {
+export async function resolveGoalIdFromGitRemote() {
 	const client = getAuthorizedClient()
-	const studentId = (await client.api.getCurrentUser({})).user.getCurrentUser.currentSchoolStudentId
 
-	return getGoalIdFromNodeCode(client, await getNodeCode(), studentId)
+	const { user } = await client.api.getCurrentUser({})
+	const studentId = user.getCurrentUser.currentSchoolStudentId
+
+	const nodeCode = getNodeCode()
+
+	return getGoalIdFromNodeCode(client, nodeCode, studentId)
 }

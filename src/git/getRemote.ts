@@ -1,10 +1,9 @@
-export async function getRemote() {
-	const proc = Bun.spawn(["git", "remote", "get-url", "origin"])
-	await proc.exited
+export function getRemote() {
+	const proc = Bun.spawnSync(["git", "remote", "get-url", "origin"])
 
-	if(proc.exitCode != 0) {
+	if (proc.exitCode !== 0) {
 		throw new Error("Failed to get origin remote.")
 	}
 
-	return await new Response(proc.stdout).text()
+	return proc.stdout.toString()
 }

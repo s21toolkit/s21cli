@@ -1,53 +1,90 @@
-import { command, option } from "cmd-ts"
-import { duration } from "@/cli/arguments/duration"
-import { resolveGoalIdFromGit } from "@/git/resolveGoalIdFromGit"
-import { getAuthorizedClient } from "@/auth"
+import type { Client } from "@s21toolkit/client"
+import { command, option, string } from "cmd-ts"
 import dayjs from "dayjs"
+import { getGoalIdFromNodeCode } from "@/adapters/getGoalIdFromNodeCode"
+import { getAuthorizedClient } from "@/auth"
+import { duration } from "@/cli/arguments/duration"
+import { resolveGoalIdFromGitRemote } from "@/git"
 
-export const watchForSlots = command({
-	aliases: ["watch", "wfs", "watchForSlots"],
+async function resolveProjectModuleId(client: Client, projectCode: string) {
+	if (projectCode === "this") {
+		return await resolveGoalIdFromGitRemote()
+	}
+
+	const { user } = await client.api.getCurrentUser()
+
+	const goalId = await getGoalIdFromNodeCode(
+		client,
+		projectCode,
+		user.getCurrentUser.currentSchoolStudentId,
+	)
+
+	return goalId
+}
+
+export const watchForSlotsCommand = command({
+	aliases: ["watch", "wfs", "watch-for-slots"],
 	name: "wfs",
-	description:
-		"Watching for slots on project. Should be called in project directory.",
+	description: "Watches for evaluation slots for the specified project",
 	args: {
-		ahead: option({
+		projectCode: option({
+			long: "project",
+			short: "p",
+			description:
+				"Project to seek slots for, use `this` to infer from current repository (default)",
+			type: string,
+			defaultValue: () => "this",
+		}),
+		timeAhead: option({
 			long: "time-ahead",
+			short: "t",
+			description: "Time period to seek slots in",
 			defaultValue: () => 60 * 60 * 12,
-			type: duration
-		})
+			type: duration,
+		}),
 	},
-	async handler (args) {
-		const client = getAuthorizedClient();
+	async handler(args) {
+		const client = getAuthorizedClient()
 
-		const module = await client.api.calendarGetModule({
-			moduleId: await resolveGoalIdFromGit()
-		})
+		const moduleId = await resolveProjectModuleId(client, args.projectCode)
+
+		const module = await client.api.calendarGetModule({ moduleId })
 
 		const taskId = module.student.getModuleById.currentTask.task.id
 
-		console.log(`Watching on project ${module.student.getModuleById.moduleTitle}...`)
+		console.log(
+			`Watching on project ${module.student.getModuleById.moduleTitle}...`,
+		)
 
-		while(true) {
-			const slots = await client.api.calendarGetNameLessStudentTimeslotsForReview({
-				from: dayjs().toDate(),
-				to: dayjs().add(args.ahead, "s").toDate(),
-				taskId: taskId
-			})
+		for (;;) {
+			const slots =
+				await client.api.calendarGetNameLessStudentTimeslotsForReview({
+					from: dayjs().toDate(),
+					to: dayjs().add(args.timeAhead, "seconds").toDate(),
+					taskId,
+				})
 
-			const timeSlots = slots.student.getNameLessStudentTimeslotsForReview.timeSlots
-			if(timeSlots.length === 0) {
+			const { timeSlots } =
+				slots.student.getNameLessStudentTimeslotsForReview
+			if (timeSlots.length === 0) {
 				continue
 			}
 
-			const startTime = timeSlots[0]!.validStartTimes[0] as any as string
+			const startTime = timeSlots[0]!
+				.validStartTimes[0]! as unknown as string
+
 			await client.api.calendarAddBookingToEventSlot({
-				answerId: module.student.getModuleById.trajectory.levels[0]!.goalElements[0]!.points[0]!.studentTask.lastAnswer.id,
+				answerId:
+					module.student.getModuleById.trajectory.levels[0]!
+						.goalElements[0]!.points[0]!.studentTask.lastAnswer.id,
 				wasStaffSlotChosen: timeSlots[0]!.staffSlot.toString(),
-				startTime: startTime,
-				isOnline: false
+				startTime,
+				isOnline: false,
 			})
 
-			console.log(`Subscribed on slot ${new Date(startTime).toLocaleString()}`)
+			console.log(
+				`Subscribed on slot ${new Date(startTime).toLocaleString()}`,
+			)
 		}
-	}
+	},
 })
