@@ -9,6 +9,8 @@ export const infoCommand = command({
 		projectCode: option({
 			long: "project",
 			short: "p",
+			description:
+				"Project to seek slots for, use `this` to infer from current repository (default)",
 			type: string,
 			defaultValue: () => "this",
 		}),
