@@ -6,7 +6,7 @@ RELEASE_URL=https://api.github.com/repos/s21toolkit/s21cli/releases/latest
 
 # I FUCKING LOVE POSIX SHELLS
 : "${S21_ROOT:="$HOME/.s21"}"
-: "${$21_BIN:="$S21_ROOT/bin"}"
+: "${S21_BIN:="$S21_ROOT/bin"}"
 : "${S21_EXE:="$S21_BIN/s21"}"
 
 # Installation
