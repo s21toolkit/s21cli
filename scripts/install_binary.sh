@@ -5,9 +5,11 @@
 RELEASE_URL=https://api.github.com/repos/s21toolkit/s21cli/releases/latest
 
 # I FUCKING LOVE POSIX SHELLS
-: "${S21_ROOT:="$HOME/.s21"}"
-: "${S21_BIN:="$S21_ROOT/bin"}"
-: "${S21_EXE:="$S21_BIN/s21"}"
+: "${S21_ROOT:="$HOME/.s21"}"			# Root directory
+: "${S21_LINK:="$S21_ROOT/bin"}"		# Exposed directory
+: "${S21_EXE:="$S21_LINK/s21"}"		# Executable path
+
+S21_BIN=$(dirname $S21_EXE)
 
 # Installation
 
@@ -29,7 +31,7 @@ fi
 
 echo "- Downloading $BINARY_URL to $S21_BIN"
 
-mkdir -p $S21_ROOT $S21_BIN $(dirname $S21_EXE)
+mkdir -p $S21_ROOT $S21_LINK $S21_BIN
 curl -L $BINARY_URL -o $S21_EXE
 
 echo "- Updating permissions"
@@ -38,14 +40,14 @@ chmod +x $S21_EXE
 
 echo "- Adding to PATH"
 
-if echo :$PATH: | grep -qv :$S21_BIN:; then
+if echo :$PATH: | grep -qv :$S21_LINK:; then
 
 	added=false
 
 	# Posix
 
 	if [ -f "$HOME/.profile" ]; then
-		echo 'export PATH="'$21_BIN':$PATH"' >> "$HOME/.profile"
+		echo 'export PATH="'$S21_LINK':$PATH"' >> "$HOME/.profile"
 
 		added=true
 		echo "-- Added to .profile"
@@ -54,11 +56,11 @@ if echo :$PATH: | grep -qv :$S21_BIN:; then
 	# Bash
 
 	if [ -f "$HOME/.bashrc" ]; then
-		echo 'export PATH="'$21_BIN':$PATH"' >> "$HOME/.bashrc"
+		echo 'export PATH="'$S21_LINK':$PATH"' >> "$HOME/.bashrc"
 
 		echo "-- Added to .bashrc"
 	elif [ -f "$HOME/.bash_profile" ]; then
-		echo 'export PATH="'$21_BIN':$PATH"' >> "$HOME/.bash_profile"
+		echo 'export PATH="'$S21_LINK':$PATH"' >> "$HOME/.bash_profile"
 
 		added=true
 		echo "-- Added to .bash_profile"
@@ -67,11 +69,11 @@ if echo :$PATH: | grep -qv :$S21_BIN:; then
 	# Zsh
 
 	if [ -f "$HOME/.zprofile" ]; then
-		echo 'export PATH="'$21_BIN':$PATH"' >> "$HOME/.zprofile"
+		echo 'export PATH="'$S21_LINK':$PATH"' >> "$HOME/.zprofile"
 
 		echo "-- Added to .zprofile"
 	elif [ -f "$HOME/.zshrc" ]; then
-		echo 'export PATH="'$21_BIN':$PATH"' >> "$HOME/.zshrc"
+		echo 'export PATH="'$S21_LINK':$PATH"' >> "$HOME/.zshrc"
 
 		added=true
 		echo "-- Added to .zshrc"
