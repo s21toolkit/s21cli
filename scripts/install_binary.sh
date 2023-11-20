@@ -29,7 +29,7 @@ fi
 
 echo "- Downloading $BINARY_URL to $S21_BIN"
 
-mkdir -p $S21_BIN
+mkdir -p $S21_ROOT $S21_BIN $(dirname $S21_EXE)
 curl -L $BINARY_URL -o $S21_EXE
 
 echo "- Updating permissions"
