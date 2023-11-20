@@ -9,5 +9,3 @@ S21_OLD_EXE="$S21_BIN/s21"
 curl -fsSL https://raw.githubusercontent.com/s21toolkit/s21cli/master/scripts/install_binary.sh | sh
 
 mv $S21_EXE $S21_OLD_EXE
-
-rm -f $S21_EXE
