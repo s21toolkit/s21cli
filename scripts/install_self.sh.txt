@@ -1,3 +1,13 @@
 # This script is meant to be packaged & run by s21cli itself to pull latest install script and update
 
+S21_ROOT="$HOME/.s21"
+S21_BIN="$S21_ROOT/bin"
+S21_UPDATES="$S21_ROOT/updates"
+S21_EXE="$S21_UPDATES/s21"
+S21_OLD_EXE="$S21_BIN/s21"
+
 curl -fsSL https://raw.githubusercontent.com/s21toolkit/s21cli/master/scripts/install_binary.sh | sh
+
+mv $S21_EXE $S21_OLD_EXE
+
+rm -f $S21_EXE

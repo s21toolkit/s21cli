@@ -4,9 +4,10 @@
 
 RELEASE_URL=https://api.github.com/repos/s21toolkit/s21cli/releases/latest
 
-S21_ROOT="$HOME/.s21"
-S21_BIN="$S21_ROOT/bin"
-S21_EXE="$S21_BIN/s21"
+# I FUCKING LOVE POSIX SHELLS
+: "${S21_ROOT:="$HOME/.s21"}"
+: "${$21_BIN:="$S21_ROOT/bin"}"
+: "${S21_EXE:="$S21_BIN/s21"}"
 
 # Installation
 
@@ -44,7 +45,7 @@ if echo :$PATH: | grep -qv :$S21_BIN:; then
 	# Posix
 
 	if [ -f "$HOME/.profile" ]; then
-		echo 'export PATH="$HOME/.s21/bin:$PATH"' >> "$HOME/.profile"
+		echo 'export PATH="'$21_BIN':$PATH"' >> "$HOME/.profile"
 
 		added=true
 		echo "-- Added to .profile"
@@ -53,11 +54,11 @@ if echo :$PATH: | grep -qv :$S21_BIN:; then
 	# Bash
 
 	if [ -f "$HOME/.bashrc" ]; then
-		echo 'export PATH="$HOME/.s21/bin:$PATH"' >> "$HOME/.bashrc"
+		echo 'export PATH="'$21_BIN':$PATH"' >> "$HOME/.bashrc"
 
 		echo "-- Added to .bashrc"
 	elif [ -f "$HOME/.bash_profile" ]; then
-		echo 'export PATH="$HOME/.s21/bin:$PATH"' >> "$HOME/.bash_profile"
+		echo 'export PATH="'$21_BIN':$PATH"' >> "$HOME/.bash_profile"
 
 		added=true
 		echo "-- Added to .bash_profile"
@@ -66,11 +67,11 @@ if echo :$PATH: | grep -qv :$S21_BIN:; then
 	# Zsh
 
 	if [ -f "$HOME/.zprofile" ]; then
-		echo 'export PATH="$HOME/.s21/bin:$PATH"' >> "$HOME/.zprofile"
+		echo 'export PATH="'$21_BIN':$PATH"' >> "$HOME/.zprofile"
 
 		echo "-- Added to .zprofile"
 	elif [ -f "$HOME/.zshrc" ]; then
-		echo 'export PATH="$HOME/.s21/bin:$PATH"' >> "$HOME/.zshrc"
+		echo 'export PATH="'$21_BIN':$PATH"' >> "$HOME/.zshrc"
 
 		added=true
 		echo "-- Added to .zshrc"
