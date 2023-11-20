@@ -6,6 +6,8 @@ S21_UPDATES="$S21_ROOT/updates"
 S21_EXE="$S21_UPDATES/s21"
 S21_OLD_EXE="$S21_BIN/s21"
 
+export S21_ROOT S21_BIN S21_EXE
+
 curl -fsSL https://raw.githubusercontent.com/s21toolkit/s21cli/master/scripts/install_binary.sh | sh
 
 mv $S21_EXE $S21_OLD_EXE
