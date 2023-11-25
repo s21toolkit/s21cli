@@ -1,5 +1,5 @@
 import { subcommands } from "cmd-ts"
-import { APP_VERSION } from "@/version"
+import { VERSION } from "@/version"
 import { apiCommand } from "./commands/api"
 import { authCommand } from "./commands/auth/index"
 import { gqlCommand } from "./commands/gql"
@@ -13,7 +13,7 @@ import { watchForSlotsCommand } from "./commands/wfs"
 export const cli = subcommands({
 	name: "s21",
 	description: "Command line utilities for school 21 education platform",
-	version: APP_VERSION,
+	version: VERSION.toString(),
 	cmds: {
 		test: testCommand,
 		pr: peerReviewCommand,
