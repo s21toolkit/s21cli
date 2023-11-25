@@ -1,6 +1,6 @@
 import { version } from "@root/package.json"
 
-function fetchRevision() {
+function fetchCurrentCommit() {
 	const subprocess = Bun.spawnSync({
 		cmd: ["git", "rev-parse", "--short", "HEAD"],
 	})
@@ -14,9 +14,9 @@ function fetchRevision() {
 
 export const VERSION = {
 	version,
-	revision: fetchRevision(),
+	commit: fetchCurrentCommit(),
 	get full() {
-		return `${this.version} (${this.revision})`
+		return `${this.version} (commit ${this.commit})`
 	},
 	toString() {
 		return this.full
