@@ -9,7 +9,7 @@ function fetchCurrentCommit() {
 		throw new Error("Failed to fetch git revision (HEAD)")
 	}
 
-	return subprocess.stdout.toString()
+	return subprocess.stdout.toString().trim()
 }
 
 export const VERSION = {
