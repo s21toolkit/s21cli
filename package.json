@@ -5,7 +5,10 @@
   "main": "./src/index.ts",
   "version": "0.9.5",
   "scripts": {
-    "build": "bun run ./bun/build.ts"
+    "build": "bun run ./bun/build.ts",
+    "preversion": "bun run build",
+    "publish": "npm version --",
+    "postversion": "git push & git push --tags"
   },
   "bin": {
     "s21-dev": "bin/index.ts",
