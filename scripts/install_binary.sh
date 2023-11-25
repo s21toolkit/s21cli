@@ -25,7 +25,7 @@ echo "- Locating latest release"
 
 RELEASE=latest
 
-if [ $S21_INSTALL_UNSTABLE ]; then
+if [ $S21_INSTALL_UNSTABLE = true ]; then
 	latest_version=$(curl -s $RELEASES_URL | grep "browser_download_url.*s21" | grep -o "v.*/" | tr -d / | head -n 1)
 
 	RELEASE=tags/$latest_version
