@@ -1,6 +1,7 @@
 import type { Api } from "@s21toolkit/client"
 import { command, number, option, optional, string } from "cmd-ts"
 import { join } from "node:path"
+import { getPeerReviewDescriptor } from "@/adapters/getPeerReviewDescriptor"
 import { getAuthorizedClient } from "@/auth"
 import { fetchSelectedPeerReview } from "@/cli/commands/peer-review/fetchPeerReviews"
 import { Configuration } from "@/configuration"
@@ -25,18 +26,6 @@ function bookingToPrettyString(booking: Api.GetAgendaP2P.Data) {
 	return `"${project}" by ${isTeam ? "(Team)" : ""} ${
 		verifiableUser.login
 	} reviewed by ${verifierUser.login}`
-}
-
-function bookingToUrlString(booking: Api.GetAgendaP2P.Data) {
-	const project = booking.student.getEnrichedBooking.task!.goalName
-	const verifiableUser =
-		booking.student.getEnrichedBooking.verifiableStudent!.user
-
-	const verifierUser = booking.student.getEnrichedBooking.verifierUser
-
-	return `${project}-${verifiableUser.login}-${verifierUser.login}`
-		.replaceAll(/[^\w\d_-]/g, "")
-		.replaceAll(/\s+/g, "-")
 }
 
 export const cloneCommand = command({
@@ -74,7 +63,7 @@ export const cloneCommand = command({
 		console.log(`Repo SSH link: ${sshLink}`)
 		console.log(`Repo HTTPS link: ${httpsLink}`)
 
-		const directoryName = getPrDirectory(bookingToUrlString(booking))
+		const directoryName = getPrDirectory(getPeerReviewDescriptor(booking))
 
 		const gitHandle = Bun.spawnSync({
 			cmd: [
