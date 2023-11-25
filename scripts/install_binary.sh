@@ -2,7 +2,8 @@
 
 # Configuration
 
-RELEASE_URL=https://api.github.com/repos/s21toolkit/s21cli/releases/latest
+RELEASES_URL="https://api.github.com/repos/s21toolkit/s21cli/releases"
+
 
 # I FUCKING LOVE POSIX SHELLS
 : "${S21_ROOT:="$HOME/.s21"}"			# Root directory
@@ -22,7 +23,15 @@ echo "- Target platform identified as $PLATFORM/$ARCHITECTURE"
 
 echo "- Locating latest release"
 
-BINARY_URL=$(curl -s https://api.github.com/repos/s21toolkit/s21cli/releases/latest | grep "browser_download_url.*s21" | cut -d : -f 2,3 | tr -d \" | grep $PLATFORM | xargs)
+RELEASE=latest
+
+if [ $S21_INSTALL_UNSTABLE ]; then
+	latest_version=$(curl -s $RELEASES_URL | grep "browser_download_url.*s21" | grep -o "v.*/" | tr -d / | head -n 1)
+
+	RELEASE=tags/$latest_version
+fi
+
+BINARY_URL=$(curl -s "$RELEASES_URL/$RELEASE" | grep "browser_download_url.*s21" | cut -d : -f 2,3 | tr -d \" | grep $PLATFORM | xargs)
 
 if [ $BINARY_URL != *s21-$PLATFORM-$ARCHITECTURE ]; then
 	echo "-- Warning: Platform architecture checks are not yet fully implemented"
