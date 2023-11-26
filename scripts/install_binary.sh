@@ -33,7 +33,15 @@ fi
 
 BINARY_URL=$(curl -s "$RELEASES_URL/$RELEASE" | grep "browser_download_url.*s21" | cut -d : -f 2,3 | tr -d \" | grep $PLATFORM | xargs)
 
-if [ $BINARY_URL != *s21-$PLATFORM-$ARCHITECTURE ]; then
+if [ -z "$BINARY_URL" ]; then
+	echo "-- Error: Failed to fetch release artifacts"
+
+	echo "-- Error:" $(curl -s "$RELEASES_URL/$RELEASE")
+
+	exit 1
+fi
+
+if [ "$BINARY_URL" != *s21-$PLATFORM-$ARCHITECTURE ]; then
 	echo "-- Warning: Platform architecture checks are not yet fully implemented"
 	echo "-- Warning: Potential architecture mismatch detected for $BINARY_URL -> $ARCHITECTURE"
 fi
