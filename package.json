@@ -1,12 +1,14 @@
 {
   "name": "s21cli-ts",
-  "module": "src/index.ts",
   "type": "module",
-  "main": "./src/index.ts",
   "version": "0.9.9-dev.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "publish": "npm version -m 'chore(release): %s' --",
-    "postversion": "git push & git push --tags"
+    "postversion": "git push & git push --tags",
+    "format": "pnpm eslint src bin --fix"
   },
   "bin": {
     "s21-dev": "bin/index.ts",
@@ -19,6 +21,8 @@
     "eslint": "^8.54.0",
     "eslint-kit": "^10.6.0",
     "eslint-plugin-no-relative-import-paths": "^1.5.3",
+    "eslint-plugin-require-node-import-prefix": "^0.0.2",
+    "estrella": "^1.4.1",
     "typescript": "^5.3.2"
   },
   "dependencies": {

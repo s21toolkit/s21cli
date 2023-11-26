@@ -11,7 +11,7 @@ module.exports = configure({
 	],
 
 	extend: {
-		plugins: ["no-relative-import-paths"],
+		plugins: ["no-relative-import-paths", "require-node-import-prefix"],
 
 		rules: {
 			"no-relative-import-paths/no-relative-import-paths": [
@@ -41,6 +41,7 @@ module.exports = configure({
 					disallowTypeAnnotations: false,
 				},
 			],
+			"require-node-import-prefix/no-empty-import-prefix": "error",
 		},
 	},
 })
