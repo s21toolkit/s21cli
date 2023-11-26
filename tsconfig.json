@@ -12,11 +12,14 @@
 		"moduleResolution": "Bundler",
 		"moduleDetection": "force",
 		"allowImportingTsExtensions": true,
+		"allowSyntheticDefaultImports": true,
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["src/*"],
 			"@root/*": ["./*"]
 		},
+		"typeRoots": ["types", "node_modules/@types"],
+		"types": ["esbuild", "node"],
 
 		/* Emit */
 		"noEmit": true,
