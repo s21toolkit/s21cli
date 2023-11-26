@@ -3,7 +3,7 @@
   "module": "src/index.ts",
   "type": "module",
   "main": "./src/index.ts",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "scripts": {
     "build": "bun run ./bun/build.ts",
     "preversion": "bun run build",
