@@ -1,5 +1,7 @@
 import type { Api } from "@s21toolkit/client"
 import { command, number, option, optional, string } from "cmd-ts"
+import { spawnSync } from "node:child_process"
+import { randomUUID } from "node:crypto"
 import { join } from "node:path"
 import { getPeerReviewDescriptor } from "@/adapters/getPeerReviewDescriptor"
 import { getAuthorizedClient } from "@/auth"
@@ -9,7 +11,7 @@ import { Configuration } from "@/configuration"
 function getPrDirectory(descriptor: string) {
 	const basePath = Configuration.required.prDirectory
 
-	const uuid = crypto.randomUUID()
+	const uuid = randomUUID()
 
 	return join(basePath, `${descriptor}-${uuid}`)
 }
@@ -65,9 +67,9 @@ export const cloneCommand = command({
 
 		const directoryName = getPrDirectory(getPeerReviewDescriptor(booking))
 
-		const gitHandle = Bun.spawnSync({
-			cmd: [
-				"git",
+		const handle = spawnSync(
+			"git",
+			[
 				"clone",
 				"--branch",
 				argv.branch,
@@ -75,12 +77,12 @@ export const cloneCommand = command({
 				sshLink,
 				directoryName,
 			],
-			stdout: "inherit",
-			stderr: "inherit",
-			stdin: "inherit",
-		})
+			{
+				stdio: "inherit",
+			},
+		)
 
-		if (gitHandle.exitCode !== 0) {
+		if (handle.error) {
 			console.error("Failed to clone project repo")
 		}
 	},

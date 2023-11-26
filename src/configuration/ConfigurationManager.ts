@@ -1,4 +1,6 @@
 import type { Problems } from "arktype"
+import type { FileHandle } from "node:fs/promises"
+import { access, constants, open, readFile } from "node:fs/promises"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import process from "node:process"
@@ -111,7 +113,7 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 			return
 		}
 
-		const content = await file.text()
+		const content = (await readFile(file)).toString()
 
 		const data = parse(content) as unknown
 
@@ -131,13 +133,15 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 	}
 
 	async #openFile(filename: string) {
-		const file = Bun.file(filename)
+		const exists = await access(filename, constants.R_OK)
+			.then(() => true)
+			.catch(() => false)
 
-		if (!(await file.exists())) {
+		if (!exists) {
 			return undefined
 		}
 
-		return file
+		return await open(filename, constants.O_RDONLY)
 	}
 
 	async #loadFileData(
