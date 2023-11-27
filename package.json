@@ -10,13 +10,16 @@
     "readme.md"
   ],
   "scripts": {
+    "lint:tsc": "tsc",
+    "lint:eslint": "eslint src",
+    "lint": "pnpm lint:tsc && pnpm list:eslint",
     "build:bundle": "tsup",
     "build:compile": "bun run compile.ts",
-    "build": "pnpm build:bundle && pnpm build:compile",
+    "build": "pnpm lint && pnpm build:bundle && pnpm build:compile",
     "release": "npm version -m 'chore(release): %s' --",
     "prepublishOnly": "pnpm build",
     "postversion": "git push & git push --tags",
-    "format": "eslint src bin --fix",
+    "lint:fix": "eslint src --fix",
     "s21:run": "./build/dist/main.mjs",
     "s21": "pnpm run build:bundle && pnpm s21:run"
   },
