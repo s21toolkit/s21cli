@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
 import "disposablestack/auto"
 import { binary, runSafely } from "cmd-ts"

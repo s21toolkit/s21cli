@@ -11,13 +11,14 @@
 		"module": "ESNext",
 		"moduleResolution": "Bundler",
 		"moduleDetection": "force",
-		"allowImportingTsExtensions": true,
+		"allowSyntheticDefaultImports": true,
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["src/*"],
 			"@root/*": ["./*"]
 		},
-		"types": ["bun-types"],
+		"typeRoots": ["types", "node_modules/@types"],
+		"types": ["esbuild", "node"],
 
 		/* Emit */
 		"noEmit": true,
@@ -25,6 +26,7 @@
 		/* Interop Constraints */
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
 
 		/* Type Checking */
 		"strict": true,

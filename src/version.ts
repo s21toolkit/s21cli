@@ -1,15 +1,14 @@
+import { spawnSync } from "node:child_process"
 import { version } from "@root/package.json"
 
 function fetchCurrentCommit() {
-	const subprocess = Bun.spawnSync({
-		cmd: ["git", "rev-parse", "--short", "HEAD"],
-	})
+	const handle = spawnSync("git", ["rev-parse", "--short", "HEAD"])
 
-	if (subprocess.exitCode !== 0) {
+	if (handle.error) {
 		throw new Error("Failed to fetch git revision (HEAD)")
 	}
 
-	return subprocess.stdout.toString().trim()
+	return handle.stdout.toString().trim()
 }
 
 export const VERSION = {

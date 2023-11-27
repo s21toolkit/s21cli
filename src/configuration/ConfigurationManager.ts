@@ -1,4 +1,5 @@
 import type { Problems } from "arktype"
+import { access, constants, readFile } from "node:fs/promises"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import process from "node:process"
@@ -105,13 +106,11 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 	}
 
 	async #loadYamlFile(filename: string, source: ConfigurationSource) {
-		const file = await this.#openFile(filename)
-
-		if (!file) {
+		if (!(await this.#validateFilename(filename))) {
 			return
 		}
 
-		const content = await file.text()
+		const content = (await readFile(filename)).toString()
 
 		const data = parse(content) as unknown
 
@@ -119,9 +118,7 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 	}
 
 	async #loadJSFile(filename: string, source: ConfigurationSource) {
-		const file = await this.#openFile(filename)
-
-		if (!file) {
+		if (!(await this.#validateFilename(filename))) {
 			return
 		}
 
@@ -130,14 +127,12 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 		await this.#loadFileData(data, source, filename)
 	}
 
-	async #openFile(filename: string) {
-		const file = Bun.file(filename)
+	async #validateFilename(filename: string) {
+		const result = await access(filename, constants.R_OK)
+			.then(() => true)
+			.catch(() => false)
 
-		if (!(await file.exists())) {
-			return undefined
-		}
-
-		return file
+		return result
 	}
 
 	async #loadFileData(

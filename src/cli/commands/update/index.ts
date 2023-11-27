@@ -1,5 +1,6 @@
 import { command, flag } from "cmd-ts"
-import process from "process"
+import { spawnSync } from "node:child_process"
+import process from "node:process"
 import selfInstallScript from "@root/scripts/install_self.sh.txt"
 
 export const updateCommand = command({
@@ -15,13 +16,12 @@ export const updateCommand = command({
 		}),
 	},
 	handler(argv) {
-		Bun.spawnSync({
-			cmd: ["sh", "-c", selfInstallScript],
+		spawnSync("sh", ["-c", selfInstallScript], {
 			env: {
 				...process.env,
 				S21_INSTALL_UNSTABLE: argv.unstable.toString(),
 			},
-			stdio: ["inherit", "inherit", "inherit"],
+			stdio: "inherit",
 		})
 	},
 })
