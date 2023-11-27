@@ -1,7 +1,7 @@
 import { command, number, option, optional } from "cmd-ts"
+import { getPeerReviewDescriptor } from "@/adapters/getPeerReviewDescriptor"
 import { getAuthorizedClient } from "@/auth"
 import { fetchSelectedPeerReview } from "@/cli/commands/peer-review/fetchPeerReviews"
-import { getPeerReviewDescriptor } from "@/adapters/getPeerReviewDescriptor"
 
 export const linkCommand = command({
 	name: "link",

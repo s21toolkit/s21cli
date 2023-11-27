@@ -1,5 +1,4 @@
 import type { Problems } from "arktype"
-import type { FileHandle } from "node:fs/promises"
 import { access, constants, open, readFile } from "node:fs/promises"
 import { homedir } from "node:os"
 import { join } from "node:path"
