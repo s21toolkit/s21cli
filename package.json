@@ -12,7 +12,7 @@
   "scripts": {
     "lint:tsc": "tsc",
     "lint:eslint": "eslint src",
-    "lint": "pnpm lint:tsc && pnpm list:eslint",
+    "lint": "pnpm lint:tsc && pnpm lint:eslint",
     "build:bundle": "tsup",
     "build:compile": "bun run compile.ts",
     "build": "pnpm lint && pnpm build:bundle && pnpm build:compile",
