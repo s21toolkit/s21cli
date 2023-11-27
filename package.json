@@ -5,6 +5,10 @@
   "engines": {
     "node": ">=20.0.0"
   },
+  "files": [
+    "build/dist",
+    "readme.md"
+  ],
   "scripts": {
     "build:compile": "tsup",
     "publish": "npm version -m 'chore(release): %s' --",
@@ -12,8 +16,8 @@
     "format": "eslint src bin --fix"
   },
   "bin": {
-    "s21-dev": "bin/index.ts",
-    "s21": "bin/index.ts"
+    "s21-dev": "build/dist/main.mjs",
+    "s21": "build/dist/main.mjs"
   },
   "devDependencies": {
     "@swc/core": "^1.3.99",

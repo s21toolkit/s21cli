@@ -5,12 +5,13 @@ const runtimeDependencies = Object.keys(packageJson.dependencies)
 
 // eslint-disable-next-line import/no-default-export
 export default defineConfig({
-	entry: ["bin/index.ts"],
+	entry: ["src/main.ts"],
 	clean: true,
 	dts: false,
 	format: "esm",
-	target: "node21",
+	target: "node20",
 	outDir: "build/dist",
 	noExternal: [...runtimeDependencies, "util"],
 	treeshake: true,
+	outExtension: () => ({ js: ".mjs" })
 })
