@@ -73,5 +73,5 @@ jobs:
 
       - uses: ncipollo/release-action@v1.13.0
         with:
-          artifacts: artifacts/*/*/*
+          artifacts: artifacts/**/*
           prerelease: ${{env.IS_PRERELEASE}}
