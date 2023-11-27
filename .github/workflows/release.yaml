@@ -10,48 +10,52 @@ permissions:
   contents: write
 
 env:
-  # FIXME: For some reason bun:latest breaks package installs, so it's 1.0.7 for now
-  BUN_VERSION: "1.0.7"
   IS_PRERELEASE: "${{contains(github.ref_name, 'dev')}}"
 
 jobs:
   build-linux:
     runs-on: ubuntu-latest
 
-    env:
-      GITHUB_NPM_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
-          bun-version: "${{env.BUN_VERSION}}"
+          version: latest
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ">=21.0.0"
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
 
-      - run: bun install --frozen-lockfile
-      - run: bun run build
+      - run: |
+          pnpm install --frozen-lockfile
+          pnpm build
 
       - uses: actions/upload-artifact@v3
         with:
-          path: build/*
+          path: build/bin/*
 
   build-macos:
     runs-on: macos-latest
 
-    env:
-      GITHUB_NPM_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
-          bun-version: "${{env.BUN_VERSION}}"
+          version: latest
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ">=21.0.0"
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
 
-      - run: bun install --frozen-lockfile
-      - run: bun run build
+      - run: |
+          pnpm install --frozen-lockfile
+          pnpm build
 
       - uses: actions/upload-artifact@v3
         with:
-          path: build/*
+          path: build/bin/*
 
   publish:
     needs:
@@ -69,5 +73,5 @@ jobs:
 
       - uses: ncipollo/release-action@v1.13.0
         with:
-          artifacts: artifacts/*/*
+          artifacts: artifacts/*/*/*
           prerelease: ${{env.IS_PRERELEASE}}
