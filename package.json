@@ -15,7 +15,9 @@
     "build": "pnpm build:bundle && pnpm build:compile",
     "publish": "npm version -m 'chore(release): %s' --",
     "postversion": "git push & git push --tags",
-    "format": "eslint src bin --fix"
+    "format": "eslint src bin --fix",
+    "s21:run": "./build/dist/main.mjs",
+    "s21": "pnpm run build:bundle && pnpm s21:run"
   },
   "bin": {
     "s21-dev": "build/dist/main.mjs",
