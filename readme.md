@@ -4,35 +4,19 @@
 
 ## Установка
 
-> [!WARNING]
-> Так как Bun для Windows пока в разработке, сборок для Windows не предусмотрено.
+Пакет через `npm` (необходим Node.js >=20 версии):
 
-Установка через скрипт:
+```sh
+npm install --global @s21toolkit/cli
+```
+
+Независимый исполняемый файл через скрипт:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/s21toolkit/s21cli/master/scripts/install_binary.sh | sh
 ```
 
-Установка бинарного релиза вручную: [[Релизы](https://github.com/s21toolkit/s21cli/releases)]
-
-<details>
-
-<summary>
-Установка через Bun
-</summary>
-
-> [!IMPORTANT]
-> Для работы необходимо установить <a href="https://bun.sh">Bun</a>
->
-> ```sh
-> curl -fsSL https://bun.sh/install | bash
-> ```
-
-```sh
-bun add -g github:s21toolkit/s21cli
-```
-
-</details>
+Независимый исполняемый файл вручную: [[Релизы](https://github.com/s21toolkit/s21cli/releases)]
 
 ## Настройка
 
