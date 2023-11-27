@@ -8,5 +8,5 @@ export default defineConfig({
 	format: "esm",
 	target: "node20",
 	outDir: "build/dist",
-	outExtension: () => ({ js: ".mjs" })
+	outExtension: () => ({ js: ".mjs" }),
 })
