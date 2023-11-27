@@ -1,0 +1,31 @@
+name: publish
+
+on:
+  push:
+    tags: "v*.*.*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    env:
+      NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ">=21.0.0"
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - run: |
+          pnpm install --frozen-lockfile
+          pnpm publish --access public --no-git-checks
