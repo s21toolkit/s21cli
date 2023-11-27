@@ -1,5 +1,5 @@
 {
-  "name": "s21cli-ts",
+  "name": "@s21toolkit/cli",
   "type": "module",
   "version": "0.9.9-dev.0",
   "engines": {
