@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@s21toolkit/client':
-    specifier: ^0.5.1
-    version: 0.5.1
+    specifier: ^0.7.0
+    version: 0.7.0
   arktype:
     specifier: 1.0.24-alpha
     version: 1.0.24-alpha
@@ -849,8 +849,8 @@ packages:
     dev: true
     optional: true
 
-  /@s21toolkit/client@0.5.1:
-    resolution: {integrity: sha512-J9PKH4rO4glImRr+tPdaJ6SbM5te+CemM2072ywIFwdow5RPfj40Ej2+bMSWiy7xG986Ug5cEAplNITL+2Kzng==, tarball: https://npm.pkg.github.com/download/@s21toolkit/client/0.5.1/c353c7e2f1f7ee6fc633bb74430cc4685eb0c07c}
+  /@s21toolkit/client@0.7.0:
+    resolution: {integrity: sha512-rm8BT5yq5+P5XvIkf7r+uaO+j8K4HUnUwtzVQ3rxrBCtrgaX1wp1rsjIWwQV1N2/Me09kt/tZ3/nbyQ1EFJHPA==}
     engines: {node: '>=20.0.0'}
     dependencies:
       common-tags: 1.8.2
