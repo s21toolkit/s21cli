@@ -1,4 +1,4 @@
-import { Client, DefaultAuthProvider } from "@s21toolkit/client"
+import { Client, UserAuthProvider } from "@s21toolkit/client"
 import { command, option, string } from "cmd-ts"
 
 export const testCommand = command({
@@ -19,7 +19,7 @@ export const testCommand = command({
 	async handler(argv) {
 		const { username, password } = argv
 
-		const auth = new DefaultAuthProvider(username, password)
+		const auth = new UserAuthProvider(username, password)
 
 		const client = new Client(auth)
 

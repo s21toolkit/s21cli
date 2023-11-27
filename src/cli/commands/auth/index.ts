@@ -1,4 +1,4 @@
-import { fetchUserData, Token } from "@s21toolkit/client"
+import { fetchAccessToken, fetchUserData } from "@s21toolkit/client"
 import { command, flag } from "cmd-ts"
 import { Configuration } from "@/configuration"
 
@@ -17,17 +17,15 @@ export const authCommand = command({
 
 		const { username, password } = Configuration.required
 
-		const token = new Token(username, password)
+		const tokenResponse = await fetchAccessToken(username, password)
 
-		await token.refresh()
-
-		console.log(`Token: ${token.accessToken}`)
+		console.log(`Token: ${tokenResponse.accessToken}`)
 
 		if (noId) {
 			return
 		}
 
-		const { user } = await fetchUserData(token)
+		const { user } = await fetchUserData(tokenResponse)
 
 		const schoolId = user.getCurrentUserSchoolRoles[0]?.schoolId
 

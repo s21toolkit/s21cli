@@ -1,4 +1,4 @@
-import { Client, DefaultAuthProvider } from "@s21toolkit/client"
+import { Client, UserAuthProvider } from "@s21toolkit/client"
 import { TokenAuthProvider } from "@/auth/TokenAuthProvider"
 import { Configuration } from "@/configuration"
 
@@ -13,7 +13,7 @@ export function createAuthorizedClient() {
 
 	const { username, password } = Configuration.required
 
-	const auth = new DefaultAuthProvider(username, password)
+	const auth = new UserAuthProvider(username, password)
 
 	const client = new Client(auth)
 
