@@ -1,5 +1,5 @@
 import type { Problems } from "arktype"
-import { access, constants, open, readFile } from "node:fs/promises"
+import { access, constants, readFile } from "node:fs/promises"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import process from "node:process"
