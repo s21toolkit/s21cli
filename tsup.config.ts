@@ -21,6 +21,6 @@ export default defineConfig({
 	outDir: "build/dist",
 	outExtension: () => ({ js: ".mjs" }),
 	define: {
-		__CURRENT_COMMIT: fetchCurrentCommit(),
+		__CURRENT_COMMIT: `"${fetchCurrentCommit()}"`,
 	},
 })
