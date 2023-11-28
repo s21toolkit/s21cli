@@ -24,7 +24,7 @@ export const updateCommand = command({
 		}),
 	},
 	handler(argv) {
-		if (IS_BINARY_BUILD && !argv.force) {
+		if (!IS_BINARY_BUILD && !argv.force) {
 			console.warn(stripIndents`
 				This command is meant for updating standalone binary installs, which is not your case.
 
