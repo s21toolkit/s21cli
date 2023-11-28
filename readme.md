@@ -10,7 +10,7 @@
 npm install --global @s21toolkit/cli
 ```
 
-Независимый исполняемый файл через скрипт:
+Независимый исполняемый файл через скрипт (доступны не для всех платформ):
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/s21toolkit/s21cli/master/scripts/install_binary.sh | sh
