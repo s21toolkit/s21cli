@@ -13,7 +13,7 @@ spawnSync("pnpm", [
 	"--compile",
 	entrypoint,
 	"--define",
-	"BINARY_BUILD=true",
+	"__BINARY_BUILD=true",
 	"--outfile",
 	outfile,
 ])

@@ -1,3 +1,4 @@
-declare const BINARY_BUILD: unknown
+// eslint-disable-next-line @typescript-eslint/naming-convention
+declare const __BINARY_BUILD: unknown
 
-export const IS_BINARY_BUILD = typeof BINARY_BUILD !== "undefined"
+export const IS_BINARY_BUILD = typeof __BINARY_BUILD !== "undefined"
