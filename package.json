@@ -21,7 +21,9 @@
     "postversion": "git push & git push --tags",
     "lint:fix": "eslint src --fix",
     "s21:run": "./build/dist/main.mjs",
-    "s21": "pnpm run build:bundle && pnpm s21:run"
+    "s21:run_binary": "./build/bin/*",
+    "s21": "pnpm run build:bundle && pnpm s21:run",
+    "s21b": "pnpm run build:bundle && pnpm run build:compile && pnpm s21:run_binary"
   },
   "bin": {
     "s21-dev": "build/dist/main.mjs",
