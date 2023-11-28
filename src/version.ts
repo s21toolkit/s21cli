@@ -1,19 +1,11 @@
-import { spawnSync } from "node:child_process"
 import { version } from "@root/package.json"
 
-function fetchCurrentCommit() {
-	const handle = spawnSync("git", ["rev-parse", "--short", "HEAD"])
-
-	if (handle.error) {
-		throw new Error("Failed to fetch git revision (HEAD)")
-	}
-
-	return handle.stdout.toString().trim()
-}
+// eslint-disable-next-line @typescript-eslint/naming-convention
+declare const __CURRENT_COMMIT: string
 
 export const VERSION = {
 	version,
-	commit: fetchCurrentCommit(),
+	commit: __CURRENT_COMMIT,
 	get full() {
 		return `${this.version} (commit ${this.commit})`
 	},
