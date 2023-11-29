@@ -5,7 +5,7 @@ export async function getGoalIdFromNodeCode(
 	nodeCode: string,
 	studentId: string,
 ) {
-	const graphBasis = await client.api.getGraphBasisGoals({
+	const graphBasis = await client.api("cache").getGraphBasisGoals({
 		studentId,
 	})
 
