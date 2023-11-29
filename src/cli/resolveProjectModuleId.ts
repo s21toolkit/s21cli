@@ -10,7 +10,7 @@ export async function resolveProjectModuleId(
 		return await resolveGoalIdFromGitRemote()
 	}
 
-	const { user } = await client.api.getCurrentUser()
+	const { user } = await client.api("cache").getCurrentUser()
 
 	const goalId = await getGoalIdFromNodeCode(
 		client,
