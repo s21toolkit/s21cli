@@ -23,9 +23,14 @@ const cacheOptions = {
 const AUTH_TTL_SEX = 60 * 60 * 10 // 10h
 const PERSISTENT_TTL_SEX = 60 * 60 * 48 // 48h
 
-const cacheDirBase = cacheOptions.local ? process.cwd() : homedir()
+const CACHE_BASENAME = ".s21/cache"
 
-export const cacheDirectory = resolve(cacheDirBase, ".s21/cache")
+export const globalCacheDirectory = resolve(homedir(), CACHE_BASENAME)
+export const localCacheDirectory = resolve(process.cwd(), CACHE_BASENAME)
+
+export const cacheDirectory = cacheOptions.local
+	? localCacheDirectory
+	: globalCacheDirectory
 
 await mkdir(cacheDirectory, {
 	recursive: true,
