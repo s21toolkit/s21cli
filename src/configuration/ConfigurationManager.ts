@@ -1,24 +1,15 @@
 import type { Problems } from "arktype"
-import { access, constants, readFile } from "node:fs/promises"
+import { access, constants } from "node:fs/promises"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import process from "node:process"
-import { parse } from "yaml"
 import type { ConfigurationSchema } from "./ConfigurationSchema"
 import {
 	ConfigurationSource,
 	resolveSchemaProperty,
 } from "./ConfigurationSchema"
 
-const YAML_CONFIGURATION_FILE_NAMES = [".s21.yaml", ".s21.yml"]
-const JS_CONFIGURATION_FILE_NAMES = [
-	".s21.js",
-	".s21.cjs",
-	".s21.mjs",
-	".s21.ts",
-	".s21.cts",
-	".s21.mts",
-]
+const CONFIGURATION_FILE_NAMES = [".s21.js", ".s21.cjs", ".s21.mjs"]
 
 // TODO: Decompose this, extract configuration loaders
 export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
@@ -91,30 +82,12 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 	}
 
 	async #loadFileFrom(directory: string, source: ConfigurationSource) {
-		for (const configName of YAML_CONFIGURATION_FILE_NAMES) {
-			const filename = join(directory, configName)
-
-			await this.#loadYamlFile(filename, source)
-		}
-
-		for (const configName of JS_CONFIGURATION_FILE_NAMES) {
+		for (const configName of CONFIGURATION_FILE_NAMES) {
 			const filename = join(directory, configName)
 
 			// eslint-disable-next-line no-bitwise
 			await this.#loadJSFile(filename, source | ConfigurationSource.JSFile)
 		}
-	}
-
-	async #loadYamlFile(filename: string, source: ConfigurationSource) {
-		if (!(await this.#validateFilename(filename))) {
-			return
-		}
-
-		const content = (await readFile(filename)).toString()
-
-		const data = parse(content) as unknown
-
-		await this.#loadFileData(data, source, filename)
 	}
 
 	async #loadJSFile(filename: string, source: ConfigurationSource) {
