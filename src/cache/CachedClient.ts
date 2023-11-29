@@ -1,24 +1,48 @@
 import type { AuthProvider } from "@s21toolkit/client"
 import { ApiContext, Client } from "@s21toolkit/client"
-import type { Cache } from "cache-manager"
+import { type Cache } from "cache-manager"
 import { randomUUID } from "node:crypto"
 
 class CachedApiContext extends ApiContext {
-	override client: CachedClient
-
-	constructor(client: CachedClient) {
+	constructor(override client: CachedClient) {
 		super(client)
-		this.client = client
 	}
 }
 
+export type CachingBehavior = "cache" | "invalidate" | "passthrough"
+
+export type CachedClientConfig = {
+	defaultCachingBehavior: CachingBehavior
+	cacheId: string
+}
+
+function createCachedClientConfig(
+	partialConfig: Partial<CachedClientConfig>,
+): CachedClientConfig {
+	return {
+		cacheId: partialConfig.cacheId ?? randomUUID(),
+		defaultCachingBehavior: partialConfig.defaultCachingBehavior ?? "cache",
+	}
+}
+
+type CachedApiContextProxy = CachedApiContext & {
+	(cachingBehavior: CachingBehavior): CachedApiContext
+}
+
+/**
+ * Unholy proxy cringe
+ */
 export class CachedClient extends Client {
+	#config: CachedClientConfig
+
 	constructor(
 		authProvider: AuthProvider,
 		readonly cache: Cache,
-		readonly cacheId: string = randomUUID(),
+		config: Partial<CachedClientConfig>,
 	) {
 		super(authProvider)
+
+		this.#config = createCachedClientConfig(config)
 	}
 
 	#createOperationCacheKey(
@@ -27,10 +51,32 @@ export class CachedClient extends Client {
 	) {
 		const encodedVariables = btoa(JSON.stringify(variables))
 
-		return `@CachedClient/${this.cacheId}/request/${operationName}:${encodedVariables}`
+		return `@CachedClient/${this.#config.cacheId}/request/${operationName}:${encodedVariables}`
 	}
 
 	override get api() {
+		const defaultCachedContext = this.#createCachedApiContext(
+			this.#config.defaultCachingBehavior,
+		)
+
+		const applyProxyTarget = Object.assign(() => {}, { client: this })
+
+		const applyProxy = new Proxy(applyProxyTarget, {
+			apply(target, _thisArg, argArray) {
+				const [cachingBehavior] = argArray
+
+				return target.client.#createCachedApiContext(cachingBehavior)
+			},
+
+			get(_target, p: keyof typeof defaultCachedContext, _receiver) {
+				return defaultCachedContext[p]
+			},
+		})
+
+		return applyProxy as unknown as CachedApiContextProxy
+	}
+
+	#createCachedApiContext(cachingBehavior: CachingBehavior) {
 		return new Proxy(new CachedApiContext(this), {
 			get(context, p, receiver) {
 				const value: ApiContext[keyof ApiContext] = Reflect.get(
@@ -44,7 +90,11 @@ export class CachedClient extends Client {
 				}
 
 				return new Proxy(value, {
-					apply(method, thisArg, argArray) {
+					async apply(method, thisArg, argArray) {
+						if (cachingBehavior === "passthrough") {
+							return await Reflect.apply(method, thisArg, argArray)
+						}
+
 						const [variables] = argArray
 
 						const cacheKey = context.client.#createOperationCacheKey(
@@ -52,26 +102,14 @@ export class CachedClient extends Client {
 							variables,
 						)
 
-						const call = async () => {
-							const cachedResult =
-								await context.client.cache.get(cacheKey)
-
-							if (!cachedResult) {
-								const result = await Reflect.apply(
-									method,
-									thisArg,
-									argArray,
-								)
-
-								await context.client.cache.set(cacheKey, result)
-
-								return result
-							}
-
-							return cachedResult
+						if (cachingBehavior === "invalidate") {
+							context.client.cache.del(cacheKey)
 						}
 
-						return call()
+						return await context.client.cache.wrap(
+							cacheKey,
+							async () => await Reflect.apply(method, thisArg, argArray),
+						)
 					},
 				})
 			},
