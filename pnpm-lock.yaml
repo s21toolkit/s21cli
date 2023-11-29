@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@s21toolkit/client':
-    specifier: ^0.7.0
-    version: 0.7.0
+    specifier: ^0.7.1
+    version: 0.7.1
   arktype:
     specifier: 1.0.24-alpha
     version: 1.0.24-alpha
@@ -54,7 +54,7 @@ devDependencies:
     version: 8.54.0
   eslint-kit:
     specifier: ^10.6.0
-    version: 10.6.0(@types/eslint@8.44.7)(effector@22.8.8)(eslint@8.54.0)(prettier@3.1.0)(svelte@3.59.2)(typescript@5.3.2)
+    version: 10.6.0(@types/eslint@8.44.7)(effector@23.0.0)(eslint@8.54.0)(prettier@3.1.0)(svelte@3.59.2)(typescript@5.3.2)
   eslint-plugin-no-relative-import-paths:
     specifier: ^1.5.3
     version: 1.5.3
@@ -858,8 +858,8 @@ packages:
     dev: true
     optional: true
 
-  /@s21toolkit/client@0.7.0:
-    resolution: {integrity: sha512-rm8BT5yq5+P5XvIkf7r+uaO+j8K4HUnUwtzVQ3rxrBCtrgaX1wp1rsjIWwQV1N2/Me09kt/tZ3/nbyQ1EFJHPA==}
+  /@s21toolkit/client@0.7.1:
+    resolution: {integrity: sha512-0Q0R1i8aUEk4tw6e+mQXWW9DZAOX+5LRcpMibdAMeXxD6TtRrF/KQVO4M4cu4pwcQ3n7sa9J2qrjej7vdiO6zw==}
     engines: {node: '>=20.0.0'}
     dependencies:
       common-tags: 1.8.2
@@ -1670,8 +1670,8 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /effector@22.8.8:
-    resolution: {integrity: sha512-uqYEPt/jIZ3Y1WhpyED1XuXAJNsVM5TcWZvcyQhl6nYKRynklGiu+Fy/BnLQftmMcxZS478laAuExUPfuOGiOg==}
+  /effector@23.0.0:
+    resolution: {integrity: sha512-8lT1iX8ivWRUnJL4XG2OhCZPRZku1XVc7AwbJCChxZhhB6ii/hZgs0GOTeE3BJfvc1BKf97q2hU3Yzp323sCiA==}
     engines: {node: '>=11.0.0'}
     dev: true
 
@@ -1859,7 +1859,7 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-kit@10.6.0(@types/eslint@8.44.7)(effector@22.8.8)(eslint@8.54.0)(prettier@3.1.0)(svelte@3.59.2)(typescript@5.3.2):
+  /eslint-kit@10.6.0(@types/eslint@8.44.7)(effector@23.0.0)(eslint@8.54.0)(prettier@3.1.0)(svelte@3.59.2)(typescript@5.3.2):
     resolution: {integrity: sha512-K86FMxbhLhOrMqqaOK42ueepVT/6bIXSzvaBCEigLIdPKa1Rwx54Bq074iD9o4Za4SCAMnA+nDym7OxBCnHcQA==}
     peerDependencies:
       eslint: ^8.41.0
@@ -1876,7 +1876,7 @@ packages:
       eslint-import-resolver-custom-alias: 1.3.2(eslint-plugin-import@2.27.5)
       eslint-import-resolver-jsconfig: 1.1.0
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@5.62.0)(eslint-plugin-import@2.27.5)(eslint@8.54.0)
-      eslint-plugin-effector: 0.11.0(effector@22.8.8)(eslint@8.54.0)
+      eslint-plugin-effector: 0.11.0(effector@23.0.0)(eslint@8.54.0)
       eslint-plugin-import: 2.27.5(@typescript-eslint/parser@5.62.0)(eslint-import-resolver-typescript@3.6.1)(eslint@8.54.0)
       eslint-plugin-jsx-a11y: 6.7.1(eslint@8.54.0)
       eslint-plugin-prettier: 5.0.0(@types/eslint@8.44.7)(eslint@8.54.0)(prettier@3.1.0)
@@ -1932,14 +1932,14 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-effector@0.11.0(effector@22.8.8)(eslint@8.54.0):
+  /eslint-plugin-effector@0.11.0(effector@23.0.0)(eslint@8.54.0):
     resolution: {integrity: sha512-iujBwqh8z09lxrnTF3jAj2WHwxdKYWzf2DXn6ambdBjx3wgHgLt2vjpzctXxWR1+PPyoj3GyQYY7tsnc/RTNTw==}
     engines: {node: ^14 || ^15 || ^16 || ^17 || ^18 || ^19 || ^20}
     peerDependencies:
       effector: '*'
       eslint: 7 || 8
     dependencies:
-      effector: 22.8.8
+      effector: 23.0.0
       eslint: 8.54.0
       prettier: 2.8.8
     dev: true
