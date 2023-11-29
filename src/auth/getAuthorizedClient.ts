@@ -13,8 +13,8 @@ export function getAuthorizedClient(
 		const auth = new TokenAuthProvider(token, { schoolId })
 
 		return new CachedClient(auth, persistentCache, {
-			cacheId: "default",
-			defaultCachingBehavior: "cache",
+			cacheId: `default:${token}`,
+			defaultCachingBehavior: cachingBehavior,
 		})
 	}
 
