@@ -43,7 +43,7 @@ const authStore = createDiskStore({
 	zip: cacheOptions.zip,
 })
 
-const persistentStore = createDiskStore({
+const dataStore = createDiskStore({
 	ttl: PERSISTENT_TTL_SEX,
 	path: resolve(cacheDirectory, "data"),
 	subdirs: !cacheOptions.flat,
@@ -54,6 +54,6 @@ export const authCache = await caching(
 	cacheOptions.enabled ? authStore : NoopStore,
 )
 
-export const persistentCache = await caching(
-	cacheOptions.enabled ? persistentStore : NoopStore,
+export const dataCache = await caching(
+	cacheOptions.enabled ? dataStore : NoopStore,
 )
