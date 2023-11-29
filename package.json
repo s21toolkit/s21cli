@@ -51,8 +51,7 @@
     "cmd-ts": "^0.13.0",
     "common-tags": "^1.8.2",
     "dayjs": "^1.11.10",
-    "disposablestack": "^1.1.2",
-    "yaml": "^2.3.4"
+    "disposablestack": "^1.1.2"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
