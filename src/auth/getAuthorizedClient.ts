@@ -23,7 +23,7 @@ export function getAuthorizedClient(
 	const auth = new CachedUserAuthProvider(username, password)
 
 	const client = new CachedClient(auth, persistentCache, {
-		cacheId: "default",
+		cacheId: `default:${btoa(`${username}:${password}`)}`,
 		defaultCachingBehavior: cachingBehavior,
 	})
 
