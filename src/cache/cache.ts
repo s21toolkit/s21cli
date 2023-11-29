@@ -1,4 +1,4 @@
-import { caching, memoryStore as createMemoryStore } from "cache-manager"
+import { caching } from "cache-manager"
 import { mkdir } from "node:fs/promises"
 import { homedir } from "node:os"
 import { resolve } from "node:path"
@@ -23,8 +23,6 @@ const cacheOptions = {
 const AUTH_TTL_SEX = 60 * 60 * 10 // 10h
 const PERSISTENT_TTL_SEX = 60 * 60 * 48 // 48h
 
-const MEMORY_TTL_MS = 1000 * 60 * 5 // 5m
-
 const cacheDirBase = cacheOptions.local ? process.cwd() : homedir()
 
 const cacheDir = resolve(cacheDirBase, ".s21/cache")
@@ -47,18 +45,10 @@ const persistentStore = createDiskStore({
 	zip: cacheOptions.zip,
 })
 
-const memoryStore = createMemoryStore({
-	ttl: MEMORY_TTL_MS,
-})
-
 export const authCache = await caching(
 	cacheOptions.enabled ? authStore : NoopStore,
 )
 
 export const persistentCache = await caching(
 	cacheOptions.enabled ? persistentStore : NoopStore,
-)
-
-export const memoryCache = await caching(
-	cacheOptions.enabled ? memoryStore : NoopStore,
 )
