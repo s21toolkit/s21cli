@@ -14,6 +14,7 @@ export type CachingBehavior = "cache" | "invalidate" | "passthrough"
 export type CachedClientConfig = {
 	defaultCachingBehavior: CachingBehavior
 	cacheId: string
+	ttl?: number
 }
 
 function createCachedClientConfig(
@@ -22,11 +23,12 @@ function createCachedClientConfig(
 	return {
 		cacheId: partialConfig.cacheId ?? randomUUID(),
 		defaultCachingBehavior: partialConfig.defaultCachingBehavior ?? "cache",
+		ttl: partialConfig.ttl,
 	}
 }
 
 type CachedApiContextProxy = CachedApiContext & {
-	(cachingBehavior: CachingBehavior): CachedApiContext
+	(cachingBehavior: CachingBehavior, ttl?: number): CachedApiContext
 }
 
 /**
@@ -57,15 +59,16 @@ export class CachedClient extends Client {
 	override get api() {
 		const defaultCachedContext = this.#createCachedApiContext(
 			this.#config.defaultCachingBehavior,
+			this.#config.ttl,
 		)
 
 		const applyProxyTarget = Object.assign(() => {}, { client: this })
 
 		const applyProxy = new Proxy(applyProxyTarget, {
 			apply(target, _thisArg, argArray) {
-				const [cachingBehavior] = argArray
+				const [cachingBehavior, ttl] = argArray
 
-				return target.client.#createCachedApiContext(cachingBehavior)
+				return target.client.#createCachedApiContext(cachingBehavior, ttl)
 			},
 
 			get(_target, p: keyof typeof defaultCachedContext, _receiver) {
@@ -76,7 +79,7 @@ export class CachedClient extends Client {
 		return applyProxy as unknown as CachedApiContextProxy
 	}
 
-	#createCachedApiContext(cachingBehavior: CachingBehavior) {
+	#createCachedApiContext(cachingBehavior: CachingBehavior, ttl?: number) {
 		return new Proxy(new CachedApiContext(this), {
 			get(context, p, receiver) {
 				const value: ApiContext[keyof ApiContext] = Reflect.get(
@@ -109,6 +112,7 @@ export class CachedClient extends Client {
 						return await context.client.cache.wrap(
 							cacheKey,
 							async () => await Reflect.apply(method, thisArg, argArray),
+							ttl,
 						)
 					},
 				})
