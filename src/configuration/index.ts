@@ -15,6 +15,14 @@ export const Configuration = new ConfigurationManager({
 		["string", "|>", (value) => value === "true"],
 	]),
 
+	// Cache
+	cache: type({
+		"enabled?": "boolean",
+		"zip?": "boolean",
+		"local?": "boolean",
+		"flat?": "boolean",
+	}),
+
 	// pr/clone
 	prDirectory: type("string"),
 })
