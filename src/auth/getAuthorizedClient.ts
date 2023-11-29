@@ -14,7 +14,7 @@ export function getAuthorizedClient(
 
 		return new CachedClient(auth, persistentCache, {
 			cacheId: "default",
-			defaultCachingBehavior: cachingBehavior,
+			defaultCachingBehavior: "cache",
 		})
 	}
 
