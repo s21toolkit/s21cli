@@ -1,9 +1,9 @@
-import type { Client } from "@s21toolkit/client"
 import dayjs from "dayjs"
 import { getAuthorizedClient } from "@/auth/getAuthorizedClient"
+import type { CachedClient } from "@/cache"
 
 async function fetchEnrichedBookingAndChecklist(
-	client: Client,
+	client: CachedClient,
 	bookingId: string,
 ) {
 	const enrichedBooking = await client.api.getAgendaP2P({ bookingId })

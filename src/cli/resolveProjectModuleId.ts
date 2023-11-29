@@ -1,9 +1,9 @@
-import type { Client } from "@s21toolkit/client"
 import { getGoalIdFromNodeCode } from "@/adapters/getGoalIdFromNodeCode"
+import type { CachedClient } from "@/cache"
 import { resolveGoalIdFromGitRemote } from "@/git"
 
 export async function resolveProjectModuleId(
-	client: Client,
+	client: CachedClient,
 	projectCode: string,
 ) {
 	if (projectCode === "this") {

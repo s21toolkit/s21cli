@@ -1,8 +1,9 @@
-import type { Api, Client } from "@s21toolkit/client"
+import type { Api } from "@s21toolkit/client"
 import dayjs from "dayjs"
 import { getPeerReviewDescriptor } from "@/adapters/getPeerReviewDescriptor"
+import type { CachedClient } from "@/cache"
 
-export async function fetchPendingBookings(client: Client) {
+export async function fetchPendingBookings(client: CachedClient) {
 	const agendaEvents = await client.api.getAgendaEvents({
 		from: dayjs().toDate(),
 		to: dayjs().add(1, "hour").toDate(),
@@ -21,7 +22,7 @@ export async function fetchPendingBookings(client: Client) {
 }
 
 export async function fetchEnrichedBooking(
-	client: Client,
+	client: CachedClient,
 	event: Api.GetAgendaEvents.Data.GetMyAgendaEvent,
 ) {
 	return await client.api.getAgendaP2P({
@@ -30,13 +31,13 @@ export async function fetchEnrichedBooking(
 }
 
 export async function fetchPeerReviews(
-	client: Client,
+	client: CachedClient,
 ): Promise<Api.GetAgendaP2P.Data[]>
 export async function fetchPeerReviews(
-	client: Client,
+	client: CachedClient,
 	index: number,
 ): Promise<Api.GetAgendaP2P.Data>
-export async function fetchPeerReviews(client: Client, index?: number) {
+export async function fetchPeerReviews(client: CachedClient, index?: number) {
 	const pendingBookings = await fetchPendingBookings(client)
 
 	if (index === undefined) {
@@ -66,7 +67,10 @@ export async function fetchPeerReviews(client: Client, index?: number) {
 	return enrichedBooking
 }
 
-export async function fetchSelectedPeerReview(client: Client, index?: number) {
+export async function fetchSelectedPeerReview(
+	client: CachedClient,
+	index?: number,
+) {
 	if (index === undefined) {
 		const bookings = await fetchPeerReviews(client)
 

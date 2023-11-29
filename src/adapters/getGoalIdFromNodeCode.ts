@@ -1,7 +1,7 @@
-import type { Client } from "@s21toolkit/client"
+import type { CachedClient } from "@/cache"
 
 export async function getGoalIdFromNodeCode(
-	client: Client,
+	client: CachedClient,
 	nodeCode: string,
 	studentId: string,
 ) {
