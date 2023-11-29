@@ -2,6 +2,7 @@ import { subcommands } from "cmd-ts"
 import { VERSION } from "@/version"
 import { apiCommand } from "./commands/api"
 import { authCommand } from "./commands/auth/index"
+import { cacheCommand } from "./commands/cache"
 import { gqlCommand } from "./commands/gql"
 import { peerReviewCommand } from "./commands/peer-review"
 import { projectCommand } from "./commands/project"
@@ -24,5 +25,6 @@ export const cli = subcommands({
 		update: updateCommand,
 		wfs: watchForSlotsCommand,
 		project: projectCommand,
+		cache: cacheCommand,
 	},
 })

@@ -25,22 +25,22 @@ const PERSISTENT_TTL_SEX = 60 * 60 * 48 // 48h
 
 const cacheDirBase = cacheOptions.local ? process.cwd() : homedir()
 
-const cacheDir = resolve(cacheDirBase, ".s21/cache")
+export const cacheDirectory = resolve(cacheDirBase, ".s21/cache")
 
-await mkdir(cacheDir, {
+await mkdir(cacheDirectory, {
 	recursive: true,
 })
 
 const authStore = createDiskStore({
 	ttl: AUTH_TTL_SEX,
-	path: resolve(cacheDir, "auth"),
+	path: resolve(cacheDirectory, "auth"),
 	subdirs: !cacheOptions.flat,
 	zip: cacheOptions.zip,
 })
 
 const persistentStore = createDiskStore({
 	ttl: PERSISTENT_TTL_SEX,
-	path: resolve(cacheDir, "data"),
+	path: resolve(cacheDirectory, "data"),
 	subdirs: !cacheOptions.flat,
 	zip: cacheOptions.zip,
 })
