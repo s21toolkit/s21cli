@@ -13,7 +13,7 @@ export async function fetchPendingBookings(client: CachedClient) {
 	const pendingBookingEvents =
 		agendaEvents.calendarEventS21.getMyAgendaEvents.filter(
 			(event) =>
-				event.agendaEventType === "CHECK_FOR_VERIFIER" &&
+				event.agendaEventType.includes("CHECK_FOR_VERIFIER") &&
 				event.agendaItemContext.entityType === "BOOKING" &&
 				dayjs().isAfter(event.start),
 		)
