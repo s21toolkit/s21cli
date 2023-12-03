@@ -1,7 +1,7 @@
 {
   "name": "@s21toolkit/cli",
   "type": "module",
-  "version": "0.13.0-dev.1",
+  "version": "0.13.0",
   "engines": {
     "node": ">=20.0.0"
   },
