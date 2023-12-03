@@ -16,6 +16,11 @@ npm install --global @s21toolkit/cli
 curl -fsSL https://raw.githubusercontent.com/s21toolkit/s21cli/master/scripts/install_binary.sh | sh
 ```
 
+> [!IMPORTANT]
+> По умолчанию устанавливает s21cli в `$HOME/.s21`.
+> Задать свой путь установки можно через переменную окружения `S21_HOME`.
+> Эта переменная так же будет использоваться для обновления, поэтому рекомендуется сделать её постоянной.
+
 Независимый исполняемый файл вручную: [[Релизы](https://github.com/s21toolkit/s21cli/releases)]
 
 ## Настройка
