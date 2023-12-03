@@ -6,8 +6,8 @@ RELEASES_URL="https://api.github.com/repos/s21toolkit/s21cli/releases"
 
 
 # I FUCKING LOVE POSIX SHELLS
-: "${S21_ROOT:="$HOME/.s21"}"			# Root directory
-: "${S21_LINK:="$S21_ROOT/bin"}"		# Exposed directory
+: "${S21_HOME:="$HOME/.s21"}"			# Root directory
+: "${S21_LINK:="$S21_HOME/bin"}"		# Exposed directory
 : "${S21_EXE:="$S21_LINK/s21"}"		# Executable path
 
 S21_BIN=$(dirname $S21_EXE)
@@ -48,7 +48,7 @@ fi
 
 echo "- Downloading $BINARY_URL to $S21_BIN"
 
-mkdir -p $S21_ROOT $S21_LINK $S21_BIN
+mkdir -p $S21_HOME $S21_LINK $S21_BIN
 curl -L $BINARY_URL -o $S21_EXE
 
 echo "- Updating permissions"

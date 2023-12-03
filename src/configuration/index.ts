@@ -1,7 +1,11 @@
 import { type } from "arktype"
 import { ConfigurationManager } from "./ConfigurationManager"
+import { ConfigurationSource } from "./ConfigurationSchema"
 
 export const Configuration = new ConfigurationManager({
+	// Home directory
+	HOME: [type("string"), ConfigurationSource.Environment],
+
 	// Authentication
 	username: type("string"),
 	password: type("string"),

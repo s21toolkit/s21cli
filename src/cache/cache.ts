@@ -1,8 +1,8 @@
 import { caching } from "cache-manager"
 import { mkdir } from "node:fs/promises"
-import { homedir } from "node:os"
 import { resolve } from "node:path"
 import { Configuration } from "@/configuration"
+import { Paths } from "@/paths"
 import { createDiskStore } from "./DiskStore"
 import { NoopStore } from "./NoopStore"
 
@@ -23,9 +23,13 @@ const cacheOptions = {
 const AUTH_TTL_SEX = 60 * 60 * 10 // 10h
 const PERSISTENT_TTL_SEX = 60 * 60 * 48 // 48h
 
-const CACHE_BASENAME = ".s21/cache"
+const CACHE_BASENAME = "cache"
 
-export const globalCacheDirectory = resolve(homedir(), CACHE_BASENAME)
+export const globalCacheDirectory = resolve(
+	Paths.HOME,
+	Paths.S21,
+	CACHE_BASENAME,
+)
 export const localCacheDirectory = resolve(process.cwd(), CACHE_BASENAME)
 
 export const cacheDirectory = cacheOptions.local
