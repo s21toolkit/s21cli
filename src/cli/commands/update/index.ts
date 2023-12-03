@@ -4,6 +4,7 @@ import { spawnSync } from "node:child_process"
 import process from "node:process"
 import selfInstallScript from "@root/scripts/install_self.sh.txt"
 import { IS_BINARY_BUILD } from "@/build"
+import { Paths } from "@/paths"
 
 export const updateCommand = command({
 	name: "update",
@@ -41,6 +42,7 @@ export const updateCommand = command({
 			env: {
 				...process.env,
 				S21_INSTALL_UNSTABLE: argv.unstable.toString(),
+				S21_HOME: Paths.HOME,
 			},
 			stdio: "inherit",
 		})
