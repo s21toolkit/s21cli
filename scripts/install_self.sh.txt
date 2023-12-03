@@ -1,6 +1,6 @@
 # This script is meant to be packaged & run by s21cli itself to pull latest install script and update
 
-: "${S21_HOME="$HOME/.s21"}"
+: "${S21_HOME:="$HOME/.s21"}"
 
 S21_LINK="$S21_HOME/bin"
 S21_UPDATES="$S21_HOME/updates"
