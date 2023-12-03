@@ -5,7 +5,9 @@ import { Configuration } from "./configuration"
 const configuredHomedir = Configuration.optional.HOME
 
 export namespace Paths {
-	export const HOME_DEFAULT = resolve(homedir(), ".s21")
+	export const S21 = ".s21"
+
+	export const HOME_DEFAULT = resolve(homedir(), S21)
 
 	export const HOME = resolve(configuredHomedir ?? HOME_DEFAULT)
 }
