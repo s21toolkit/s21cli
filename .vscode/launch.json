@@ -22,7 +22,7 @@
 			"type": "pickString",
 			"options": [
 				"${userHome}/Source/s21/SQL_beginner.Day00-1",
-				"${userHome}/Source/s21/D04_SimpleDocker-1"
+				"${userHome}/Source/s21/DO2_LinuxNetwork-1"
 			]
 		}
 	]
