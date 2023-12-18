@@ -1,0 +1,29 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "node",
+			"internalConsoleOptions": "neverOpen",
+			"request": "launch",
+			"name": "Debug File",
+			"program": "${workspaceFolder}/build/dist/main.mjs",
+			"cwd": "${input:project}",
+			"args": ["wfs"],
+			"stopOnEntry": false,
+		},
+	],
+	"inputs": [
+		{
+			"id": "project",
+			"description": "",
+			"type": "pickString",
+			"options": [
+				"${userHome}/Source/s21/SQL_beginner.Day00-1",
+				"${userHome}/Source/s21/D04_SimpleDocker-1"
+			]
+		}
+	]
+}

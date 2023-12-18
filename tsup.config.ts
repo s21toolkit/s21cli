@@ -1,6 +1,8 @@
 import { spawnSync } from "node:child_process"
 import { defineConfig } from "tsup"
 
+const isDev = process.env.NODE_ENV === "development"
+
 function fetchCurrentCommit() {
 	const handle = spawnSync("git", ["rev-parse", "--short", "HEAD"])
 
@@ -16,6 +18,7 @@ export default defineConfig({
 	entry: ["src/main.ts"],
 	clean: true,
 	dts: false,
+	sourcemap: isDev,
 	format: "esm",
 	target: "node20",
 	outDir: "build/dist",

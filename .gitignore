@@ -169,7 +169,7 @@ dist
 .pnp.\*
 
 # vscode workspace configuration
-.vscode/
+# .vscode/
 
 # data scratchpad
 .data/

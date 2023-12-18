@@ -14,6 +14,7 @@
     "lint:eslint": "eslint src",
     "lint": "pnpm lint:tsc && pnpm lint:eslint",
     "build:bundle": "tsup",
+    "watch:bundle": "NODE_ENV=development tsup --watch",
     "build:compile": "bun run compile.ts",
     "build": "pnpm lint && pnpm build:bundle && pnpm build:compile",
     "release": "npm version -m 'chore(release): %s' --",
