@@ -5,10 +5,10 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "Debug wfs",
 			"type": "node",
 			"internalConsoleOptions": "neverOpen",
 			"request": "launch",
-			"name": "Debug File",
 			"program": "${workspaceFolder}/build/dist/main.mjs",
 			"cwd": "${input:project}",
 			"args": ["wfs"],
