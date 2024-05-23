@@ -10,7 +10,6 @@ export const Configuration = new ConfigurationManager({
 	username: type("string"),
 	password: type("string"),
 	token: type("string"),
-	schoolId: type("string"),
 
 	// Debug
 	debugRawErrors: type([

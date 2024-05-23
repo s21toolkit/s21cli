@@ -1,8 +1,9 @@
-import { command, option, string } from "cmd-ts"
-import dayjs from "dayjs"
+import assert from "node:assert"
 import { getAuthorizedClient } from "@/auth"
 import { duration } from "@/cli/arguments/duration"
 import { resolveProjectModuleId } from "@/cli/resolveProjectModuleId"
+import { command, option, string } from "cmd-ts"
+import dayjs from "dayjs"
 
 export const watchForSlotsCommand = command({
 	aliases: ["watch", "wfs", "watch-for-slots"],
@@ -30,9 +31,15 @@ export const watchForSlotsCommand = command({
 
 		const moduleId = await resolveProjectModuleId(client, argv.projectCode)
 
-		const module = await client.api.calendarGetModule({ moduleId })
+		const module = await client.api.calendarGetModule({
+			moduleId: String(moduleId),
+		})
 
-		const taskId = module.student.getModuleById.currentTask.task.id
+		assert(module.student, "Module student not found")
+
+		const taskId = module.student.getModuleById.currentTask?.task.id
+
+		assert(taskId, "Current task not found")
 
 		console.log(
 			`Watching on project ${module.student.getModuleById.moduleTitle}...`,
@@ -46,20 +53,27 @@ export const watchForSlotsCommand = command({
 					taskId,
 				})
 
+			assert(slots.student, "Slots student not found")
+
 			const { timeSlots } =
 				slots.student.getNameLessStudentTimeslotsForReview
+
 			if (timeSlots.length === 0) {
 				continue
 			}
 
-			const startTime = timeSlots[0]!
-				.validStartTimes[0]! as unknown as string
+			const startTime = timeSlots[0]?.validStartTimes[0]
+
+			assert(startTime, "Start time not found")
+
+			assert(
+				module.student.getModuleById.currentTask?.lastAnswer?.id,
+				"Current task answer ID not found",
+			)
 
 			await client.api.calendarAddBookingToEventSlot({
-				answerId:
-					module.student.getModuleById.trajectory.levels[0]!
-						.goalElements[0]!.points[0]!.studentTask.lastAnswer.id,
-				wasStaffSlotChosen: timeSlots[0]!.staffSlot.toString(),
+				answerId: module.student.getModuleById.currentTask?.lastAnswer?.id,
+				wasStaffSlotChosen: timeSlots[0]?.staffSlot ?? false,
 				startTime,
 				isOnline: false,
 			})

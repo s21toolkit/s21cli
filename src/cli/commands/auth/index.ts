@@ -1,19 +1,20 @@
-import { fetchAccessToken, fetchUserData } from "@s21toolkit/client"
-import { command, flag } from "cmd-ts"
 import { Configuration } from "@/configuration"
+import { fetchAccessToken, fetchContextHeaders } from "@s21toolkit/client"
+import { command, flag } from "cmd-ts"
 
 export const authCommand = command({
 	name: "auth",
 	description: "Performs user authentication, returns API token and school ID",
 	args: {
-		noId: flag({
-			long: "no-id",
+		noContextHeaders: flag({
+			long: "no-context-headers",
+			short: "n",
 			description: "Not request school ID",
 			defaultValue: () => false,
 		}),
 	},
 	async handler(argv) {
-		const { noId } = argv
+		const { noContextHeaders } = argv
 
 		const { username, password } = Configuration.required
 
@@ -21,18 +22,16 @@ export const authCommand = command({
 
 		console.log(`Token: ${tokenResponse.accessToken}`)
 
-		if (noId) {
+		if (noContextHeaders) {
 			return
 		}
 
-		const { user } = await fetchUserData(tokenResponse)
+		const contextHeaders = await fetchContextHeaders(
+			tokenResponse.accessToken,
+		)
 
-		const schoolId = user.getCurrentUserSchoolRoles[0]?.schoolId
-
-		if (!schoolId) {
-			throw new Error("Failed to extract schoolId")
+		for (const [header, value] of Object.entries(contextHeaders)) {
+			console.log(`${header}: ${value}`)
 		}
-
-		console.log(`SchoolID: ${schoolId}`)
 	},
 })

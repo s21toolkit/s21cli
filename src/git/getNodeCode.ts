@@ -11,6 +11,7 @@ export function getNodeCode() {
 		throw new Error("Failed to parse remote repo URL")
 	}
 
+	// biome-ignore lint/style/noNonNullAssertion: Always valid
 	const code = project.split("_")[0]!
 
 	return code

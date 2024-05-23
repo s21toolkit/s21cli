@@ -1,40 +1,58 @@
 import {
-	type AuthCredentials,
-	isExpired,
+	type ContextHeaders,
 	UserAuthProvider,
+	isExpired,
 } from "@s21toolkit/client"
 import { authCache } from "./cache"
 
 export class CachedUserAuthProvider extends UserAuthProvider {
-	#username: string
-	#password: string
+	#accessTokenCacheKey
+	#contextHeadersCacheKey
 
 	constructor(username: string, password: string) {
 		super(username, password)
 
-		this.#username = username
-		this.#password = password
+		this.#accessTokenCacheKey = btoa(`${username}:${password}:accessToken`)
+		this.#contextHeadersCacheKey = btoa(
+			`${username}:${password}:contextHeaders`,
+		)
 	}
 
-	override async getAuthCredentials(): Promise<AuthCredentials> {
-		const key = btoa(`${this.#username}:${this.#password}`)
+	override async getAccessToken(): Promise<string> {
+		const cachedAccessToken = await authCache.get<string>(
+			this.#accessTokenCacheKey,
+		)
 
-		const cachedCredentials = await authCache.get<AuthCredentials>(key)
+		if (!cachedAccessToken) {
+			const accessToken = await super.getAccessToken()
 
-		if (!cachedCredentials) {
-			const credentials = await super.getAuthCredentials()
+			await authCache.set(this.#accessTokenCacheKey, accessToken)
 
-			await authCache.set(key, credentials)
-
-			return credentials
+			return accessToken
 		}
 
-		if (isExpired(cachedCredentials.accessToken)) {
-			await authCache.del(key)
+		if (isExpired(cachedAccessToken)) {
+			await authCache.del(this.#accessTokenCacheKey)
 
-			return await this.getAuthCredentials()
+			return await this.getAccessToken()
 		}
 
-		return cachedCredentials
+		return cachedAccessToken
+	}
+
+	override async getContextHeaders(): Promise<ContextHeaders> {
+		const cachedContextHeaders = await authCache.get<ContextHeaders>(
+			this.#contextHeadersCacheKey,
+		)
+
+		if (!cachedContextHeaders) {
+			const contextHeaders = await super.getContextHeaders()
+
+			await authCache.set(this.#contextHeadersCacheKey, contextHeaders)
+
+			return contextHeaders
+		}
+
+		return cachedContextHeaders
 	}
 }

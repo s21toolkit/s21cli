@@ -1,7 +1,11 @@
-import type { Api } from "@s21toolkit/client"
-import dayjs from "dayjs"
+import assert from "node:assert"
 import { getPeerReviewDescriptor } from "@/adapters/getPeerReviewDescriptor"
 import type { CachedClient } from "@/cache"
+import type {
+	GetAgendaEventsQuery,
+	GetAgendaP2PQuery,
+} from "@s21toolkit/client-schema"
+import dayjs from "dayjs"
 
 export async function fetchPendingBookings(client: CachedClient) {
 	const agendaEvents = await client.api.getAgendaEvents({
@@ -11,19 +15,23 @@ export async function fetchPendingBookings(client: CachedClient) {
 	})
 
 	const pendingBookingEvents =
-		agendaEvents.calendarEventS21.getMyAgendaEvents.filter(
+		agendaEvents.calendarEventS21?.getMyAgendaEvents.filter(
 			(event) =>
 				event.agendaEventType.includes("CHECK_FOR_VERIFIER") &&
 				event.agendaItemContext.entityType === "BOOKING" &&
 				dayjs().isAfter(event.start),
 		)
 
+	assert(pendingBookingEvents, "Pending booking events are not available")
+
 	return pendingBookingEvents
 }
 
 export async function fetchEnrichedBooking(
 	client: CachedClient,
-	event: Api.GetAgendaEvents.Data.GetMyAgendaEvent,
+	event: NonNullable<
+		GetAgendaEventsQuery["calendarEventS21"]
+	>["getMyAgendaEvents"][number],
 ) {
 	return await client.api.getAgendaP2P({
 		bookingId: event.agendaItemContext.entityId,
@@ -32,11 +40,11 @@ export async function fetchEnrichedBooking(
 
 export async function fetchPeerReviews(
 	client: CachedClient,
-): Promise<Api.GetAgendaP2P.Data[]>
+): Promise<GetAgendaP2PQuery[]>
 export async function fetchPeerReviews(
 	client: CachedClient,
 	index: number,
-): Promise<Api.GetAgendaP2P.Data>
+): Promise<GetAgendaP2PQuery[]>
 export async function fetchPeerReviews(client: CachedClient, index?: number) {
 	const pendingBookings = await fetchPendingBookings(client)
 
@@ -60,7 +68,9 @@ export async function fetchPeerReviews(client: CachedClient, index?: number) {
 		)
 	}
 
-	const selectedBooking = pendingBookings[index]!
+	const selectedBooking = pendingBookings[index]
+
+	assert(selectedBooking, "Selected booking is not available")
 
 	const enrichedBooking = await fetchEnrichedBooking(client, selectedBooking)
 
@@ -75,6 +85,7 @@ export async function fetchSelectedPeerReview(
 		const bookings = await fetchPeerReviews(client)
 
 		if (bookings.length === 1) {
+			// biome-ignore lint/style/noNonNullAssertion: length already checked
 			return bookings[0]!
 		}
 
@@ -91,9 +102,13 @@ export async function fetchSelectedPeerReview(
 		}
 
 		throw new Error("Multiple bookings found")
-	} else {
-		const booking = await fetchPeerReviews(client, index)
-
-		return booking
 	}
+
+	const [booking] = await fetchPeerReviews(client, index)
+
+	if (!booking) {
+		throw new Error("No booking found")
+	}
+
+	return booking
 }

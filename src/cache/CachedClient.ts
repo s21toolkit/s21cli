@@ -1,13 +1,7 @@
-import type { AuthProvider } from "@s21toolkit/client"
-import { ApiContext, Client } from "@s21toolkit/client"
-import { type Cache } from "cache-manager"
 import { randomUUID } from "node:crypto"
-
-class CachedApiContext extends ApiContext {
-	constructor(override client: CachedClient) {
-		super(client)
-	}
-}
+import { type AuthProvider, Client } from "@s21toolkit/client"
+import { Schema } from "@s21toolkit/client-schema"
+import type { Cache } from "cache-manager"
 
 export type CachingBehavior = "cache" | "invalidate" | "passthrough"
 
@@ -27,22 +21,21 @@ function createCachedClientConfig(
 	}
 }
 
-type CachedApiContextProxy = CachedApiContext & {
-	(cachingBehavior: CachingBehavior, ttl?: number): CachedApiContext
-}
+type CachedApiContextProxy = Schema &
+	((cachingBehavior: CachingBehavior, ttl?: number) => Schema)
 
 /**
  * Unholy proxy cringe
  */
-export class CachedClient extends Client {
-	#config: CachedClientConfig
+export class CachedClient extends Client<Schema> {
+	#config
 
 	constructor(
-		authProvider: AuthProvider,
+		auth: AuthProvider,
 		readonly cache: Cache,
 		config: Partial<CachedClientConfig>,
 	) {
-		super(authProvider)
+		super(Schema, auth)
 
 		this.#config = createCachedClientConfig(config)
 	}
@@ -80,15 +73,17 @@ export class CachedClient extends Client {
 	}
 
 	#createCachedApiContext(cachingBehavior: CachingBehavior, ttl?: number) {
-		return new Proxy(new CachedApiContext(this), {
+		const self = this
+
+		return new Proxy(super.api, {
 			get(context, p, receiver) {
-				const value: ApiContext[keyof ApiContext] = Reflect.get(
+				const value: Schema[keyof Schema] = Reflect.get(
 					context,
 					p,
 					receiver,
 				)
 
-				if (typeof value !== "function" || typeof p != "string") {
+				if (typeof value !== "function" || typeof p !== "string") {
 					return value
 				}
 
@@ -100,16 +95,13 @@ export class CachedClient extends Client {
 
 						const [variables] = argArray
 
-						const cacheKey = context.client.#createOperationCacheKey(
-							p,
-							variables,
-						)
+						const cacheKey = self.#createOperationCacheKey(p, variables)
 
 						if (cachingBehavior === "invalidate") {
-							context.client.cache.del(cacheKey)
+							self.cache.del(cacheKey)
 						}
 
-						return await context.client.cache.wrap(
+						return await self.cache.wrap(
 							cacheKey,
 							async () => await Reflect.apply(method, thisArg, argArray),
 							ttl,

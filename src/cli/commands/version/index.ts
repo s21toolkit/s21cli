@@ -1,5 +1,5 @@
-import { command } from "cmd-ts"
 import { VERSION } from "@/version"
+import { command } from "cmd-ts"
 
 export const versionCommand = command({
 	name: "version",

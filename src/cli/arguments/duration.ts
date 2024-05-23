@@ -16,6 +16,7 @@ export const duration = extendType(string, {
 	description:
 		"Duration supporting w,d,h,m,s multipliers and returning the seconds in it",
 	async from(rawValue) {
+		// biome-ignore lint/style/noNonNullAssertion: length already checked
 		const multiplier = multipliers[rawValue[rawValue.length - 1]!]
 		if (!multiplier) {
 			throw new Error("Unknown multiplier specified")

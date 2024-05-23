@@ -1,5 +1,5 @@
-import { subcommands } from "cmd-ts"
 import { VERSION } from "@/version"
+import { subcommands } from "cmd-ts"
 import { apiCommand } from "./commands/api"
 import { authCommand } from "./commands/auth/index"
 import { cacheCommand } from "./commands/cache"

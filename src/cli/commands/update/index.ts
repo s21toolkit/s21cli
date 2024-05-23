@@ -1,10 +1,10 @@
-import { command, flag } from "cmd-ts"
-import { stripIndents } from "common-tags"
 import { spawnSync } from "node:child_process"
 import process from "node:process"
-import selfInstallScript from "@root/scripts/install_self.sh.txt"
 import { IS_BINARY_BUILD } from "@/build"
 import { Paths } from "@/paths"
+import selfInstallScript from "@root/scripts/install_self.sh.txt"
+import { command, flag } from "cmd-ts"
+import { stripIndents } from "common-tags"
 
 export const updateCommand = command({
 	name: "update",

@@ -1,10 +1,10 @@
-import { command, flag } from "cmd-ts"
 import { rm } from "node:fs/promises"
 import {
 	cacheDirectory,
 	globalCacheDirectory,
 	localCacheDirectory,
 } from "@/cache"
+import { command, flag } from "cmd-ts"
 
 async function cleanCache(directory: string) {
 	console.log(`Cleaning cache from '${directory}' . . .`)

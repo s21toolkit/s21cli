@@ -1,7 +1,8 @@
-import { command, number, option, optional } from "cmd-ts"
+import assert from "node:assert"
 import { getPeerReviewDescriptor } from "@/adapters/getPeerReviewDescriptor"
 import { getAuthorizedClient } from "@/auth"
 import { fetchSelectedPeerReview } from "@/cli/commands/peer-review/fetchPeerReviews"
+import { command, number, option, optional } from "cmd-ts"
 
 export const linkCommand = command({
 	name: "link",
@@ -23,12 +24,23 @@ export const linkCommand = command({
 			`Pending booking detected: ${getPeerReviewDescriptor(booking)}`,
 		)
 
-		const checklist = await client.api.createFilledChecklist({
-			studentAnswerId: booking.student.getEnrichedBooking.answerId!,
+		assert(
+			booking.student?.getEnrichedBooking.answerId,
+			"Answer ID not found",
+		)
+
+		const checklist = await client.api.getFilledChecklist({
+			filledChecklistId: booking.student.getEnrichedBooking.answerId,
 		})
 
+		assert(
+			checklist.student?.getP2pInfo.solutionInfo?.gitlabSolutionInfo
+				?.gitlabLink,
+			"Gitlab link not found",
+		)
+
 		const { sshLink, httpsLink } =
-			checklist.student.createFilledChecklist.gitlabStudentProjectUrl
+			checklist.student.getP2pInfo.solutionInfo.gitlabSolutionInfo.gitlabLink
 
 		console.log(`Repo SSH link: ${sshLink}`)
 		console.log(`Repo HTTPS link: ${httpsLink}`)

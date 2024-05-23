@@ -1,7 +1,7 @@
-import { createGqlQueryRequest } from "@s21toolkit/client"
-import { command, option, positional } from "cmd-ts"
 import { getAuthorizedClient } from "@/auth"
 import { json } from "@/cli/arguments/json"
+import { S21_GQL_API_URL, getAuthHeaders } from "@s21toolkit/client"
+import { command, option, positional } from "cmd-ts"
 
 export const gqlCommand = command({
 	name: "gql",
@@ -22,13 +22,30 @@ export const gqlCommand = command({
 
 		const client = getAuthorizedClient()
 
-		const request = createGqlQueryRequest(
-			query,
-			variables as Record<string, unknown>,
-		)
+		const response = await fetch(S21_GQL_API_URL, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				...(await getAuthHeaders(client.auth)),
+			},
+			body: JSON.stringify({
+				query,
+				variables,
+			}),
+		})
 
-		const data = await client.request(request)
+		if (!response.ok) {
+			console.error(
+				`HTTP Error: [${response.status}] ${response.statusText}`,
+			)
+		}
 
-		console.log(JSON.stringify(data, undefined, 2))
+		try {
+			const data = await response.json()
+
+			console.log(JSON.stringify(data, undefined, 2))
+		} catch {
+			console.log(await response.text())
+		}
 	},
 })

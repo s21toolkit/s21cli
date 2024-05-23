@@ -1,6 +1,7 @@
-import dayjs from "dayjs"
+import assert from "node:assert"
 import { getAuthorizedClient } from "@/auth/getAuthorizedClient"
 import type { CachedClient } from "@/cache"
+import dayjs from "dayjs"
 
 async function fetchEnrichedBookingAndChecklist(
 	client: CachedClient,
@@ -8,14 +9,12 @@ async function fetchEnrichedBookingAndChecklist(
 ) {
 	const enrichedBooking = await client.api.getAgendaP2P({ bookingId })
 
-	const answerId = enrichedBooking.student.getEnrichedBooking.answerId
+	const answerId = enrichedBooking.student?.getEnrichedBooking.answerId
 
-	if (!answerId) {
-		throw new Error("Failed to fetch answerId")
-	}
+	assert(answerId, "Failed to fetch answerId")
 
-	const checklist = await client.api.createFilledChecklist({
-		studentAnswerId: answerId,
+	const checklist = await client.api.getFilledChecklist({
+		filledChecklistId: answerId,
 	})
 
 	return {
@@ -31,9 +30,11 @@ export async function fetchPendingPeerReviews(client = getAuthorizedClient()) {
 		limit: 100,
 	})
 
-	const pendingBookingEvents = agendaEvents.calendarEventS21.getMyAgendaEvents
+	const pendingBookingEvents = agendaEvents.calendarEventS21?.getMyAgendaEvents
 		.filter((event) => event.agendaItemContext.entityType === "BOOKING")
 		.filter((event) => dayjs().isAfter(event.start))
+
+	assert(pendingBookingEvents, "Pending booking events are not available")
 
 	if (pendingBookingEvents.length === 0) {
 		throw new Error("No bookings found")

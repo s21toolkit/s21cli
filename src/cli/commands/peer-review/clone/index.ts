@@ -1,5 +1,4 @@
-import type { Api } from "@s21toolkit/client"
-import { command, number, option, optional, string } from "cmd-ts"
+import assert from "node:assert"
 import { spawnSync } from "node:child_process"
 import { randomUUID } from "node:crypto"
 import { join } from "node:path"
@@ -7,6 +6,8 @@ import { getPeerReviewDescriptor } from "@/adapters/getPeerReviewDescriptor"
 import { getAuthorizedClient } from "@/auth"
 import { fetchSelectedPeerReview } from "@/cli/commands/peer-review/fetchPeerReviews"
 import { Configuration } from "@/configuration"
+import type { GetAgendaP2PQuery } from "@s21toolkit/client-schema"
+import { command, number, option, optional, string } from "cmd-ts"
 
 function getPrDirectory(descriptor: string) {
 	const basePath = Configuration.required.prDirectory
@@ -16,18 +17,34 @@ function getPrDirectory(descriptor: string) {
 	return join(basePath, `${descriptor}-${uuid}`)
 }
 
-function bookingToPrettyString(booking: Api.GetAgendaP2P.Data) {
-	const project = booking.student.getEnrichedBooking.task!.goalName
-	const verifiableUser =
-		booking.student.getEnrichedBooking.verifiableStudent!.user
+function bookingToPrettyString(booking: GetAgendaP2PQuery) {
+	const project = booking.student?.getEnrichedBooking.task?.goalName
+	const verifiableUsers =
+		booking.student?.getEnrichedBooking.verifiableInfo?.verifiableStudents
 
-	const verifierUser = booking.student.getEnrichedBooking.verifierUser
+	assert(
+		project,
+		"Failed to create booking descriptor, project was not provided",
+	)
+	assert(
+		verifiableUsers,
+		"Failed to create booking descriptor, user was not provided",
+	)
 
-	const isTeam = Boolean(booking.student.getEnrichedBooking.team)
+	const verifierUser = booking.student?.getEnrichedBooking.verifierUser
 
-	return `"${project}" by ${isTeam ? "(Team)" : ""} ${
-		verifiableUser.login
-	} reviewed by ${verifierUser.login}`
+	assert(
+		verifierUser,
+		"Failed to create booking descriptor, verifier was not provided",
+	)
+
+	const isTeam = Boolean(
+		booking.student?.getEnrichedBooking.verifiableInfo?.team,
+	)
+
+	return `"${project}" by ${isTeam ? "(Team)" : ""} ${verifiableUsers
+		.map((student) => student.login)
+		.join(", ")} reviewed by ${verifierUser.login}`
 }
 
 export const cloneCommand = command({
@@ -53,14 +70,23 @@ export const cloneCommand = command({
 
 		const booking = await fetchSelectedPeerReview(client, argv.index)
 
-		const checklist = await client.api.createFilledChecklist({
-			studentAnswerId: booking.student.getEnrichedBooking.answerId!,
+		assert(
+			booking.student?.getEnrichedBooking.answerId,
+			"Selected booking is missing answerId",
+		)
+
+		const checklist = await client.api.getFilledChecklist({
+			filledChecklistId: booking.student?.getEnrichedBooking.answerId,
 		})
 
 		console.log(`Pending booking detected: ${bookingToPrettyString(booking)}`)
 
 		const { sshLink, httpsLink } =
-			checklist.student.createFilledChecklist.gitlabStudentProjectUrl
+			checklist.student?.getP2pInfo.solutionInfo?.gitlabSolutionInfo
+				?.gitlabLink ?? {}
+
+		assert(sshLink, "Failed to extract ssh repo link")
+		assert(httpsLink, "Failed to extarct https repo link")
 
 		console.log(`Repo SSH link: ${sshLink}`)
 		console.log(`Repo HTTPS link: ${httpsLink}`)

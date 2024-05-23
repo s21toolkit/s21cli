@@ -1,8 +1,8 @@
-import type { Problems } from "arktype"
-import { access, constants } from "node:fs/promises"
+import { constants, access } from "node:fs/promises"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import process from "node:process"
+import type { Problems } from "arktype"
 import type { ConfigurationSchema } from "./ConfigurationSchema"
 import {
 	ConfigurationSource,
@@ -27,6 +27,7 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 	get<TKey extends keyof TSchema>(property: TKey) {
 		this.#assertConfigured(property)
 
+		// biome-ignore lint/style/noNonNullAssertion: checked in #assertConfigured
 		return this.#configuration[property]!
 	}
 
@@ -113,9 +114,9 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 		source: ConfigurationSource,
 		filename: string,
 	) {
-		if (!data || typeof data != "object") {
+		if (!data || typeof data !== "object") {
 			console.error(`Configuration problems detected in ${filename}:`)
-			console.error(`\t- Invalid configuration root, must be an object`)
+			console.error("\t- Invalid configuration root, must be an object")
 			return
 		}
 
@@ -166,6 +167,7 @@ export class ConfigurationManager<const TSchema extends ConfigurationSchema> {
 			}
 
 			const { schema, source: allowedSource } = resolveSchemaProperty(
+				// biome-ignore lint/style/noNonNullAssertion: already checked in the beginning of the loop
 				this.schema[key]!,
 			)
 

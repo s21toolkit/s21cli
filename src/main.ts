@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 import "disposablestack/auto"
-import { binary, runSafely } from "cmd-ts"
 import process from "node:process"
 import { cli } from "@/cli"
 import { CLIError } from "@/cli/CLIError"
 import { Configuration } from "@/configuration"
+import { binary, runSafely } from "cmd-ts"
 
 async function main(): Promise<number> {
 	const displayRawErrors = Configuration.optional.debugRawErrors ?? false

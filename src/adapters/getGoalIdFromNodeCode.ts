@@ -1,3 +1,4 @@
+import assert from "node:assert"
 import type { CachedClient } from "@/cache"
 
 export async function getGoalIdFromNodeCode(
@@ -5,16 +6,21 @@ export async function getGoalIdFromNodeCode(
 	nodeCode: string,
 	studentId: string,
 ) {
-	const graphBasis = await client.api("cache").getGraphBasisGoals({
+	const graphState = await client.api("cache").ProjectMapGetStudentGraphState({
 		studentId,
 	})
 
-	const node = graphBasis.student.getBasisGraph.graphNodes.find(
-		(e) => e.nodeCode === nodeCode,
-	)
-	if (!node) {
-		throw new Error(`Node ${nodeCode} not found`)
+	const nodes = graphState.holyGraph?.getStudentStateGraph?.nodes
+
+	assert(nodes, "Nodes not found")
+
+	const [item] = nodes
+		.map((node) => node.items.find((item) => item.code === nodeCode))
+		.filter(Boolean)
+
+	if (!item) {
+		throw new Error(`Item ${nodeCode} not found`)
 	}
 
-	return node.entityId
+	return item.entityId
 }

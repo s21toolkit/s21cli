@@ -1,4 +1,5 @@
 import { Client, UserAuthProvider } from "@s21toolkit/client"
+import { Schema } from "@s21toolkit/client-schema"
 import { command, option, string } from "cmd-ts"
 
 export const testCommand = command({
@@ -21,12 +22,12 @@ export const testCommand = command({
 
 		const auth = new UserAuthProvider(username, password)
 
-		const client = new Client(auth)
+		const client = new Client(Schema, auth)
 
 		try {
-			const data = await client.api.getCurrentUser()
+			const data = await client.api.getCurrentUserExperience()
 
-			console.log("Ok:", data.student.getExperience.coinsCount)
+			console.log("Ok:", data.student?.getExperience.coinsCount ?? "<none>")
 		} catch (error) {
 			if (!(error instanceof Error)) {
 				console.error("Unknown error")

@@ -1,6 +1,6 @@
-import { command, option, positional } from "cmd-ts"
 import { getAuthorizedClient } from "@/auth"
 import { json } from "@/cli/arguments/json"
+import { command, option, positional } from "cmd-ts"
 
 export const apiCommand = command({
 	name: "api",

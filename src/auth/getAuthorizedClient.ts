@@ -1,16 +1,16 @@
-import { TokenAuthProvider } from "@s21toolkit/client"
 import type { CachingBehavior } from "@/cache"
 import { CachedClient, CachedUserAuthProvider } from "@/cache"
 import { dataCache } from "@/cache/cache"
 import { Configuration } from "@/configuration"
+import { TokenAuthProvider } from "@s21toolkit/client"
 
 export function getAuthorizedClient(
 	cachingBehavior: CachingBehavior = "passthrough",
 ) {
-	const { token, schoolId } = Configuration.optional
+	const { token } = Configuration.optional
 
 	if (token) {
-		const auth = new TokenAuthProvider(token, { schoolId })
+		const auth = new TokenAuthProvider(token)
 
 		return new CachedClient(auth, dataCache, {
 			cacheId: `default:${token}`,
