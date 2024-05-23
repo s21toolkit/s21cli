@@ -12,8 +12,8 @@
 			"program": "${workspaceFolder}/build/dist/main.mjs",
 			"cwd": "${input:project}",
 			"args": ["wfs"],
-			"stopOnEntry": false,
-		},
+			"stopOnEntry": false
+		}
 	],
 	"inputs": [
 		{
