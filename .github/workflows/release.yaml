@@ -13,7 +13,7 @@ env:
   IS_PRERELEASE: "${{contains(github.ref_name, 'dev')}}"
 
 jobs:
-  build-linux:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,48 +30,8 @@ jobs:
       - run: |
           pnpm install --frozen-lockfile
           pnpm build
-
-      - uses: actions/upload-artifact@v3
-        with:
-          path: build/bin/*
-
-  build-macos:
-    runs-on: macos-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: latest
-      - uses: actions/setup-node@v3
-        with:
-          node-version: ">=21.0.0"
-          cache: pnpm
-          registry-url: https://registry.npmjs.org
-
-      - run: |
-          pnpm install --frozen-lockfile
-          pnpm build
-
-      - uses: actions/upload-artifact@v3
-        with:
-          path: build/bin/*
-
-  publish:
-    needs:
-      - build-linux
-      - build-macos
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v3
-        with:
-          path: artifacts
 
       - uses: ncipollo/release-action@v1.13.0
         with:
-          artifacts: artifacts/**/*
+          artifacts: build/bin/*
           prerelease: ${{env.IS_PRERELEASE}}
