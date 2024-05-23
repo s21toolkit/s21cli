@@ -21,8 +21,8 @@ importers:
         specifier: ^5.5.3
         version: 5.5.3
       cache-manager-fs-hash:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^2.0.0
+        version: 2.0.0
       common-tags:
         specifier: ^1.8.2
         version: 1.8.2
@@ -594,7 +594,6 @@ packages:
 
   bun@1.1.9:
     resolution: {integrity: sha512-imtKSi5ieJYZ8H/YJIUy1xY91izXTV0iE28399vKiq3vjNaVz9/kzEHqZKDZcofYtknfnc5Izo4qaB5kpmQ+Yg==}
-    cpu: [arm64, x64]
     os: [darwin, linux, win32]
     hasBin: true
 
@@ -608,9 +607,9 @@ packages:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
 
-  cache-manager-fs-hash@1.1.0:
-    resolution: {integrity: sha512-5D4Y2cnioxiy830a7QrWtRmsrfZCW1z3BOIZ0jessuFHIj/8e8mI4MsDYTaEz6aPn0EC4YAWWtQGJVsqccXW/w==}
-    engines: {node: '>=8.0.0'}
+  cache-manager-fs-hash@2.0.0:
+    resolution: {integrity: sha512-w03tp8mvfglRUFtItCdC114rFyzk0umu5LnnRM5spnu2+Mj8/2PrDHCnaoPltto/2fK94fC/Kw2rHqBXqIEgTQ==}
+    engines: {node: '>=18.0.0'}
 
   cache-manager@5.5.3:
     resolution: {integrity: sha512-Td6F8lZE/YCciSi8xmdBjur6zlKIcoLMZp9jTmJNc44DrXIIcEhr9gra5j1T7RRbtWHaG5tJMEBKS+0S1+T2NQ==}
@@ -1882,7 +1881,7 @@ snapshots:
 
   cac@6.7.14: {}
 
-  cache-manager-fs-hash@1.1.0:
+  cache-manager-fs-hash@2.0.0:
     dependencies:
       lockfile: 1.0.4
 

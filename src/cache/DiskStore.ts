@@ -1,7 +1,6 @@
 import type { Store } from "cache-manager"
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { create as _createDiskStore } from "cache-manager-fs-hash"
+// @ts-expect-error
+import { DiskStore as _DiskStore } from "cache-manager-fs-hash"
 
 export type DiskStoreConfig = {
 	/**
@@ -20,11 +19,6 @@ export type DiskStoreConfig = {
 	zip?: boolean
 
 	/**
-	 * Max size in bytes on disk
-	 */
-	maxsize?: number
-
-	/**
 	 * Create subdirectories
 	 */
 	subdirs?: boolean
@@ -33,5 +27,5 @@ export type DiskStoreConfig = {
 type DiskStore = Store
 
 export function createDiskStore(config: DiskStoreConfig): DiskStore {
-	return _createDiskStore(config)
+	return new _DiskStore(config)
 }

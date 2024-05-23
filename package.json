@@ -44,7 +44,7 @@
     "@s21toolkit/client-schema": "^73.4.3",
     "arktype": "1.0.24-alpha",
     "cache-manager": "^5.5.3",
-    "cache-manager-fs-hash": "^1.1.0",
+    "cache-manager-fs-hash": "^2.0.0",
     "common-tags": "^1.8.2",
     "dayjs": "^1.11.11",
     "disposablestack": "^1.1.5"
