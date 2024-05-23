@@ -19,6 +19,10 @@ echo "Installing s21cli"
 PLATFORM=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCHITECTURE=$(uname -m | tr '[:upper:]' '[:lower:]')
 
+if [ "$ARCHITECTURE" = "x86_64" ]; then
+	ARCHITECTURE="x64"
+fi
+
 echo "- Target platform identified as $PLATFORM/$ARCHITECTURE"
 
 echo "- Locating latest release"
@@ -31,7 +35,7 @@ if [ "$S21_INSTALL_UNSTABLE" = true ]; then
 	RELEASE=tags/$latest_version
 fi
 
-BINARY_URL=$(curl -s "$RELEASES_URL/$RELEASE" | grep "browser_download_url.*s21" | cut -d : -f 2,3 | tr -d \" | grep $PLATFORM | xargs)
+BINARY_URL=$(curl -s "$RELEASES_URL/$RELEASE" | grep "browser_download_url.*s21" | cut -d : -f 2,3 | tr -d \" | grep "$PLATFORM-$ARCHITECTURE" | xargs)
 
 if [ -z "$BINARY_URL" ]; then
 	echo "-- Error: Failed to fetch release artifacts"
