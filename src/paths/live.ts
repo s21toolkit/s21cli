@@ -23,7 +23,7 @@ export const PathsLive = Layer.effect(
 	Effect.gen(function* (_) {
 		yield* Effect.logDebug("Resolving paths")
 
-		const home = yield* Config.string("S21HOME").pipe(
+		const home = yield* Config.string("S21_HOME").pipe(
 			Config.withDefault(os.homedir()),
 		)
 
