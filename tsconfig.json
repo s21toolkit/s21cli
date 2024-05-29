@@ -5,6 +5,8 @@
 		"@s21toolkit/shared/tsconfig/tsup.tsconfig.json"
 	],
 	"compilerOptions": {
+		"exactOptionalPropertyTypes": true,
+
 		"baseUrl": ".",
 		"paths": {
 			"@/*": ["src/*"],

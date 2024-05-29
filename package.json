@@ -15,17 +15,16 @@
     "lint": "pnpm lint:biome && pnpm lint:tsc",
     "fix:biome": "biome check --apply .",
     "fix": "pnpm fix:biome",
-    "build:compile": "bun run compile.ts",
-    "build:bundle": "tsup",
-    "build": "pnpm lint && pnpm build:bundle && pnpm build:compile",
+    "build:tsup": "tsup",
+    "build": "pnpm lint && pnpm build:tsup",
     "watch:bundle": "NODE_ENV=development tsup --watch",
     "release": "npm version -m 'chore(release): %s' --",
     "prepublishOnly": "pnpm build",
     "postversion": "git push && git push --tags",
-    "s21b": "pnpm run build:bundle && pnpm run build:compile && pnpm s21:run_binary",
+    "s21b": "pnpm run build:tsup && pnpm run build:compile && pnpm s21:run_binary",
     "s21:run_binary": "./build/bin/*",
     "s21:run": "./build/dist/main.mjs",
-    "s21": "pnpm run build:bundle && pnpm s21:run"
+    "s21": "pnpm run build:tsup && pnpm s21:run"
   },
   "bin": "build/main.js",
   "devDependencies": {
@@ -34,20 +33,24 @@
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/common-tags": "^1.8.4",
     "@types/node": "^20.12.12",
-    "bun": "^1.1.9",
-    "cmd-ts": "^0.13.0",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@effect/cli": "^0.36.36",
+    "@effect/platform": "^0.55.1",
+    "@effect/platform-node": "^0.51.1",
+    "@effect/schema": "^0.67.14",
     "@s21toolkit/client": "^1.0.0",
     "@s21toolkit/client-schema": "^73.4.3",
-    "arktype": "1.0.24-alpha",
     "cache-manager": "^5.5.3",
     "cache-manager-fs-hash": "^2.0.0",
     "common-tags": "^1.8.2",
     "dayjs": "^1.11.11",
-    "disposablestack": "^1.1.5"
+    "disposablestack": "^1.1.5",
+    "effect": "^3.2.5",
+    "merge-anything": "^5.1.7",
+    "simple-git": "^3.24.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
