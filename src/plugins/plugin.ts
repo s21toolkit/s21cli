@@ -1,5 +1,8 @@
 import type { Command } from "@effect/cli"
 import type { Schema } from "@effect/schema"
+import type { Effect } from "effect"
+
+type MaybeEffect<A, E = never, R = never> = A | Effect.Effect<A, E, R>
 
 export namespace Plugin {
 	// biome-ignore lint/suspicious/noExplicitAny: invariant
@@ -12,8 +15,11 @@ export namespace Plugin {
 	}
 
 	export type Contributions = {
+		/**
+		 * Command to be added to the CLI
+		 */
 		// biome-ignore lint/suspicious/noExplicitAny: invariant
-		command: Command.Command<any, any, any, any>
+		command?: Command.Command<any, never, unknown, unknown>
 	}
 
 	export type Metadata = {
@@ -26,9 +32,9 @@ export type ConfiguredPlugin<TSchema extends Plugin.Schema = Plugin.Schema> = {
 	configurationSchema?: TSchema
 	activate: (
 		context: Plugin.ActivationContext<TSchema>,
-	) => Plugin.Contributions | undefined
+	) => MaybeEffect<Plugin.Contributions | undefined>
 }
 
 export type Plugin<TSchema extends Plugin.Schema = Plugin.Schema> = (
 	setupContext: Plugin.SetupContext,
-) => ConfiguredPlugin<TSchema>
+) => MaybeEffect<ConfiguredPlugin<TSchema>>

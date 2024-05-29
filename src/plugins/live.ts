@@ -38,7 +38,13 @@ export const PluginsLive = Layer.effect(
 					installedPackage,
 				)) as Plugin
 
-				const configuredPlugin = setupPlugin(unsafePlugin)
+				let configuredPlugin
+
+				configuredPlugin = setupPlugin(unsafePlugin)
+
+				if (Effect.isEffect(configuredPlugin)) {
+					configuredPlugin = yield* configuredPlugin
+				}
 
 				yield* Effect.logDebug(
 					`Loaded plugin package ${installedPackage} as ${name}`,
