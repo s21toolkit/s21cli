@@ -56,5 +56,8 @@
     "registry": "https://registry.npmjs.org"
   },
   "private": false,
-  "license": "MIT"
+  "license": "MIT",
+  "volta": {
+    "node": "20.14.0"
+  }
 }
