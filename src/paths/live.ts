@@ -33,8 +33,8 @@ export const PathsLive = Layer.effect(
 
 		yield* Effect.logDebug(
 			"Resolved paths",
-			`global:"${global}"`,
-			`local:"${local}"`,
+			`global:"${JSON.stringify(global)}"`,
+			`local:"${JSON.stringify(local)}"`,
 		)
 
 		return { home, global, local }
