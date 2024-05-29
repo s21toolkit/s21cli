@@ -1,5 +1,5 @@
 import { Paths } from "@/paths"
-import { Plugins } from "@/plugins"
+import { type ConfiguredPlugin, type Plugin, Plugins } from "@/plugins"
 import { type ParseResult, Schema } from "@effect/schema"
 // biome-ignore lint/suspicious/noShadowRestrictedNames: it's fine
 import { Data, Effect, Function, Layer } from "effect"
@@ -18,46 +18,54 @@ export class ConfigFormatError extends Data.TaggedError("ConfigFormatError") {
 	}
 }
 
+class LoadedConfig extends Data.TaggedClass("LoadedConfig") {
+	constructor(readonly value: unknown) {
+		super()
+	}
+}
+
 const importScript = (path: string) =>
-	Effect.tryPromise({
-		try: async (): Promise<unknown> => import(path),
-		catch: (error) => new ConfigLoadingError(error),
+	Effect.gen(function* (_) {
+		yield* Effect.logDebug(`Importing ${path}`)
+
+		const result = yield* Effect.tryPromise({
+			try: async (): Promise<unknown> => import(path),
+			catch: (error) => new ConfigLoadingError(error),
+		}).pipe(
+			Effect.map((value) => new LoadedConfig(value)),
+			Effect.merge,
+		)
+
+		if (result._tag === "LoadedConfig") {
+			yield* Effect.logDebug(`Imported ${path}`)
+		} else {
+			yield* Effect.logDebug(`Failed to import ${path}`, result.cause)
+		}
+
+		return result
 	})
 
-export const ConfigurationLive = Layer.effect(
-	Configuration,
+const loadConfigs = (paths: string[]) =>
 	Effect.gen(function* (_) {
-		const paths = yield* Paths
+		const results = yield* Effect.all(paths.map(importScript))
+
+		const errors = results.filter(
+			(value): value is ConfigLoadingError =>
+				value._tag === "ConfigLoadingError",
+		)
+
+		const values = results.filter(
+			(value): value is LoadedConfig => value._tag === "LoadedConfig",
+		)
+
+		return { values, errors }
+	})
+
+const validatePluginConfiguration = (
+	pluginCponfiguration: Record<string, unknown>,
+) =>
+	Effect.gen(function* (_) {
 		const plugins = yield* Plugins
-
-		yield* Effect.logDebug(
-			`Loading global configuration: ${paths.global.config}`,
-		)
-
-		const rawGlobalConfiguration = yield* importScript(paths.global.config)
-
-		yield* Effect.logDebug("Loaded global configuration")
-
-		const rawLocalConfiguration = yield* importScript(paths.local.config)
-
-		yield* Effect.logDebug("Loaded local configuration")
-
-		const rawConfiguration = merge(
-			rawGlobalConfiguration,
-			rawLocalConfiguration,
-		)
-
-		yield* Effect.logDebug("Merged configuration")
-
-		yield* Effect.logDebug("Validating configuration")
-
-		const configuration = yield* Function.pipe(
-			rawConfiguration,
-			Schema.decodeUnknown(Configuration.FullConfiguration),
-			Effect.mapError((error) => new ConfigFormatError(error)),
-		)
-
-		yield* Effect.logDebug("Decoded configuration")
 
 		for (const [id, plugin] of plugins) {
 			yield* Effect.logDebug(
@@ -66,7 +74,7 @@ export const ConfigurationLive = Layer.effect(
 
 			const schema = plugin.configurationSchema ?? Schema.Unknown
 
-			const rawPluginConfiguration = configuration.plugins[plugin.name]
+			const rawPluginConfiguration = pluginCponfiguration[plugin.name]
 
 			yield* Function.pipe(
 				rawPluginConfiguration,
@@ -78,6 +86,51 @@ export const ConfigurationLive = Layer.effect(
 				`Decoded plugin configuration ${plugin.name} (${id})`,
 			)
 		}
+	})
+
+export const ConfigurationLive = Layer.effect(
+	Configuration,
+	Effect.gen(function* (_) {
+		const paths = yield* Paths
+
+		yield* Effect.logDebug("Loading configuration")
+
+		const loadedConfigs = yield* loadConfigs([
+			paths.global.config,
+			paths.local.config,
+		])
+
+		if (loadedConfigs.values.length === 0) {
+			yield* Effect.logDebug("No configuration found")
+
+			// biome-ignore lint/style/noNonNullAssertion: expect non-nullable
+			yield* loadedConfigs.errors[0]!
+		}
+
+		yield* Effect.logDebug("Loaded configuration")
+
+		const [rawGlobalConfig, ...rawLocalConfigs] = loadedConfigs.values.map(
+			({ value }) => value,
+		)
+
+		const rawConfiguration = merge(rawGlobalConfig, ...rawLocalConfigs)
+
+		yield* Effect.logDebug(
+			"Merged configuration",
+			JSON.stringify(rawConfiguration, null, 2),
+		)
+
+		yield* Effect.logDebug("Validating configuration")
+
+		const configuration = yield* Function.pipe(
+			rawConfiguration,
+			Schema.decodeUnknown(Configuration.FullConfiguration),
+			Effect.mapError((error) => new ConfigFormatError(error)),
+		)
+
+		yield* Effect.logDebug("Decoded configuration")
+
+		yield* validatePluginConfiguration(configuration.plugins)
 
 		return configuration
 	}),
