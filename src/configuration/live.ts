@@ -16,6 +16,10 @@ export class ConfigFormatError extends Data.TaggedError("ConfigFormatError") {
 	constructor(override readonly cause: ParseResult.ParseError) {
 		super()
 	}
+
+	override toString() {
+		return this.cause.toString()
+	}
 }
 
 class LoadedConfig extends Data.TaggedClass("LoadedConfig") {
@@ -29,7 +33,8 @@ const importScript = (path: string) =>
 		yield* Effect.logDebug(`Importing ${path}`)
 
 		const result = yield* Effect.tryPromise({
-			try: async (): Promise<unknown> => import(path),
+			try: async (): Promise<unknown> =>
+				import(path).then((value) => value?.default),
 			catch: (error) => new ConfigLoadingError(error),
 		}).pipe(
 			Effect.map((value) => new LoadedConfig(value)),
