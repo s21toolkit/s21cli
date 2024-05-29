@@ -4,7 +4,7 @@ import {
 	NodePath,
 	NodeRuntime,
 } from "@effect/platform-node"
-import { Console, Effect } from "effect"
+import { Console, Effect, LogLevel, Logger } from "effect"
 import { Configuration, ConfigurationLive } from "./configuration"
 import { PathsLive } from "./paths"
 import { NpmPluginLoader, PluginsLive } from "./plugins"
@@ -30,5 +30,6 @@ program.pipe(
 	Effect.provide(NodePath.layer),
 	Effect.provide(NodeCommandExecutor.layer),
 	Effect.provide(NodeFileSystem.layer),
+	Logger.withMinimumLogLevel(LogLevel.All),
 	NodeRuntime.runMain,
 )
