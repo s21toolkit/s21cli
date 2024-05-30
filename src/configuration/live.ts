@@ -1,5 +1,5 @@
 import { Paths } from "@/paths"
-import { type ConfiguredPlugin, type Plugin, Plugins } from "@/plugins"
+import { Plugins } from "@/plugins"
 import { type ParseResult, Schema } from "@effect/schema"
 // biome-ignore lint/suspicious/noShadowRestrictedNames: it's fine
 import { Data, Effect, Function, Layer } from "effect"
