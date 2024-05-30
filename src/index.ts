@@ -5,23 +5,21 @@ import {
 	NodeRuntime,
 } from "@effect/platform-node"
 import { Console, Effect, LogLevel, Logger } from "effect"
-import { Configuration, ConfigurationLive } from "./configuration"
+import { ConfigurationLive } from "./configuration"
 import { PathsLive } from "./paths"
-import { LoadedPluginsLive, NpmPluginLoader } from "./plugins"
+import { ActivePlugins, LoadedPluginsLive, NpmPluginLoader } from "./plugins"
+import { ActivePluginsLive } from "./plugins/active/live"
 
 const program = Effect.gen(function* (_) {
 	yield* Effect.logDebug("Starting program")
 
-	yield* Effect.logDebug("Loading configuration")
+	const activePlugins = yield* ActivePlugins
 
-	const configuration = yield* Configuration
-
-	yield* Effect.logDebug("Loaded configuration")
-
-	yield* Console.log(JSON.stringify(configuration, null, 2))
+	yield* Console.log(JSON.stringify(activePlugins, null, 2))
 })
 
 program.pipe(
+	Effect.provide(ActivePluginsLive),
 	Effect.provide(ConfigurationLive),
 	Effect.provide(PathsLive),
 	Effect.provide(LoadedPluginsLive),

@@ -18,7 +18,7 @@ export namespace Configuration {
 			}),
 		),
 		plugins: S.Struct({
-			enabled: S.Array(S.String).pipe(S.optional({ default: () => [] })),
+			enabled: S.Array(S.String).pipe(S.optional({ default: () => ["*"] })),
 			disabled: S.Array(S.String).pipe(S.optional({ default: () => [] })),
 		}).pipe((self) =>
 			self.pipe(S.optional({ default: () => self.make({}) })),

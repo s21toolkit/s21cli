@@ -129,7 +129,10 @@ export const ConfigurationLive = Layer.effect(
 			Effect.mapError((cause) => new ConfigFormatError({ cause })),
 		)
 
-		yield* Effect.logDebug("Decoded configuration")
+		yield* Effect.logDebug(
+			"Decoded configuration",
+			JSON.stringify(configuration, null, 2),
+		)
 
 		yield* validatePluginConfiguration(configuration.plugins)
 

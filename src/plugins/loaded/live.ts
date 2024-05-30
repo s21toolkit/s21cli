@@ -1,5 +1,5 @@
+import type { ConfiguredPlugin, Plugin } from "@/plugins"
 import { Effect, Layer } from "effect"
-import type { ConfiguredPlugin, Plugin } from "../plugin"
 import { PluginLoader } from "./loader/service"
 import { LoadedPlugins } from "./service"
 

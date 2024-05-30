@@ -11,7 +11,7 @@ export namespace Plugin {
 	export type SetupContext = Record<never, unknown>
 
 	export type ActivationContext<TSchema extends Schema = Schema> = {
-		configuration: TSchema
+		configuration: Schema.Schema.Type<TSchema>
 	}
 
 	export type Contributions = {
@@ -19,17 +19,17 @@ export namespace Plugin {
 		 * Command to be added to the CLI
 		 */
 		// biome-ignore lint/suspicious/noExplicitAny: invariant
-		command?: Command.Command<any, never, unknown, unknown>
+		command?: Command.Command<any, never, unknown, unknown> | undefined
 	}
 
 	export type Metadata = {
 		name: string
-		description?: string
+		description?: string | undefined
 	}
 }
 
 export type ConfiguredPlugin<TSchema extends Plugin.Schema = Plugin.Schema> = {
-	configurationSchema?: TSchema
+	configurationSchema?: TSchema | undefined
 	activate: (
 		context: Plugin.ActivationContext<TSchema>,
 	) => MaybeEffect<Plugin.Contributions | undefined>
