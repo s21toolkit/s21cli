@@ -116,10 +116,7 @@ export const ConfigurationLive = Layer.effect(
 
 		const rawConfiguration = merge(rawGlobalConfig, ...rawLocalConfigs)
 
-		yield* Effect.logDebug(
-			"Merged configuration",
-			JSON.stringify(rawConfiguration, null, 2),
-		)
+		yield* Effect.logDebug("Merged configuration", rawConfiguration)
 
 		yield* Effect.logDebug("Validating configuration")
 
@@ -129,13 +126,10 @@ export const ConfigurationLive = Layer.effect(
 			Effect.mapError((cause) => new ConfigFormatError({ cause })),
 		)
 
-		yield* Effect.logDebug(
-			"Decoded configuration",
-			JSON.stringify(configuration, null, 2),
-		)
+		yield* Effect.logDebug("Decoded configuration", configuration)
 
 		yield* validatePluginConfiguration(configuration.plugins)
 
 		return configuration
-	}),
+	}).pipe(Effect.withLogSpan("ConfigurationLive")),
 )

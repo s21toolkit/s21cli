@@ -62,5 +62,5 @@ export const LoadedPluginsLive = Layer.effect(
 		}
 
 		return plugins
-	}),
+	}).pipe(Effect.withLogSpan("LoadedPluginsLive")),
 )

@@ -1,6 +1,9 @@
+import { stdout } from "node:process"
 import { Config, Effect, Layer, LogLevel, Logger } from "effect"
+import { JsonLogger, PrettyLogger } from "effect-log"
+import { formatLogMessage } from "./format"
 
-const DEFAULT_LOG_LEVEL = LogLevel.Error
+const DEFAULT_LOG_LEVEL = LogLevel.Fatal
 
 const LogLevelLive = Config.logLevel("S21_LOG_LEVEL").pipe(
 	Config.withDefault(DEFAULT_LOG_LEVEL),
@@ -8,9 +11,25 @@ const LogLevelLive = Config.logLevel("S21_LOG_LEVEL").pipe(
 	Layer.unwrapEffect,
 )
 
-export const LoggerLive = Logger.replace(
-	Logger.defaultLogger,
-	Logger.make((options) => {
-		Logger.defaultLogger.log(options)
-	}),
+export const LoggerLive = Layer.unwrapEffect(
+	Effect.gen(function* (_) {
+		const logFormat = yield* Config.literal(
+			"pretty",
+			"json",
+		)("S21_LOG_FORMAT").pipe(Config.withDefault("pretty"))
+
+		switch (logFormat) {
+			case "pretty":
+				return PrettyLogger.make({
+					showFiberId: false,
+					showSpans: true,
+					showTime: false,
+					enableColors: stdout.isTTY,
+				}).pipe(Logger.mapInput(formatLogMessage))
+			case "json":
+				return JsonLogger.make({})
+		}
+	}).pipe(
+		Effect.map((logger) => Logger.replace(Logger.defaultLogger, logger)),
+	),
 ).pipe(Layer.provide(LogLevelLive))

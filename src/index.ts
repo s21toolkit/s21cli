@@ -16,7 +16,7 @@ const program = Effect.gen(function* (_) {
 
 	const activePlugins = yield* ActivePlugins
 
-	yield* Console.log("Active plugins", JSON.stringify(activePlugins, null, 2))
+	yield* Console.log("Active plugins", activePlugins)
 })
 
 program.pipe(

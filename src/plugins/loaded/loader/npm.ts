@@ -44,7 +44,7 @@ export const NpmPluginLoader = Layer.effect(
 
 		return {
 			installedPackages,
-			loadPackage: (id) =>
+			loadPackage: (id: string) =>
 				Effect.gen(function* (_) {
 					try {
 						yield* Effect.logDebug(`Loading package ${id}`)
@@ -61,5 +61,5 @@ export const NpmPluginLoader = Layer.effect(
 					}
 				}),
 		}
-	}),
+	}).pipe(Effect.withLogSpan("NpmPluginLoader")),
 )

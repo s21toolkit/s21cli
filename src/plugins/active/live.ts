@@ -86,5 +86,5 @@ export const ActivePluginsLive = Layer.effect(
 		)
 
 		return activePlugins
-	}),
+	}).pipe(Effect.withLogSpan("ActivePluginsLive")),
 )
