@@ -1,4 +1,4 @@
-import { Schema } from "@effect/schema"
+import { Schema as S } from "@effect/schema"
 import { Context } from "effect"
 
 export class Configuration extends Context.Tag("Configuration")<
@@ -7,46 +7,52 @@ export class Configuration extends Context.Tag("Configuration")<
 >() {}
 
 export namespace Configuration {
-	export const GeneralConfiguration = Schema.Struct({
-		credentials: Schema.Union(
-			Schema.Struct({
-				username: Schema.String,
-				password: Schema.String,
+	export const GeneralConfiguration = S.Struct({
+		credentials: S.Union(
+			S.Struct({
+				username: S.String,
+				password: S.String,
 			}),
-			Schema.Struct({
-				token: Schema.String,
+			S.Struct({
+				token: S.String,
 			}),
 		),
-		plugins: Schema.Struct({
-			enabled: Schema.Array(Schema.String).pipe(Schema.default([])),
-			disabled: Schema.Array(Schema.String).pipe(Schema.default([])),
-		}).pipe(Schema.optional()),
-		cache: Schema.Struct({
-			enabled: Schema.Boolean.pipe(Schema.default(true)),
-			local: Schema.Boolean.pipe(Schema.default(false)),
-			flat: Schema.Boolean.pipe(Schema.default(false)),
-			zip: Schema.Boolean.pipe(Schema.default(true)),
-		}).pipe(Schema.optional()),
-		debug: Schema.Struct({
-			logLevel: Schema.Literal(
+		plugins: S.Struct({
+			enabled: S.Array(S.String).pipe(S.optional({ default: () => [] })),
+			disabled: S.Array(S.String).pipe(S.optional({ default: () => [] })),
+		}).pipe((self) =>
+			self.pipe(S.optional({ default: () => self.make({}) })),
+		),
+		cache: S.Struct({
+			enabled: S.Boolean.pipe(S.optional({ default: () => true })),
+			local: S.Boolean.pipe(S.optional({ default: () => false })),
+			flat: S.Boolean.pipe(S.optional({ default: () => false })),
+			zip: S.Boolean.pipe(S.optional({ default: () => true })),
+		}).pipe((self) =>
+			self.pipe(S.optional({ default: () => self.make({}) })),
+		),
+		debug: S.Struct({
+			logLevel: S.Literal(
 				"all",
 				"debug",
 				"info",
 				"warn",
 				"error",
 				"none",
-			).pipe(Schema.default("error")),
-		}).pipe(Schema.optional()),
+			).pipe(S.optional({ default: () => "error" })),
+		}).pipe((self) =>
+			self.pipe(S.optional({ default: () => self.make({}) })),
+		),
 	})
 
-	export type GeneralConfiguration = Schema.Schema.Type<
-		typeof GeneralConfiguration
-	>
+	export type GeneralConfiguration = S.Schema.Type<typeof GeneralConfiguration>
 
-	export const FullConfiguration = Schema.Struct({
+	export const FullConfiguration = S.Struct({
 		general: GeneralConfiguration,
-		plugins: Schema.Record(Schema.String, Schema.Unknown),
+		plugins: S.Record(S.String, S.Unknown).pipe(
+			S.optional({ default: () => ({}) }),
+		),
 	})
 
-	export type FullConfiguration = Schema.Schema.Type<typeof FullConfiguration>
+	export type FullConfiguration = S.Schema.Type<typeof FullConfiguration>
 }
