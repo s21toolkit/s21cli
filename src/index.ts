@@ -7,7 +7,7 @@ import {
 import { Console, Effect, LogLevel, Logger } from "effect"
 import { Configuration, ConfigurationLive } from "./configuration"
 import { PathsLive } from "./paths"
-import { NpmPluginLoader, PluginsLive } from "./plugins"
+import { LoadedPluginsLive, NpmPluginLoader } from "./plugins"
 
 const program = Effect.gen(function* (_) {
 	yield* Effect.logDebug("Starting program")
@@ -24,7 +24,7 @@ const program = Effect.gen(function* (_) {
 program.pipe(
 	Effect.provide(ConfigurationLive),
 	Effect.provide(PathsLive),
-	Effect.provide(PluginsLive),
+	Effect.provide(LoadedPluginsLive),
 	Effect.provide(NpmPluginLoader),
 	Effect.provide(PathsLive),
 	Effect.provide(NodePath.layer),

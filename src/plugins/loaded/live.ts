@@ -1,7 +1,7 @@
 import { Effect, Layer } from "effect"
+import type { ConfiguredPlugin, Plugin } from "../plugin"
 import { PluginLoader } from "./loader/service"
-import type { ConfiguredPlugin, Plugin } from "./plugin"
-import { Plugins } from "./service"
+import { LoadedPlugins } from "./service"
 
 const PLUGIN_PACKAGE_NAME_PATTERN =
 	/^(@s21toolkit\/cli-plugin-|s21cli-plugin-)(?<pluginName>[\w\d\-\_)\.]+)$/
@@ -10,8 +10,8 @@ function setupPlugin(plugin: Plugin) {
 	return plugin({})
 }
 
-export const PluginsLive = Layer.effect(
-	Plugins,
+export const LoadedPluginsLive = Layer.effect(
+	LoadedPlugins,
 	Effect.gen(function* (_) {
 		const loader = yield* PluginLoader
 

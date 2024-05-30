@@ -1,5 +1,5 @@
 import { Paths } from "@/paths"
-import { Plugins } from "@/plugins"
+import { LoadedPlugins } from "@/plugins"
 import { type ParseResult, Schema } from "@effect/schema"
 // biome-ignore lint/suspicious/noShadowRestrictedNames: it's fine
 import { Data, Effect, Function, Layer } from "effect"
@@ -66,7 +66,7 @@ const validatePluginConfiguration = (
 	pluginCponfiguration: Record<string, unknown>,
 ) =>
 	Effect.gen(function* (_) {
-		const plugins = yield* Plugins
+		const plugins = yield* LoadedPlugins
 
 		for (const [id, plugin] of plugins) {
 			yield* Effect.logDebug(
