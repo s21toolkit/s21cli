@@ -31,18 +31,6 @@ export namespace Configuration {
 		}).pipe((self) =>
 			self.pipe(S.optional({ default: () => self.make({}) })),
 		),
-		debug: S.Struct({
-			logLevel: S.Literal(
-				"all",
-				"debug",
-				"info",
-				"warn",
-				"error",
-				"none",
-			).pipe(S.optional({ default: () => "error" })),
-		}).pipe((self) =>
-			self.pipe(S.optional({ default: () => self.make({}) })),
-		),
 	})
 
 	export type GeneralConfiguration = S.Schema.Type<typeof GeneralConfiguration>

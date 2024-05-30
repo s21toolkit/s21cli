@@ -4,8 +4,9 @@ import {
 	NodePath,
 	NodeRuntime,
 } from "@effect/platform-node"
-import { Console, Effect, LogLevel, Logger } from "effect"
+import { Console, Effect } from "effect"
 import { ConfigurationLive } from "./configuration"
+import { LoggerLive } from "./logger/live"
 import { PathsLive } from "./paths"
 import { ActivePlugins, LoadedPluginsLive, NpmPluginLoader } from "./plugins"
 import { ActivePluginsLive } from "./plugins/active/live"
@@ -15,7 +16,7 @@ const program = Effect.gen(function* (_) {
 
 	const activePlugins = yield* ActivePlugins
 
-	yield* Console.log(JSON.stringify(activePlugins, null, 2))
+	yield* Console.log("Active plugins", JSON.stringify(activePlugins, null, 2))
 })
 
 program.pipe(
@@ -28,6 +29,6 @@ program.pipe(
 	Effect.provide(NodePath.layer),
 	Effect.provide(NodeCommandExecutor.layer),
 	Effect.provide(NodeFileSystem.layer),
-	Logger.withMinimumLogLevel(LogLevel.All),
+	Effect.provide(LoggerLive),
 	NodeRuntime.runMain,
 )
