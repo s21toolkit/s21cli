@@ -59,6 +59,8 @@ export const NpmPluginLoader = Layer.effect(
 
 						yield* new PluginLoader.PackageNotFound()
 					}
+
+					return
 				}),
 		}
 	}).pipe(Effect.withLogSpan("NpmPluginLoader")),

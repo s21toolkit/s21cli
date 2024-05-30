@@ -1,5 +1,5 @@
 import type { ConfiguredPlugin, Plugin } from "@/plugins"
-import { Effect, Layer } from "effect"
+import { Effect, Layer, Option } from "effect"
 import { PluginLoader } from "./loader/service"
 import { LoadedPlugins } from "./service"
 
@@ -34,13 +34,17 @@ export const LoadedPluginsLive = Layer.effect(
 			)
 
 			try {
-				const unsafePlugin = (yield* loader.loadPackage(
-					installedPackage,
-				)) as Plugin
+				const unsafePlugin = (yield* loader
+					.loadPackage(installedPackage)
+					.pipe(Effect.option)) as Option.Option<Plugin>
+
+				if (Option.isNone(unsafePlugin)) {
+					continue
+				}
 
 				let configuredPlugin
 
-				configuredPlugin = setupPlugin(unsafePlugin)
+				configuredPlugin = setupPlugin(unsafePlugin.value)
 
 				if (Effect.isEffect(configuredPlugin)) {
 					configuredPlugin = yield* configuredPlugin

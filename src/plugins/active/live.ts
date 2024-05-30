@@ -63,7 +63,7 @@ export const ActivePluginsLive = Layer.effect(
 			let contributions
 
 			contributions = plugin.activate({
-				configuration: configuration.plugins[plugin.name],
+				configuration: configuration.plugins.get(plugin.name),
 			})
 
 			if (Effect.isEffect(contributions)) {

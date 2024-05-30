@@ -3,7 +3,10 @@ import { Context } from "effect"
 
 export class Configuration extends Context.Tag("Configuration")<
 	Configuration,
-	Configuration.FullConfiguration
+	{
+		general: Configuration.GeneralConfiguration
+		plugins: Map<string, unknown>
+	}
 >() {}
 
 export namespace Configuration {

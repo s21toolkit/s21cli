@@ -26,8 +26,11 @@
     "s21:run": "./build/dist/main.mjs",
     "s21": "pnpm run build:tsup && pnpm s21:run"
   },
-  "bin": "build/main.js",
-  "main": "src/index.ts",
+  "bin": {
+    "s21next": "./build/main.js"
+  },
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "devDependencies": {
     "@biomejs/biome": "^1.7.3",
     "@s21toolkit/shared": "^1.3.4",

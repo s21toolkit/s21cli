@@ -62,11 +62,13 @@ const loadConfigs = (paths: string[]) =>
 		return { values, errors }
 	})
 
-const validatePluginConfiguration = (
-	pluginCponfiguration: Record<string, unknown>,
+const decodePluginConfiguration = (
+	pluginConfiguration: Record<string, unknown>,
 ) =>
 	Effect.gen(function* (_) {
 		const plugins = yield* LoadedPlugins
+
+		const decodedPluginConfiguration = new Map<string, unknown>()
 
 		for (const [id, plugin] of plugins) {
 			yield* Effect.logDebug(
@@ -75,9 +77,9 @@ const validatePluginConfiguration = (
 
 			const schema = plugin.configurationSchema ?? Schema.Unknown
 
-			const rawPluginConfiguration = pluginCponfiguration[plugin.name]
+			const rawPluginConfiguration = pluginConfiguration[plugin.name]
 
-			yield* Function.pipe(
+			const decodedValue: unknown = yield* Function.pipe(
 				rawPluginConfiguration,
 				Schema.decodeUnknown(schema),
 				Effect.mapError((cause) => new ConfigFormatError({ cause })),
@@ -86,7 +88,11 @@ const validatePluginConfiguration = (
 			yield* Effect.logDebug(
 				`Decoded plugin configuration ${plugin.name} (${id})`,
 			)
+
+			decodedPluginConfiguration.set(plugin.name, decodedValue)
 		}
+
+		return decodedPluginConfiguration
 	})
 
 export const ConfigurationLive = Layer.effect(
@@ -128,8 +134,13 @@ export const ConfigurationLive = Layer.effect(
 
 		yield* Effect.logDebug("Decoded configuration", configuration)
 
-		yield* validatePluginConfiguration(configuration.plugins)
+		const decodedPluginConfiguration = yield* decodePluginConfiguration(
+			configuration.plugins,
+		)
 
-		return configuration
+		return {
+			general: configuration.general,
+			plugins: decodedPluginConfiguration,
+		}
 	}).pipe(Effect.withLogSpan("ConfigurationLive")),
 )

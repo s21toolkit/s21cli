@@ -1,6 +1,11 @@
 import { configs } from "@s21toolkit/shared/tsup"
 import { defineConfig } from "tsup"
 
-export default defineConfig({
-	...configs.cli,
-})
+export default defineConfig([
+	{
+		...configs.cli,
+	},
+	{
+		...configs.nodeLibrary,
+	},
+])

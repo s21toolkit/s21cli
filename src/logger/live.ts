@@ -3,7 +3,7 @@ import { Config, Effect, Layer, LogLevel, Logger } from "effect"
 import { JsonLogger, PrettyLogger } from "effect-log"
 import { formatLogMessage } from "./format"
 
-const DEFAULT_LOG_LEVEL = LogLevel.Fatal
+const DEFAULT_LOG_LEVEL = LogLevel.Error
 
 const LogLevelLive = Config.logLevel("S21_LOG_LEVEL").pipe(
 	Config.withDefault(DEFAULT_LOG_LEVEL),
