@@ -6,17 +6,13 @@ import { Data, Effect, Function, Layer } from "effect"
 import { merge } from "merge-anything"
 import { Configuration } from "./service"
 
-export class ConfigLoadingError extends Data.TaggedError("ConfigLoadingError") {
-	constructor(override readonly cause: unknown) {
-		super()
-	}
-}
+export class ConfigLoadingError extends Data.TaggedError("ConfigLoadingError")<{
+	cause: unknown
+}> {}
 
-export class ConfigFormatError extends Data.TaggedError("ConfigFormatError") {
-	constructor(override readonly cause: ParseResult.ParseError) {
-		super()
-	}
-
+export class ConfigFormatError extends Data.TaggedError("ConfigFormatError")<{
+	cause: ParseResult.ParseError
+}> {
 	override toString() {
 		return this.cause.toString()
 	}
@@ -35,7 +31,7 @@ const importScript = (path: string) =>
 		const result = yield* Effect.tryPromise({
 			try: async (): Promise<unknown> =>
 				import(path).then((value) => value?.default),
-			catch: (error) => new ConfigLoadingError(error),
+			catch: (cause) => new ConfigLoadingError({ cause }),
 		}).pipe(
 			Effect.map((value) => new LoadedConfig(value)),
 			Effect.merge,
@@ -84,7 +80,7 @@ const validatePluginConfiguration = (
 			yield* Function.pipe(
 				rawPluginConfiguration,
 				Schema.decodeUnknown(schema),
-				Effect.mapError((error) => new ConfigFormatError(error)),
+				Effect.mapError((cause) => new ConfigFormatError({ cause })),
 			)
 
 			yield* Effect.logDebug(
@@ -130,7 +126,7 @@ export const ConfigurationLive = Layer.effect(
 		const configuration = yield* Function.pipe(
 			rawConfiguration,
 			Schema.decodeUnknown(Configuration.FullConfiguration),
-			Effect.mapError((error) => new ConfigFormatError(error)),
+			Effect.mapError((cause) => new ConfigFormatError({ cause })),
 		)
 
 		yield* Effect.logDebug("Decoded configuration")
