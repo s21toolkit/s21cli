@@ -23,6 +23,8 @@ export default defineConfig({
 	target: "node20",
 	outDir: "build/dist",
 	outExtension: () => ({ js: ".mjs" }),
+	// https://github.com/egoist/tsup/issues/927#issuecomment-2416440833
+	banner: () => ({ js: `import { createRequire } from 'module'; const require = createRequire(import.meta.url);` }),
 	define: {
 		__CURRENT_COMMIT: `"${fetchCurrentCommit()}"`,
 	},
