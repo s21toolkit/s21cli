@@ -1,6 +1,6 @@
-import { Client, UserAuthProvider } from "@s21toolkit/client"
+import { Client, TokenAuthProvider, UserAuthProvider } from "@s21toolkit/client"
 import { Schema } from "@s21toolkit/client-schema"
-import { command, option, string } from "cmd-ts"
+import { command, option, optional, string } from "cmd-ts"
 
 export const testCommand = command({
 	name: "test",
@@ -16,11 +16,18 @@ export const testCommand = command({
 			long: "password",
 			type: string,
 		}),
+		token: option({
+			short: "t",
+			long: "token",
+			type: optional(string),
+		}),
 	},
 	async handler(argv) {
-		const { username, password } = argv
+		const { username, password, token } = argv
 
-		const auth = new UserAuthProvider(username, password)
+		const auth = token
+			? new TokenAuthProvider(token)
+			: new UserAuthProvider(username, password)
 
 		const client = new Client(Schema, auth)
 

@@ -19,7 +19,7 @@ export function resolveSchemaProperty(schema: ConfigurationSchemaProperty) {
 	return {
 		schema: isArray ? schema[0] : schema,
 		source: isArray
-			? schema[1] ?? ConfigurationSource.Any
+			? (schema[1] ?? ConfigurationSource.Any)
 			: ConfigurationSource.Any,
 	}
 }

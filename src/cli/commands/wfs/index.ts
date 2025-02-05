@@ -1,8 +1,8 @@
 import assert from "node:assert"
+import { resolveGoalIdFromGitRemote } from "@/adapters/git"
 import { getAuthorizedClient } from "@/auth"
 import { duration } from "@/cli/arguments/duration"
-import { resolveProjectModuleId } from "@/cli/resolveProjectModuleId"
-import { command, option, string } from "cmd-ts"
+import { command, flag, option, string } from "cmd-ts"
 import dayjs from "dayjs"
 
 export const watchForSlotsCommand = command({
@@ -10,11 +10,11 @@ export const watchForSlotsCommand = command({
 	name: "wfs",
 	description: "Watches for evaluation slots for the specified project",
 	args: {
-		projectCode: option({
+		projectId: option({
 			long: "project",
 			short: "p",
 			description:
-				"Project to seek slots for, use `this` to infer from current repository (default)",
+				"Project id to seek slots for, use `this` to infer from current repository (default)",
 			type: string,
 			defaultValue: () => "this",
 		}),
@@ -25,14 +25,21 @@ export const watchForSlotsCommand = command({
 			defaultValue: () => 60 * 60 * 12,
 			type: duration,
 		}),
+		offline: flag({
+			long: "offline",
+			short: "o",
+			description: "Literally online flag",
+			defaultValue: () => false,
+		}),
 	},
-	async handler(argv) {
+	async handler({ offline, projectId, timeAhead }) {
 		const client = getAuthorizedClient()
 
-		const moduleId = await resolveProjectModuleId(client, argv.projectCode)
+		const id =
+			projectId === "this" ? await resolveGoalIdFromGitRemote() : projectId
 
 		const module = await client.api.calendarGetModule({
-			moduleId: String(moduleId),
+			moduleId: String(id),
 		})
 
 		assert(module.student, "Module student not found")
@@ -49,7 +56,7 @@ export const watchForSlotsCommand = command({
 			const slots =
 				await client.api.calendarGetNameLessStudentTimeslotsForReview({
 					from: dayjs().toDate(),
-					to: dayjs().add(argv.timeAhead, "seconds").toDate(),
+					to: dayjs().add(timeAhead, "seconds").toDate(),
 					taskId,
 				})
 
@@ -74,8 +81,8 @@ export const watchForSlotsCommand = command({
 			await client.api.calendarAddBookingToEventSlot({
 				answerId: module.student.getModuleById.currentTask?.lastAnswer?.id,
 				wasStaffSlotChosen: timeSlots[0]?.staffSlot ?? false,
+				isOnline: !offline,
 				startTime,
-				isOnline: false,
 			})
 
 			console.log(

@@ -6,11 +6,13 @@ export async function getGoalIdFromNodeCode(
 	nodeCode: string,
 	studentId: string,
 ) {
-	const graphState = await client.api("cache").ProjectMapGetStudentGraphState({
-		studentId,
-	})
+	const graphState = await client
+		.api("cache")
+		.ProjectMapGetStudentGraphTemplate({
+			studentId,
+		})
 
-	const nodes = graphState.holyGraph?.getStudentStateGraph?.nodes
+	const nodes = graphState.holyGraph?.getStudentGraphTemplate?.nodes
 
 	assert(nodes, "Nodes not found")
 
