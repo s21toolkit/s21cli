@@ -2,6 +2,8 @@ import assert from "node:assert"
 import { getAuthorizedClient } from "@/auth"
 import dayjs from "dayjs"
 
+const subscriptions: Record<string, dayjs.Dayjs> = {}
+
 export async function watchForSlot({
 	taskId,
 	answerId,
@@ -16,8 +18,6 @@ export async function watchForSlot({
 	title: string
 }) {
 	const api = getAuthorizedClient().api("passthrough")
-	const subscriptions: { timestamp: dayjs.Dayjs; startTime: dayjs.Dayjs }[] =
-		[]
 
 	for (;;) {
 		const slots = await api.calendarGetNameLessStudentTimeslotsForReview({
@@ -33,15 +33,12 @@ export async function watchForSlot({
 			continue
 		}
 
-		const startTime = timeSlots[0]?.validStartTimes[0]
-		assert(startTime, "Start time not found")
+		const startDate = timeSlots[0]?.validStartTimes[0]
+		assert(startDate, "Start time not found")
 
-		const startDayjs = dayjs(startTime)
-		const slot = subscriptions.find((e) => e.startTime.isSame(startDayjs))
-		if (
-			slot?.startTime.isSame(dayjs(startTime)) &&
-			slot?.timestamp.diff(dayjs(), "seconds") < 15
-		) {
+		const startTime = startDate.toISOString()
+		const timestamp = subscriptions[startTime]
+		if ((timestamp?.diff(dayjs(), "seconds") ?? 15) < 15) {
 			console.log(
 				`[${title}] Cant resubscribe on same slot until 15 seconds is passed skipping...`,
 			)
@@ -51,17 +48,14 @@ export async function watchForSlot({
 		await api.calendarAddBookingToEventSlot({
 			wasStaffSlotChosen: timeSlots[0]?.staffSlot ?? false,
 			isOnline: online,
-			startTime,
+			startTime: startDate,
 			answerId,
 		})
 
-		if (slot) {
-			slot.timestamp = dayjs()
-			slot.startTime = startDayjs
-		}
+		subscriptions[startTime] = dayjs()
 
 		console.log(
-			`[${title}] Subscribed on slot ${new Date(startTime).toLocaleString()}`,
+			`[${title}] Subscribed on slot ${new Date(startDate).toLocaleString()}`,
 		)
 	}
 }
