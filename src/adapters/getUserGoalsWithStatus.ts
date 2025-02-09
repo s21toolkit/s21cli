@@ -3,9 +3,7 @@ import { getAuthorizedClient } from "@/auth"
 import { getCurrentUserId } from "@/auth/getCurrentUser"
 import type { DisplayedGoalStatus } from "@s21toolkit/client-schema"
 
-export async function getCurrentUserGoalsWithStatus(
-	status: DisplayedGoalStatus,
-) {
+export async function getUserGoalsWithStatus(status: DisplayedGoalStatus) {
 	const api = getAuthorizedClient().api("passthrough")
 	const userId = await getCurrentUserId()
 

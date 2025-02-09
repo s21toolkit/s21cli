@@ -1,14 +1,17 @@
 import assert from "node:assert"
+import { getStudentCurrentTaskGoalPairsWithStatus } from "@/adapters/getStudentCurrentTaskGoalPairsWithStatus"
 import { resolveGoalIdFromGitRemote } from "@/adapters/git"
 import { getAuthorizedClient } from "@/auth"
 import { duration } from "@/cli/arguments/duration"
+import { DisplayedGoalStatus } from "@s21toolkit/client-schema"
 import { command, flag, option, string } from "cmd-ts"
-import dayjs from "dayjs"
+import { watchForSlot } from "./watchForSlotByLastAnswerId"
 
 export const watchForSlotsCommand = command({
 	aliases: ["watch", "wfs", "watch-for-slots"],
 	name: "wfs",
-	description: "Watches for evaluation slots for the specified project",
+	description:
+		"Watches for evaluation slots for the specified project subscribing on first avaliabe slot from current time to current time + time-ahead",
 	args: {
 		projectId: option({
 			long: "project",
@@ -21,7 +24,7 @@ export const watchForSlotsCommand = command({
 		timeAhead: option({
 			long: "time-ahead",
 			short: "t",
-			description: "Time period to seek slots in",
+			description: "Time period to seek slots in seconds",
 			defaultValue: () => 60 * 60 * 12,
 			type: duration,
 		}),
@@ -31,63 +34,73 @@ export const watchForSlotsCommand = command({
 			description: "Literally online flag",
 			defaultValue: () => false,
 		}),
+		all: flag({
+			long: "all",
+			short: "a",
+			description:
+				"Watch for slots on all projects with P2P_EVALUTAIONS status ignores project flag",
+			defaultValue: () => false,
+		}),
 	},
-	async handler({ offline, projectId, timeAhead }) {
-		const client = getAuthorizedClient()
+	async handler({ all, offline, projectId, timeAhead }) {
+		const api = getAuthorizedClient().api("passthrough")
 
-		const id =
-			projectId === "this" ? await resolveGoalIdFromGitRemote() : projectId
-
-		const module = await client.api.calendarGetModule({
-			moduleId: String(id),
-		})
-
-		assert(module.student, "Module student not found")
-
-		const taskId = module.student.getModuleById.currentTask?.task.id
-
-		assert(taskId, "Current task not found")
-
-		console.log(
-			`Watching on project ${module.student.getModuleById.moduleTitle}...`,
-		)
-
-		for (;;) {
-			const slots =
-				await client.api.calendarGetNameLessStudentTimeslotsForReview({
-					from: dayjs().toDate(),
-					to: dayjs().add(timeAhead, "seconds").toDate(),
-					taskId,
-				})
-
-			assert(slots.student, "Slots student not found")
-
-			const { timeSlots } =
-				slots.student.getNameLessStudentTimeslotsForReview
-
-			if (timeSlots.length === 0) {
-				continue
-			}
-
-			const startTime = timeSlots[0]?.validStartTimes[0]
-
-			assert(startTime, "Start time not found")
-
-			assert(
-				module.student.getModuleById.currentTask?.lastAnswer?.id,
-				"Current task answer ID not found",
+		const modules = []
+		if (all) {
+			modules.push(
+				...(await getStudentCurrentTaskGoalPairsWithStatus(
+					DisplayedGoalStatus.P2PEvaluations,
+				).then((tg) =>
+					tg.map(({ goal, currentTask }) => ({
+						taskId: currentTask.taskId,
+						answerId: currentTask.lastAnswer?.id,
+						// @ts-ignore theres must be either one or another i dont want fix intersection type between project and intensive goal query which .flat() generates
+						title: goal.name ?? goal.goalName,
+					})),
+				)),
 			)
 
-			await client.api.calendarAddBookingToEventSlot({
-				answerId: module.student.getModuleById.currentTask?.lastAnswer?.id,
-				wasStaffSlotChosen: timeSlots[0]?.staffSlot ?? false,
-				isOnline: !offline,
-				startTime,
-			})
+			if (modules.length === 0) {
+				console.log("No projects with evaluations status.")
+				return
+			}
+		} else {
+			const id =
+				projectId === "this"
+					? await resolveGoalIdFromGitRemote()
+					: projectId
 
-			console.log(
-				`Subscribed on slot ${new Date(startTime).toLocaleString()}`,
+			modules.push(
+				await api
+					.calendarGetModule({
+						moduleId: String(id),
+					})
+					.then((m) => ({
+						module: m.student?.getModuleById,
+						currentTask: m.student?.getModuleById.currentTask,
+					}))
+					.then(({ module, currentTask }) => ({
+						taskId: currentTask?.id,
+						answerId: currentTask?.lastAnswer?.id,
+						title: module?.moduleTitle,
+					})),
 			)
 		}
+
+		await Promise.all(
+			modules.map(({ taskId, answerId, title }) => {
+				assert(taskId, "taskId not found")
+				assert(answerId, "answerId not found")
+
+				console.log(`Watching on project ${title}...`)
+				return watchForSlot({
+					title,
+					taskId,
+					answerId,
+					online: !offline,
+					timeAhead,
+				})
+			}),
+		)
 	},
 })

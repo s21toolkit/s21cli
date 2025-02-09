@@ -1,13 +1,13 @@
 import assert from "node:assert"
 import { getAuthorizedClient } from "@/auth"
 import { DisplayedGoalStatus } from "@s21toolkit/client-schema"
-import { getCurrentUserGoalsWithStatus } from "./getUserGoalsWithStatus"
+import { getUserGoalsWithStatus } from "./getUserGoalsWithStatus"
 
-export async function getCurrentStudentTasksWithStatus(
+export async function getStudentCurrentTaskGoalPairsWithStatus(
 	status: DisplayedGoalStatus = DisplayedGoalStatus.InProgress,
 ) {
 	const api = getAuthorizedClient().api("passthrough")
-	const goals = await getCurrentUserGoalsWithStatus(status)
+	const goals = await getUserGoalsWithStatus(status)
 	return await Promise.all(
 		goals.map(async (g) => {
 			assert(g?.goalId, "Got empty goalId")
@@ -15,7 +15,7 @@ export async function getCurrentStudentTasksWithStatus(
 				.getProjectInfo({ goalId: g.goalId.toString() })
 				.then((p) => p.student?.getModuleById.currentTask)
 			assert(currentTask, `No current task for ${g?.goalId}`)
-			return currentTask
+			return { goal: g, currentTask }
 		}),
 	)
 }
