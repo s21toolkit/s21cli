@@ -5,7 +5,7 @@ import { getAuthorizedClient } from "@/auth"
 import { duration } from "@/cli/arguments/duration"
 import { DisplayedGoalStatus } from "@s21toolkit/client-schema"
 import { command, flag, option, string } from "cmd-ts"
-import { watchForSlot } from "./watchForSlotByLastAnswerId"
+import { watchForSlot } from "./watchForSlot"
 
 export const watchForSlotsCommand = command({
 	aliases: ["watch", "wfs", "watch-for-slots"],
