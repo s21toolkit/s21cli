@@ -20,6 +20,7 @@ const cacheOptions = {
 	...(cacheConfiguration ?? {}),
 }
 
+// https://www.youtube.com/watch?v=UHmFbT8DPX8
 const AUTH_TTL_SEX = 60 * 60 * 10 // 10h
 const PERSISTENT_TTL_SEX = 60 * 60 * 48 // 48h
 
